@@ -15,7 +15,20 @@ class Login extends Component {
     }
 
     login = () => {
+        var username = document.getElementById("usernameinput").value;
+        var password = document.getElementById("passwordinput").value;
 
+        firebase.database().ref("Accounts").once('value').then(function(snapshot) {
+            snapshot.forEach(childSnapshot => {
+                console.log(childSnapshot.child("username").val());
+                if(childSnapshot.child("username").val() === username) {
+                    if(childSnapshot.child("password").val() === password) {
+                        window.open("/Homepage");
+                        window.close("/");
+                    }
+                }
+            });
+        });
     }
 
     createAccount = () => {
