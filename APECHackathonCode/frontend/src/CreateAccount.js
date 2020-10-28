@@ -18,10 +18,12 @@ class CreateAccount extends Component {
         var username = document.getElementById("usernameinput");
         var password = document.getElementById("passwordinput");
         var resturauntName = document.getElementById("resturauntinput");
+        var country = document.getElementById("country");
 
         firebase.database().ref("Accounts").child(resturauntName.value).child("resturauntName").set(resturauntName.value);
         firebase.database().ref("Accounts").child(resturauntName.value).child("username").set(username.value);
         firebase.database().ref("Accounts").child(resturauntName.value).child("password").set(password.value);
+        firebase.database().ref("Accounts").child(resturauntName.value).child("country").set(country.value);
         firebase.database().ref("Accounts").child(resturauntName.value).child("suppliesPerWeek").set({0 : [0]});
         firebase.database().ref("Accounts").child(resturauntName.value).child("customersPerWeek").set({0 : [0]});
         
@@ -56,6 +58,12 @@ class CreateAccount extends Component {
                         <FormControl>
                             <InputLabel htmlFor="resturauntinput" style = {{fontSize: "20px"}}>Name of your resturaunt</InputLabel>
                             <Input id="resturauntinput" style = {{fontSize: "20px"}}/>
+                        </FormControl>
+                    </Grid>
+                    <Grid item>
+                        <FormControl>
+                            <InputLabel htmlFor="country" style = {{fontSize: "20px"}}>Name of your country</InputLabel>
+                            <Input id="country" style = {{fontSize: "20px"}}/>
                         </FormControl>
                     </Grid>
                     <Grid item>

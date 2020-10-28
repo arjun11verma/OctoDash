@@ -3,6 +3,13 @@ import Chart from "chart.js";
 
 class LineGraph extends Component {
     chartRef = React.createRef();
+
+    constructor(props) {
+        super(props);
+        this.state = {
+            data: props.data
+        }
+    }
     
     componentDidMount() {
         const myChartRef = this.chartRef.current.getContext("2d");
@@ -10,12 +17,11 @@ class LineGraph extends Component {
         new Chart(myChartRef, {
             type: "bar",
             data: {
-                //Bring in data
-                labels: ["Jan", "Feb", "March"],
+                labels: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturdays", "Sundays"],
                 datasets: [
                     {
-                        label: "Sales",
-                        data: [86, 67, 120],
+                        label: "Customers",
+                        data: this.state.data,
                     }
                 ]
             },
@@ -24,6 +30,7 @@ class LineGraph extends Component {
             }
         });
     }
+
     render() {
         return (
             <div>
