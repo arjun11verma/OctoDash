@@ -1,20 +1,18 @@
 import React, { Component } from 'react';
 import Chart from "chart.js";
 
-
-
 class LineGraph extends Component {
+    chartRef = React.createRef();
+
     constructor(props) {
         super(props);
         this.state = {
-            data: props.data,
-            chartRef: React.createRef()
+            data: props.data
         }
     }
     
     componentDidMount() {
-        const myChartRef = this.state.chartRef.current.getContext("2d");
-        
+        const myChartRef = this.chartRef.current.getContext("2d");
         new Chart(myChartRef, {
             type: "line",
             data: {

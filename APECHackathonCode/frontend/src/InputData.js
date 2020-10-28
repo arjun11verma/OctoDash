@@ -19,10 +19,13 @@ class InputData extends Component {
     uploadData = () => {
         var input = [];
         var name = this.state.restaurauntName;
+
         firebase.database().ref("Accounts").once('value').then(function(snapshot) {
             snapshot.forEach(childSnapshot => {
                 if(childSnapshot.child("resturauntName").val() === name) {
-                    input = childSnapshot.child("customersPerWeek").val();
+                    if(childSnapshot.child("customersPerWeek").val() != null) {
+                        input = childSnapshot.child("customersPerWeek").val();
+                    }
                 }
             });
         });
@@ -32,12 +35,12 @@ class InputData extends Component {
                 var upload = document.getElementById(weeks[i]).value;
                 upload = parseInt(upload);
                 input.push(upload);
-                document.getElementById(weeks[i]).value = ""; 
             }
     
             firebase.database().ref("Accounts").child(name).child("customersPerWeek").set(input);
 
-            
+            window.open("/Homepage/" + name);
+            window.close("/InputData/" + name);
         }, 600);
     }
 
@@ -46,7 +49,7 @@ class InputData extends Component {
             <div>
                 <Grid container direction = "column" alignItems = "center" spacing = {3} style = {{backgroundColor: "azure", width: "500px", margin: "auto", marginTop: "130px"}}>
                     <Grid item>
-                        <Typography style = {{fontFamily: "Garamond", fontSize: "30px"}}>Please input the number of customers that came in each day of the week</Typography>
+                        <Typography style = {{fontFamily: "Garamond", fontSize: "30px"}}>Please input the number of customers that came in each day of the week.</Typography>
                     </Grid>
                     <Grid item>
                         <FormControl>

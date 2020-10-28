@@ -23,7 +23,7 @@ class Login extends Component {
                 console.log(childSnapshot.child("username").val());
                 if(childSnapshot.child("username").val() === username) {
                     if(childSnapshot.child("password").val() === password) {
-                        window.open("/InputData/" + childSnapshot.child("resturauntName").val());
+                        window.open("/Homepage/" + childSnapshot.child("resturauntName").val());
                         window.close("/");
                     }
                 }
