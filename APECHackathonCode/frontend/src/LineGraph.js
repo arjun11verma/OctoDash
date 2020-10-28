@@ -24,11 +24,21 @@ class LineGraph extends Component {
                     {
                         label: "Customers",
                         data: this.state.data,
+                        backgroundColor: [
+                            'rgba(0,0,0,0)',
+                        ]
+                            
                     }
                 ]
             },
             options: {
-                //Customize chart options
+                layout: {
+                    padding:{
+                        left: 100,
+                        right: 500,
+                        top: 50,
+                    }
+                }  
             }
         });
     }
@@ -36,10 +46,12 @@ class LineGraph extends Component {
     render() {
         return (
             <div>
-                <canvas
-                    id="myChart"
-                    ref={this.chartRef}
-                />
+                <div class="chart-container">
+                    <canvas
+                        id="myChart"
+                        ref={this.chartRef}
+                    />
+                </div>                
             </div>
         )
     }
