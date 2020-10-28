@@ -5,14 +5,14 @@ class Homepage extends Component {
     constructor(props) {
         super(props);
         this.state = {
-
+            restaurauntName: ((((window.location.pathname).split("/"))[2]).replace("%20", " "))
         };
     }
 
     render() {
         return(
             <div>
-                <h1>What's Cheezin</h1>
+                
             </div>
         )
     }
