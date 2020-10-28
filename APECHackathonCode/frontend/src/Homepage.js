@@ -1,3 +1,4 @@
+import axios from 'axios';
 import React, { Component } from 'react'
 import firebase from './firebase'
 import LineGraph from './LineGraph'
@@ -32,9 +33,11 @@ class Homepage extends Component {
             this.setState({
                 data: tempInput
             })
-
-            console.log(this.state.data);
         }, 500);
+
+        axios.post('http://127.0.0.1:5000/getNewsUrls', {'country': "USA"}).then(res => {
+            console.log(res);
+        });
     }
 
     render() {

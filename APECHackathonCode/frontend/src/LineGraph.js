@@ -13,6 +13,9 @@ class LineGraph extends Component {
     
     componentDidMount() {
         const myChartRef = this.chartRef.current.getContext("2d");
+        console.log("Quit being a faggot");
+        console.log(this.state.data);
+
         new Chart(myChartRef, {
             type: "line",
             data: {

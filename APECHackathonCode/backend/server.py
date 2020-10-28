@@ -75,4 +75,4 @@ def getNewsUrls():
     return output
 
 
-app.run();
+app.run()
