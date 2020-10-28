@@ -11,7 +11,7 @@ class Homepage extends Component {
         };
     }
 
-    onComponentDidMount = () => {
+    componentDidMount = () => {
         firebase.database().ref("Accounts").once('value').then(function(snapshot) {
             snapshot.forEach(childSnapshot => {
                 if(childSnapshot.child("resturauntName").val() === this.state.restaurauntName) {
@@ -26,7 +26,7 @@ class Homepage extends Component {
     render() {
         return(
             <div>
-                <LineGraph data = {this.state.data}></LineGraph>
+                <LineGraph data = {(this.state.data)}></LineGraph>
             </div>
         )
     }

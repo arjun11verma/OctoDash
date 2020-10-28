@@ -4,7 +4,7 @@ import {BrowserRouter, Switch, Route} from 'react-router-dom'
 import Homepage from './Homepage'
 import CreateAccount from './CreateAccount'
 import Login from './Login';
-import LineGraph from './LineGraph';
+import InputData from './InputData'
 
 function App() {
   return (
@@ -13,7 +13,7 @@ function App() {
         <Route exact path = "/" component = {Login}/>
         <Route exact path = "/CreateAccount" component = {CreateAccount}/>
         <Route exact path = "/Homepage/:id" component = {Homepage}/>
-        <Route exact path = "/LineGraph" component = {LineGraph}/>
+        <Route exact path = "/InputData/:id" component = {InputData}/>
       </Switch>
     </BrowserRouter>
     );

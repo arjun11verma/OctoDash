@@ -24,13 +24,13 @@ class CreateAccount extends Component {
         firebase.database().ref("Accounts").child(resturauntName.value).child("username").set(username.value);
         firebase.database().ref("Accounts").child(resturauntName.value).child("password").set(password.value);
         firebase.database().ref("Accounts").child(resturauntName.value).child("country").set(country.value);
-        firebase.database().ref("Accounts").child(resturauntName.value).child("suppliesPerWeek").set({0 : [0]});
-        firebase.database().ref("Accounts").child(resturauntName.value).child("customersPerWeek").set({0 : [0]});
+        firebase.database().ref("Accounts").child(resturauntName.value).child("suppliesPerWeek").set([]);
+        firebase.database().ref("Accounts").child(resturauntName.value).child("customersPerWeek").set([]);
         
         setTimeout(() => {
             window.open("/"); // create a seperate class with all of your data when you need it on login 
             window.close("/CreateAccount");
-        }, 1000);
+        }, 500);
     }
 
     render() {
