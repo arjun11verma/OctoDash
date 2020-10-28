@@ -13,11 +13,10 @@ class LineGraph extends Component {
     
     componentDidMount() {
         const myChartRef = this.chartRef.current.getContext("2d");
-        
         new Chart(myChartRef, {
-            type: "bar",
+            type: "line",
             data: {
-                labels: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturdays", "Sundays"],
+                labels: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
                 datasets: [
                     {
                         label: "Customers",
