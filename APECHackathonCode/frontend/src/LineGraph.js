@@ -33,11 +33,7 @@ class LineGraph extends Component {
             },
             options: {
                 layout: {
-                    padding:{
-                        left: 100,
-                        right: 500,
-                        top: 50,
-                    }
+                    padding: 30
                 }  
             }
         });
