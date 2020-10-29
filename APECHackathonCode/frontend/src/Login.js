@@ -46,12 +46,19 @@ class Login extends Component {
         return (
             <div class="animated-background" style={{height: "100vh"}}>
                 <div>
-                    <AppBar style={{ color: "CFDBD5", textAlign: "center" }}> <Typography style={{ fontFamily: "Garamond", fontSize: "40px" }}>LavaLAMP - Create An Account</Typography></AppBar>
-
-                    <Container component="main" maxWidth="sm" style={{paddingTop: "10%"}}>
+                    <Container>
+                        <Typography style={{paddingTop: "10%", marginBottom: "-5%", textAlign: "center"}} component="h1" variant="h3">
+                            This is <b>LavaLAMP</b>.
+                        </Typography>
+                        <Typography style={{paddingTop: "5%", textAlign: "center"}} component="h1" variant="h6">
+                            Supporting local businesses during unprecedented times
+                        </Typography>
+                    </Container>
+                    <Container component="main" maxWidth="sm" style={{paddingTop: "3%"}}>
                         <Paper style={{backgroundColor: "white", display: "flex", flexDirection: "column", alignItems: "center"}} elevation={24}>
+
                             <Typography style={{paddingTop: "5%"}} component="h1" variant="h5">
-                                Log In
+                                Sign in
                             </Typography>
                             <form>
                                 <TextField
