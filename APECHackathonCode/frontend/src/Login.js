@@ -57,7 +57,7 @@ class Login extends Component {
                     <Container component="main" maxWidth="sm" style={{paddingTop: "3%"}}>
                         <Paper style={{backgroundColor: "white", display: "flex", flexDirection: "column", alignItems: "center"}} elevation={24}>
 
-                            <Typography style={{paddingTop: "5%"}} component="h1" variant="h5">
+                            <Typography style={{paddingTop: "5%", marginBottom: "2%"}} component="h1" variant="h5">
                                 Sign in
                             </Typography>
                             <form>

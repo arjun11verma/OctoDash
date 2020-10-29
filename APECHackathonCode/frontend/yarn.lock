@@ -9813,6 +9813,11 @@ react-app-polyfill@^2.0.0:
     regenerator-runtime "^0.13.7"
     whatwg-fetch "^3.4.1"
 
+react-country-region-selector@^3.0.1:
+  version "3.0.1"
+  resolved "https://registry.yarnpkg.com/react-country-region-selector/-/react-country-region-selector-3.0.1.tgz#d7368e0da8da21779bb19883ca1e829ff6879c97"
+  integrity sha512-yYAkBmc/JBfaytnFKawXYQ5Yf6dsT/j1sx7dLD1eSSPRIGCWVfeY1/BSEw00QYsUFN/C2F0mLNSAvY/XA1a33Q==
+
 react-dev-utils@^11.0.0:
   version "11.0.0"
   resolved "https://registry.yarnpkg.com/react-dev-utils/-/react-dev-utils-11.0.0.tgz#9fdb1b173f4ffc1f23fcf98465d93b16a860b73e"
