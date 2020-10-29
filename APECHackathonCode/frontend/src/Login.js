@@ -51,7 +51,7 @@ class Login extends Component {
                             This is <b>LavaLAMP</b>.
                         </Typography>
                         <Typography style={{paddingTop: "5%", textAlign: "center"}} component="h1" variant="h6">
-                            Supporting local businesses during unprecedented times
+                            Supporting local businesses during unprecedented times.
                         </Typography>
                     </Container>
                     <Container component="main" maxWidth="sm" style={{paddingTop: "3%"}}>
