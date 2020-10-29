@@ -4,7 +4,13 @@ import { Grid } from '@material-ui/core';
 import { Typography } from '@material-ui/core';
 import { AppBar } from '@material-ui/core';
 import { Button } from '@material-ui/core';
+import { Container } from '@material-ui/core';
+import { Paper } from '@material-ui/core';
 import firebase from './firebase';
+import { TextField } from "@material-ui/core";
+import { FormControlLabel } from "@material-ui/core";
+import Checkbox from "@material-ui/core/Checkbox";
+import Link from "@material-ui/core/Link";
 
 class Login extends Component {
     constructor(props) {
@@ -15,8 +21,8 @@ class Login extends Component {
     }
 
     login = () => {
-        var username = document.getElementById("usernameinput").value;
-        var password = document.getElementById("passwordinput").value;
+        var username = document.getElementById("username").value;
+        var password = document.getElementById("password").value;
 
         firebase.database().ref("Accounts").once('value').then(function(snapshot) {
             snapshot.forEach(childSnapshot => {
@@ -38,32 +44,59 @@ class Login extends Component {
 
     render() {
         return (
-            <div>
-                <AppBar style={{ color: "CFDBD5", textAlign: "center" }}> <Typography style={{ fontFamily: "Garamond", fontSize: "40px" }}>LavaLAMP - Create An Account</Typography></AppBar>
-                
-                <Grid container direction = "column" alignItems = "center" spacing = {3} style = {{backgroundColor: "azure", width: "500px", margin: "auto", marginTop: "230px"}}>
-                    <Grid item>
-                        <Typography style = {{fontFamily: "Garamond", fontSize: "30px"}}>Please fill out the following fields</Typography>
-                    </Grid>
-                    <Grid item>
-                        <FormControl>
-                            <InputLabel htmlFor="usernameinput" style = {{fontSize: "20px"}}>Your username</InputLabel>
-                            <Input id="usernameinput" style = {{fontSize: "20px"}}/>
-                        </FormControl>
-                    </Grid>
-                    <Grid item>
-                        <FormControl>
-                            <InputLabel htmlFor="passwordinput" style = {{fontSize: "20px"}}>Your password</InputLabel>
-                            <Input id="passwordinput" style = {{fontSize: "20px"}}/>
-                        </FormControl>
-                    </Grid>
-                    <Grid item>
-                        <Button onClick = {this.login} style = {{fontFamily: "Garamond", fontSize: "20px"}}>Click to Login!</Button>
-                    </Grid>
-                    <Grid item>
-                        <Button onClick = {this.createAccount} style = {{fontFamily: "Garamond", fontSize: "20px"}}>Click to create an account!</Button>
-                    </Grid>
-                </Grid>
+            <div class="animated-background" style={{height: "100vh"}}>
+                <div>
+                    <AppBar style={{ color: "CFDBD5", textAlign: "center" }}> <Typography style={{ fontFamily: "Garamond", fontSize: "40px" }}>LavaLAMP - Create An Account</Typography></AppBar>
+
+                    <Container component="main" maxWidth="sm" style={{paddingTop: "10%"}}>
+                        <Paper style={{backgroundColor: "white", display: "flex", flexDirection: "column", alignItems: "center"}} elevation={24}>
+                            <Typography style={{paddingTop: "5%"}} component="h1" variant="h5">
+                                Log In
+                            </Typography>
+                            <form>
+                                <TextField
+                                    variant="outlined"
+                                    margin="normal"
+                                    required
+                                    label="Username"
+                                    id="username"
+                                    autoFocus
+                                    style={{width: "80%", marginLeft: "10%"}}
+                                />
+                                <TextField
+                                    variant="outlined"
+                                    margin="normal"
+                                    required
+                                    fullWidth
+                                    label="Password"
+                                    type="password"
+                                    id="password"
+                                    style={{width: "80%", marginLeft: "10%"}}
+                                />
+                                <FormControlLabel
+                                    control={<Checkbox value="remember" color="primary" />}
+                                    label="Remember me"
+                                    style={{width: "80%", marginLeft: "10%"}}
+                                />
+                                <Button
+                                    onClick = {this.login}
+                                    fullWidth
+                                    variant="contained"
+                                    style={{width: "80%", marginLeft: "10%", marginTop: "3%", marginBottom: "5%"}}
+                                >
+                                    Sign In
+                                </Button>
+                                <Grid container style={{marginBottom: "5%"}}>
+                                    <Grid item xs>
+                                        <Link style={{width: "80%", marginLeft: "10%", marginTop: "5%", marginBottom: "5%"}} href="/CreateAccount">
+                                            {"Don't have an account? Sign up!"}
+                                        </Link>
+                                    </Grid>
+                                </Grid>
+                            </form>
+                        </Paper>
+                    </Container>
+                </div>
             </div>
         )
     }
