@@ -18,6 +18,8 @@ import Divider from "@material-ui/core/Divider";
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import InboxIcon from '@material-ui/icons/MoveToInbox';
 import MailIcon from '@material-ui/icons/Mail';
+import {Container, Paper} from "@material-ui/core";
+import Grid from "@material-ui/core/Grid";
 
 class Homepage extends Component {
     constructor(props) {
@@ -80,7 +82,51 @@ class Homepage extends Component {
                         </IconButton>
                     </Toolbar>
                 </AppBar>
-                <LineGraph data={(this.state.data)}></LineGraph>
+                <Grid container justify="center" style={{paddingTop: "25px"}}>
+                    <Grid item xs={9} style={{paddingLeft: "25px", paddingRight: "25px"}}>
+                        <Grid container spacing={3} justify="center">
+                            <Grid item xs={12}>
+                                <Paper style={{
+                                    backgroundColor: "white",
+                                }} elevation={5}>
+                                    <LineGraph data={(this.state.data)}></LineGraph>
+                                </Paper>
+                            </Grid>
+                            <Grid item xs={4}>
+                                <Paper style={{
+                                    backgroundColor: "white",
+                                    height: "200px"
+                                }} elevation={5}>
+                                </Paper>
+                            </Grid>
+                            <Grid item xs={8}>
+                                <Paper style={{
+                                    backgroundColor: "white",
+                                    height: "200px"
+                                }} elevation={5}>
+                                </Paper>
+                            </Grid>
+                        </Grid>
+                    </Grid>
+                    <Grid item xs={3} style={{paddingRight: "25px"}}>
+                        <Grid container spacing={3} justify="center">
+                            <Grid item xs={12}>
+                                <Paper style={{
+                                    backgroundColor: "white",
+                                    height: "200px"
+                                }} elevation={5}>
+                                </Paper>
+                            </Grid>
+                            <Grid item xs={12}>
+                                <Paper style={{
+                                    backgroundColor: "white",
+                                    height: "650px"
+                                }} elevation={5}>
+                                </Paper>
+                            </Grid>
+                        </Grid>
+                    </Grid>
+                </Grid>
             </div>
         )
     }
