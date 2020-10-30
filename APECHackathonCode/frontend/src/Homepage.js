@@ -1,7 +1,6 @@
 import axios from 'axios';
 import React, { Component } from 'react'
 import firebase from './firebase'
-<<<<<<< Updated upstream
 import LineGraph from './LineGraph'
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
@@ -13,9 +12,6 @@ import Badge from "@material-ui/core/Badge";
 import AccountCircle from "@material-ui/icons/AccountCircle";
 import { Paper } from "@material-ui/core";
 import Grid from "@material-ui/core/Grid";
-=======
-import FormControl from '@material-ui/core/FormControl'
->>>>>>> Stashed changes
 
 class Homepage extends Component {
     constructor(props) {
