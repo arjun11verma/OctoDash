@@ -1,13 +1,12 @@
 import React, { Component } from 'react';
-import {Container, FormControl, FormControlLabel, Input, InputLabel, Paper, TextField} from '@material-ui/core';
+import {Container, Paper, TextField} from '@material-ui/core';
 import { Grid } from '@material-ui/core';
 import { Typography } from '@material-ui/core';
-import { AppBar } from '@material-ui/core';
 import { Button } from '@material-ui/core';
 import firebase from './firebase';
 import Checkbox from "@material-ui/core/Checkbox";
 import Link from "@material-ui/core/Link";
-import { CountryDropdown, RegionDropdown, CountryRegionData} from "react-country-region-selector";
+import {CountryDropdown, RegionDropdown, CountryRegionData} from "react-country-region-selector";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 
 class CreateAccount extends Component {
@@ -18,26 +17,22 @@ class CreateAccount extends Component {
         };
     }
 
-    selectCountry (val) {
-        this.setState({ country: val });
-    }
-
     uploadAccount = () => {
-        var username = document.getElementById("username");
-        var password = document.getElementById("password");
-        var resturauntName = document.getElementById("resturaunt");
-        var country = document.getElementById("country");
+        var username = document.getElementById("username").value;
+        var password = document.getElementById("password").value;
+        var resturauntName = document.getElementById("resturauntName").value;
+        var country = document.getElementById("country").value;
 
-        firebase.database().ref("Accounts").child(resturauntName.value).child("resturauntName").set(resturauntName.value);
-        firebase.database().ref("Accounts").child(resturauntName.value).child("username").set(username.value);
-        firebase.database().ref("Accounts").child(resturauntName.value).child("password").set(password.value);
-        firebase.database().ref("Accounts").child(resturauntName.value).child("country").set(country.value);
-        firebase.database().ref("Accounts").child(resturauntName.value).child("suppliesPerWeek").set([]);
-        firebase.database().ref("Accounts").child(resturauntName.value).child("customersPerWeek").set([]);
+        firebase.database().ref("Accounts").child(resturauntName).child("resturauntName").set(resturauntName);
+        firebase.database().ref("Accounts").child(resturauntName).child("username").set(username);
+        firebase.database().ref("Accounts").child(resturauntName).child("password").set(password);
+        firebase.database().ref("Accounts").child(resturauntName).child("country").set(country);
+        firebase.database().ref("Accounts").child(resturauntName).child("suppliesPerWeek").set([]);
+        firebase.database().ref("Accounts").child(resturauntName).child("customersPerWeek").set([]);
         
         setTimeout(() => {
-            window.open("/"); // create a seperate class with all of your data when you need it on login 
             window.close("/CreateAccount");
+            window.open("/"); // create a seperate class with all of your data when you need it on login 
         }, 500);
     }
 
@@ -333,7 +328,7 @@ class CreateAccount extends Component {
                                         required
                                         fullWidth
                                         label="Restaurant Name"
-                                        id="restaurantname"
+                                        id="resturauntName"
                                         style={{width: "80%", marginLeft: "10%", marginTop: "2%", marginBottom: "2%"}}
                                     />
                                     <Autocomplete

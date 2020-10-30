@@ -9,95 +9,68 @@ from datetime import datetime, timedelta
 import requests, json
 
 import numpy as np
-
-import tensorflow.compat.v1 as tf
-tf.disable_v2_behavior()
-from sklearn.model_selection import train_test_split
-from sklearn.metrics import r2_score as r2
-from sklearn.preprocessing import StandardScaler, MinMaxScaler
-import pandas as pd
+import torch
+import torch.nn as nn
+from torch.autograd import Variable
 
 app = Flask(__name__)
 
 cors = CORS(app)
 
+class SimpleNet(nn.Module):
+    def __init__(self, xdim, ydim):
+        super().__init__()
+        self.linear1 = nn.Linear(xdim, ydim) 
+        self.act1 = nn.ReLU()
+        self.linear2 = nn.Linear(xdim, ydim)
+
+    def forward(self, x):
+        y_prediction = self.linear1(x)
+        #y_prediction = self.act1(y_prediction)
+        y_prediction = self.linear2(x)
+        return y_prediction
 
 @app.route('/analyzeCustomerData', methods=['POST', 'GET'])
 def analyzeCustomerData():
     post_data = (literal_eval(request.data.decode('utf8')))
-    return "Successfully Analyzed"
+    data = post_data['data']
+    y_data = []
+    x_data = []
+    xlen = 0
+    return_data = []
 
+    stopping_point = len(data) - 5 if len(data) > 5 else 0
+    for i in range(stopping_point, len(data)):
+        y_data.append([[float(data[i])]])
+        x_data.append([[float(i+1-stopping_point)]])
+        xlen += 1
+    
+    x_data = Variable(torch.tensor(x_data))
+    y_data = Variable(torch.tensor(y_data))
+    
+    model = SimpleNet(1, 1)
 
-@app.route('/predictWeek', methods=['POST', 'GET'])
-def predictWeek():
-    testset = {"10/14/20":{"cases":0,"deaths":0,"recovered":0},"10/15/20":{"cases":589,"deaths":3,"recovered":409},"10/16/20":{"cases":629,"deaths":6,"recovered":245},"10/17/20":{"cases":869,"deaths":4,"recovered":302},"10/18/20":{"cases":871,"deaths":7,"recovered":701},"10/19/20":{"cases":865,"deaths":3,"recovered":455},"10/20/20":{"cases":862,"deaths":3,"recovered":634},"10/21/20":{"cases":732,"deaths":6,"recovered":580},"10/22/20":{"cases":847,"deaths":5,"recovered":486},"10/23/20":{"cases":710,"deaths":10,"recovered":467},"10/24/20":{"cases":1228,"deaths":7,"recovered":671},"10/25/20":{"cases":823,"deaths":8,"recovered":579},"10/26/20":{"cases":1240,"deaths":7,"recovered":691},"10/27/20":{"cases":835,"deaths":2,"recovered":674}}
-    x, y = [], []
-    count = 0
-    for key in reversed(testset.keys()):
-        x.append(count)
-        y.append(testset[key]["cases"])
-        count += 1
+    criterion = torch.nn.MSELoss(size_average = False) 
+    optimizer = torch.optim.SGD(model.parameters(), lr = 0.01)
+    for epoch in range(250): 
+        optimizer.zero_grad() 
+        predicted_number_of_customers = model.forward(x_data) 
+        loss = criterion(predicted_number_of_customers, y_data) 
+        loss.backward()
+        optimizer.step()
+    
+    for i in range(xlen - 1, xlen + 6):
+        var = model(Variable(torch.tensor([[float(i)]]))).item()
+        var = int(var)
+        if(var < 0): var = 0
+        return_data.append(var)
+    
+    print(xlen)
+    print(x_data)
+    print(y_data)
+    print(return_data)
 
-    alpha = 0.15
-    epochs = 400
-    errors = []
-    m = len(testset)
-    x = np.array(x).reshape((len(x), 1))
-    y = np.array(y).reshape((len(y), 1))
-
-    x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.2)
-
-    scaler = StandardScaler().fit(x_train)
-    x_train = scaler.transform(x_train)
-    x_test = scaler.transform(x_test)
-
-    X = tf.placeholder(tf.float32, shape=[None, 1], name='x-input')
-    Y = tf.placeholder(tf.float32, shape=[None, 1], name='y-input')
-
-    theta_1 = tf.Variable(tf.zeros([1, 1]))
-    theta_2 = tf.Variable(tf.zeros([1, 1]))
-    theta_3 = tf.Variable(tf.zeros([1, 1]))
-
-    model = tf.matmul(tf.pow(X, 2), theta_1) + tf.matmul(X, theta_2) + theta_3
-
-    cost = tf.reduce_sum(tf.square(Y-model))/(2*m)
-
-    optimizer = tf.train.GradientDescentOptimizer(alpha).minimize(cost)
-
-    init = tf.global_variables_initializer()
-
-    with tf.Session() as sess:
-        sess.run(init)
-        for i in range(epochs):
-            sess.run(optimizer, feed_dict={X:x_train, Y:y_train})
-            loss = sess.run(cost, feed_dict={X:x_train, Y:y_train})
-            errors.append(loss)
-        theta1, theta2, theta3 = sess.run([theta_1, theta_2, theta_3])
-
-    #plt.plot(list(range(epochs)), errors)
-    #plt.title("Cost vs Iteration")
-    #plt.show()
-
-    b = scaler.transform(x)
-    pred = theta1 * b**2 + theta2 * b + theta3
-
-    #plt.plot(x, pred, 'red', label="Prediction")
-    #plt.plot(x, y, 'blue', label="True Values")
-    #plt.legend()
-    #plt.title("Salary vs Position")
-    #plt.show()
-    predicted = []
-    for z in range(m, m + 7):
-        predicted.append(theta1 * z**2 + theta2 * z + theta3)
-    print(predicted)
-
-
-    print("R2 Correlation: ", r2(y, pred))
-
-    # work in progress
-
-    return "done"
-
+    return {'data': return_data}
 
 @app.route('/covidData', methods=['POST', 'GET'])
 def covidData():
