@@ -20,6 +20,7 @@ import DialogContent from "@material-ui/core/DialogContent";
 import TextField from "@material-ui/core/TextField";
 import DialogActions from "@material-ui/core/DialogActions";
 import Dialog from "@material-ui/core/Dialog";
+import {DataGrid} from "@material-ui/data-grid";
 
 // ADD ANOTHER DATA LINE FOR COVID DATA TO SPAN COVID DATA TO YOUR RESTURAUNT DATA
 var globalThis;
@@ -41,7 +42,26 @@ class Homepage extends Component {
             customerMessage: "",
             customerName: "",
             urlList: "",
-            open: false
+            color: "#66cc66",
+            open: false,
+            percent: "",
+            amount: "",
+            columns: [
+                { field: 'id', headerName: 'ID', width: 70 },
+                { field: 'item', headerName: 'Item', width: 130 },
+                { field: 'category', headerName: 'Category', width: 100 },
+                {
+                    field: 'weeklyquantity',
+                    headerName: 'Weekly Quantity',
+                    type: 'number',
+                    width: 150,
+                },
+                { field: 'editbutton', headerName: 'Edit', width: 100 },
+            ],
+            rows: [
+                { id: 1, item: 'Masks', category: 'COVID', weeklyquantity: 35 },
+                { id: 2, item: 'Bread', category: 'Food', weeklyquantity: 70 },
+            ]
         };
     }
 
@@ -72,6 +92,22 @@ class Homepage extends Component {
                     }
                 }
             }
+        });
+
+        var rows = this.state.rows;
+        console.log(rows[0])
+        for (var i = 0; i < rows.length; i++) {
+            var btn = document.createElement('input');
+            btn.type = "button";
+            btn.className = "btn-" + i;
+            btn.value = "edit"
+            rows[i]["editbutton"] = btn
+        }
+
+        /*  */
+        console.log(rows)
+        globalThis.setState({
+            rows: rows
         });
 
         var inputData = [];
@@ -132,14 +168,17 @@ class Homepage extends Component {
                 if (globalThis.state.currentAverage < globalThis.state.runningAverage) {
                     amount = "less";
                     globalThis.setState({
-                        newsMessage: "Based on our predictions, you will be getting less customers next week. Here are some articles on maintaining customers and popularity in your resturaunt during COVID19."
+                        newsMessage: "Based on our predictions, you will be getting less customers next week. Here are some articles on maintaining customers and popularity in your resturaunt during COVID19.",
+                        color: "#ff6666"
                     });
                 }
 
                 var percentDifference = Math.abs(globalThis.state.runningAverage - globalThis.state.currentAverage) / (globalThis.state.runningAverage) * 100 | 0;
-                var inputMessage = "Your resturaunt had " + globalThis.state.runningAverage + " customers last week and we predict that your resturaunt will have " + globalThis.state.currentAverage + " customers next week. Based off of this, you should order " + percentDifference + "% " + amount + " supplies for next week.";
+                var inputMessage = "Your restaurant had " + globalThis.state.runningAverage + " customers last week and we predict that your restaurant will have " + globalThis.state.currentAverage + " customers next week. Based off of this, you should order " + percentDifference + "% " + amount + " supplies for next week.";
                 globalThis.setState({
-                    customerMessage: inputMessage
+                    customerMessage: inputMessage,
+                    percent: percentDifference,
+                    amount: amount
                 });
             });
 
@@ -194,6 +233,16 @@ class Homepage extends Component {
     };
 
     render() {
+        const dataTable = props => {
+            return (
+                <DataGrid
+                    rows={this.state.rows}
+                    olumns={this.state.columns}
+                    checkboxSelection
+                />
+            );
+        };
+
         return (
             <div>
                 <AppBar position="static">
@@ -224,27 +273,65 @@ class Homepage extends Component {
                                     </div>
                                 </Paper>
                             </Grid>
-                            <Grid item>
+                            <Grid item xs={12}>
                                 <Paper style={{
                                     backgroundColor: "white",
-                                    height: "150px",
-                                    width: "532px"
+                                    height: "500px"
                                 }} elevation={5}>
-                                </Paper>
-                            </Grid>
-                            <Grid item>
-                                <Paper style={{
-                                    backgroundColor: "white",
-                                    height: "150px",
-                                    width: "532px"
-                                }} elevation={5}>
-                                    <Typography style={{ padding: "10px" }}>{this.state.customerMessage}</Typography>
+                                    {dataTable}
                                 </Paper>
                             </Grid>
                         </Grid>
                     </Grid>
                     <Grid item xs={3} style={{ paddingRight: "25px" }}>
                         <Grid container spacing={3} justify="center">
+                            <Grid item xs={6}>
+                                <Paper style={{
+                                    backgroundColor: "#ffff99",
+                                    textAlign: "center",
+                                }} elevation={5}>
+                                    <Typography variant="subtitle2">
+                                        Recorded
+                                    </Typography>
+                                    <Typography variant="h5">
+                                        {this.state.runningAverage}
+                                    </Typography>
+                                    <Typography variant="subtitle2">
+                                        Customers this week
+                                    </Typography>
+                                </Paper>
+                            </Grid>
+                            <Grid item xs={6}>
+                                <Paper style={{
+                                    backgroundColor: this.state.color,
+                                    textAlign: "center"
+                                }} elevation={5}>
+                                    <Typography variant="subtitle2">
+                                        Predicted
+                                    </Typography>
+                                    <Typography variant="h5">
+                                        {this.state.currentAverage}
+                                    </Typography>
+                                    <Typography variant="subtitle2">
+                                        Customers next week
+                                    </Typography>
+                                </Paper>
+                            </Grid>
+                            <Grid item xs={12}>
+                                <Paper style={{
+                                    textAlign: "center"
+                                }} elevation={5}>
+                                    <Typography variant="subtitle2">
+                                        You should order
+                                    </Typography>
+                                    <Typography variant="h5">
+                                        {this.state.percent}% <span style={{color: this.state.color}}>{this.state.amount}</span>
+                                    </Typography>
+                                    <Typography variant="subtitle2">
+                                        Supplies for next week
+                                    </Typography>
+                                </Paper>
+                            </Grid>
                             <Grid item xs={12}>
                                 <Paper style={{
                                     backgroundColor: "white",
