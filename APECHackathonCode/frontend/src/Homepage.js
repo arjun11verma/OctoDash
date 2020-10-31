@@ -39,12 +39,12 @@ class Homepage extends Component {
             runningAverage: 0,
             currentAverage: 0,
             overallAverage: 0,
-            newsMessage: "Based on our predictions, you will be getting more customers on average next week! Here is some news regarding handling extra customers during COVID19.",
             customerMessage: "",
+            newsMessage: "Based on our predictions, you will be getting more customers on average next week! Here is some news regarding handling extra customers during COVID19.",
             customerName: "",
             urlList: "",
             casesPerDay: [],
-            open: false
+            open: false,
             color: "#66cc66",
             open: false,
             percent: "",
@@ -183,7 +183,7 @@ class Homepage extends Component {
                 if (globalThis.state.currentAverage < globalThis.state.runningAverage) {
                     amount = "less";
                     globalThis.setState({
-                        newsMessage: "Based on our predictions, you will be getting less customers next week. Here are some articles on maintaining customers and popularity in your resturaunt during COVID19.",
+                        newsMessage: "Based on our predictions, you will be getting less customers on average next week. Here is some news regarding maintaining popularity and customer base during COVID19.",
                         color: "#ff6666"
                     });
                 }
@@ -353,8 +353,6 @@ class Homepage extends Component {
                                     <Typography variant="subtitle2">
                                         Customers this week
                                     </Typography>
-                                    <Typography style={{ padding: "10px", paddingBottom: "0px" }}>{this.state.customerMessage}</Typography>
-                                    <Typography style={{ padding: "10px", paddingTop: "0px" }}>Your average number of customers per week since you started using Octo is {this.state.overallAverage}.</Typography>
                                 </Paper>
                             </Grid>
                             <Grid item xs={6}>
@@ -394,9 +392,9 @@ class Homepage extends Component {
                                     height: "200px",
                                     padding: "10px"
                                 }} elevation={5}>
-                                    <Typography>{this.state.newsMessage}</Typography>
                                     <Typography>Predicted Number (customers per week): {this.state.currentAverage}</Typography>
                                     <Typography>Recorded Number (customers per week): {this.state.runningAverage}</Typography>
+                                    <Typography>{this.state.newsMessage}</Typography>
                                 </Paper>
                             </Grid>
                             <Grid item xs={12}>
