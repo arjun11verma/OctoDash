@@ -14,6 +14,12 @@ import { Paper } from "@material-ui/core";
 import Grid from "@material-ui/core/Grid";
 import AddIcon from "@material-ui/icons/Add"
 import Fab from "@material-ui/core/Fab"
+import Button from "@material-ui/core/Button";
+import DialogTitle from "@material-ui/core/DialogTitle";
+import DialogContent from "@material-ui/core/DialogContent";
+import TextField from "@material-ui/core/TextField";
+import DialogActions from "@material-ui/core/DialogActions";
+import Dialog from "@material-ui/core/Dialog";
 
 var globalThis;
 
@@ -32,7 +38,8 @@ class Homepage extends Component {
             newsMessage: "Based on our predictions, you will be getting more customers on average next week! Here is some news regarding handling extra customers during COVID19.",
             customerMessage: "",
             customerName: "",
-            urlList: ""
+            urlList: "",
+            open: false
         };
     }
 
@@ -152,6 +159,13 @@ class Homepage extends Component {
     }
 
     render() {
+        const handleClickOpen = () => {
+            this.setState({open: true});
+        };
+
+        const handleClose = () => {
+            this.setState({open: false});
+        };
         return (
             <div>
                 <AppBar position="static">
@@ -159,17 +173,9 @@ class Homepage extends Component {
                         <Typography style={{ flexGrow: "1" }} variant="h6" >
                             Octo Dashboard
                         </Typography>
-                        <IconButton
-                            edge="end"
-                            aria-label="account of current user"
-                            aria-haspopup="true"
-                            color="inherit"
-                            onClick={this.changePage}
-                        >
-                            <Fab color="primary" aria-label="add" style={{ position: "absolute", bottom: "25", left: "25" }}>
-                                <AddIcon />
-                            </Fab>
-                        </IconButton>
+                        <Button variant="contained" onClick={handleClickOpen}>
+                            Add Data!
+                        </Button>
                     </Toolbar>
                 </AppBar>
                 <Grid container justify="center" style={{ paddingTop: "25px" }}>
@@ -235,6 +241,84 @@ class Homepage extends Component {
                         </Grid>
                     </Grid>
                 </Grid>
+                <Dialog open={this.state.open} onClose={handleClose} aria-labelledby="form-dialog-title">
+                    <DialogTitle id="form-dialog-title">Input your weekly data</DialogTitle>
+                    <DialogContent>
+                        <form>
+                            <TextField
+                                variant="outlined"
+                                margin="normal"
+                                required
+                                label="Monday"
+                                id="monday"
+                                autoFocus
+                                style={{width: "80%", marginLeft: "10%"}}
+                            />
+                            <TextField
+                                variant="outlined"
+                                margin="normal"
+                                required
+                                label="Tuesday"
+                                id="tuesday"
+                                autoFocus
+                                style={{width: "80%", marginLeft: "10%"}}
+                            />
+                            <TextField
+                                variant="outlined"
+                                margin="normal"
+                                required
+                                label="Wednesday"
+                                id="wednesday"
+                                autoFocus
+                                style={{width: "80%", marginLeft: "10%"}}
+                            />
+                            <TextField
+                                variant="outlined"
+                                margin="normal"
+                                required
+                                label="Thursday"
+                                id="thursday"
+                                autoFocus
+                                style={{width: "80%", marginLeft: "10%"}}
+                            />
+                            <TextField
+                                variant="outlined"
+                                margin="normal"
+                                required
+                                label="Friday"
+                                id="friday"
+                                autoFocus
+                                style={{width: "80%", marginLeft: "10%"}}
+                            />
+                            <TextField
+                                variant="outlined"
+                                margin="normal"
+                                required
+                                label="Saturday"
+                                id="saturday"
+                                autoFocus
+                                style={{width: "80%", marginLeft: "10%"}}
+                            />
+                            <TextField
+                                variant="outlined"
+                                margin="normal"
+                                required
+                                label="Sunday"
+                                id="sunday"
+                                autoFocus
+                                style={{width: "80%", marginLeft: "10%"}}
+                            />
+                        </form>
+                    </DialogContent>
+                    <DialogActions>
+                        <Button onClick={handleClose} color="primary">
+                            Cancel
+                        </Button>
+                        <Button onClick={handleClose} color="primary">
+                            Submit
+                        </Button>
+                    </DialogActions>
+                </Dialog>
             </div >
         )
     }
