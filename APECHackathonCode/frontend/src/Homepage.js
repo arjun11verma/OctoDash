@@ -136,7 +136,7 @@ class Homepage extends Component {
                 <AppBar position="static">
                     <Toolbar>
                         <Typography style={{ flexGrow: "1" }} variant="h6" >
-                            lavaLAMP
+                            Octo Dashboard
                         </Typography>
                         <IconButton
                             edge="end"
