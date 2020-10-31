@@ -12,6 +12,8 @@ import Badge from "@material-ui/core/Badge";
 import AccountCircle from "@material-ui/icons/AccountCircle";
 import { Paper } from "@material-ui/core";
 import Grid from "@material-ui/core/Grid";
+import AddIcon from "@material-ui/icons/Add"
+import Fab from "@material-ui/core/Fab"
 
 var globalThis;
 
@@ -52,7 +54,12 @@ class Homepage extends Component {
             },
             options: {
                 layout: {
-                    padding: 30
+                    padding: {
+                        left: 20,
+                        right: 40,
+                        top: 5,
+                        bottom: 15,
+                    }
                 }
             }
         });
@@ -156,13 +163,15 @@ class Homepage extends Component {
                                 <Paper style={{
                                     backgroundColor: "white",
                                 }} elevation={5}>
-                                    <Typography style={{ textAlign: "center", paddingTop: "25px" }}>
+                                    <Typography style={{ textAlign: "center", paddingTop: "15px" }}>
                                         Predicted Number of Customers Next Week
                                     </Typography>
-                                    <canvas
+                                    <div class="chart-container" style={{margin: "auto"}}>
+                                        <canvas
                                         id="myChart"
                                         ref={this.state.chartRef}
-                                    />
+                                        />
+                                    </div>
                                 </Paper>
                             </Grid>
                             <Grid item xs={4}>
@@ -206,6 +215,9 @@ class Homepage extends Component {
                         </Grid>
                     </Grid>
                 </Grid>
+                <Fab color="primary" aria-label="add" style={{position: "absolute", bottom: "25", left: "25"}}>
+                    <AddIcon />
+                </Fab>
             </div >
         )
     }
