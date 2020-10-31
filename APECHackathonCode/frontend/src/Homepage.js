@@ -125,7 +125,7 @@ class Homepage extends Component {
                     });
                 }
 
-                var percentDifference = Math.abs(globalThis.state.runningAverage - globalThis.state.currentAverage)/(globalThis.state.runningAverage) * 100 | 0;
+                var percentDifference = Math.abs(globalThis.state.runningAverage - globalThis.state.currentAverage) / (globalThis.state.runningAverage) * 100 | 0;
                 var inputMessage = "Your resturaunt had " + globalThis.state.runningAverage + " customers last week and we predict that your resturaunt will have " + globalThis.state.currentAverage + " customers next week. Based off of this, you should order " + percentDifference + "% " + amount + " supplies for next week.";
                 globalThis.setState({
                     customerMessage: inputMessage
@@ -134,7 +134,7 @@ class Homepage extends Component {
 
             axios.post('http://127.0.0.1:5000/getNewsUrls', { 'country': country }).then(res => {
                 var urlList = [];
-                for(var i = 0; i < 10; i++) {
+                for (var i = 0; i < 10; i++) {
                     urlList.push(res.data[i.toString()]);
                     urlList.push("\n");
                 }
@@ -164,15 +164,17 @@ class Homepage extends Component {
                             aria-label="account of current user"
                             aria-haspopup="true"
                             color="inherit"
-                            onClick = {this.changePage}
+                            onClick={this.changePage}
                         >
-                            <Typography>Input Weekly Data!</Typography>
+                            <Fab color="primary" aria-label="add" style={{ position: "absolute", bottom: "25", left: "25" }}>
+                                <AddIcon />
+                            </Fab>
                         </IconButton>
                     </Toolbar>
                 </AppBar>
                 <Grid container justify="center" style={{ paddingTop: "25px" }}>
                     <Grid item xs={9} style={{ paddingLeft: "25px", paddingRight: "25px" }}>
-                        <Grid container spacing={3} justify="center" direction = "row">
+                        <Grid container spacing={3} justify="center" direction="row">
                             <Grid item xs={12}>
                                 <Paper style={{
                                     backgroundColor: "white",
@@ -180,10 +182,10 @@ class Homepage extends Component {
                                     <Typography style={{ textAlign: "center", paddingTop: "15px" }}>
                                         Predicted Number of Customers Next Week
                                     </Typography>
-                                    <div class="chart-container" style={{margin: "auto"}}>
+                                    <div class="chart-container" style={{ margin: "auto" }}>
                                         <canvas
-                                        id="myChart"
-                                        ref={this.state.chartRef}
+                                            id="myChart"
+                                            ref={this.state.chartRef}
                                         />
                                     </div>
                                 </Paper>
@@ -202,7 +204,7 @@ class Homepage extends Component {
                                     height: "150px",
                                     width: "532px"
                                 }} elevation={5}>
-                                    <Typography style = {{padding: "10px"}}>{this.state.customerMessage}</Typography>
+                                    <Typography style={{ padding: "10px" }}>{this.state.customerMessage}</Typography>
                                 </Paper>
                             </Grid>
                         </Grid>
@@ -233,9 +235,6 @@ class Homepage extends Component {
                         </Grid>
                     </Grid>
                 </Grid>
-                <Fab color="primary" aria-label="add" style={{position: "absolute", bottom: "25", left: "25"}}>
-                    <AddIcon />
-                </Fab>
             </div >
         )
     }
