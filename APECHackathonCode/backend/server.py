@@ -35,7 +35,7 @@ def analyzeCustomerData():
     xlen = 0
     return_data = []
 
-    stopping_point = len(data) - 5 if len(data) > 5 else 0
+    stopping_point = len(data) - 6 if len(data) > 6 else 0
     for i in range(stopping_point, len(data)):
         y_data.append([[float(data[i])]])
         x_data.append([[float(i+1-stopping_point)]])

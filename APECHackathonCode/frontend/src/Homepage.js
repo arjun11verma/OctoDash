@@ -141,7 +141,7 @@ class Homepage extends Component {
                 var tempAvg = 0;
 
                 for (var i = 1; i < 8; i++) {
-                    calculatedData.push(pastData[pastData.length - 8 + i] + resData[i - 1] - topper);
+                    calculatedData.push(pastData[pastData.length - 8 + i] + resData[i - 1]*0.30 - topper*0.30);
                     tempAvg += pastData[pastData.length - i];
                 }
 
@@ -332,7 +332,7 @@ class Homepage extends Component {
                                     backgroundColor: "white",
                                     height: "200px"
                                 }} elevation={5}>
-                                    {dataTable}
+                                    <Typography style = {{padding: "10px"}}>Ever since you began using the Octo terminal, {this.state.restaurauntName} has had an average of {this.state.overallAverage} customers per week.</Typography>
                                 </Paper>
                             </Grid>
                         </Grid>
@@ -403,7 +403,7 @@ class Homepage extends Component {
                                     height: "365px",
                                     overflowY: 'scroll'
                                 }} elevation={5}>
-                                    <Typography>{this.state.urlList}</Typography>
+                                    <Typography style = {{padding: "10px"}}>{this.state.urlList}</Typography>
                                 </Paper>
                             </Grid>
                         </Grid>
