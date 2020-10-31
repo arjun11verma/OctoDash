@@ -330,7 +330,7 @@ class Homepage extends Component {
                             <Grid item xs={12}>
                                 <Paper style={{
                                     backgroundColor: "white",
-                                    height: "500px"
+                                    height: "200px"
                                 }} elevation={5}>
                                     {dataTable}
                                 </Paper>
@@ -400,7 +400,7 @@ class Homepage extends Component {
                             <Grid item xs={12}>
                                 <Paper style={{
                                     backgroundColor: "white",
-                                    height: "515px",
+                                    height: "365px",
                                     overflowY: 'scroll'
                                 }} elevation={5}>
                                     <Typography>{this.state.urlList}</Typography>
