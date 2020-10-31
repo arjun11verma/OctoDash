@@ -225,7 +225,7 @@ class Homepage extends Component {
                             <Grid item xs={12}>
                                 <Paper style={{
                                     backgroundColor: "white",
-                                    height: "525px",
+                                    height: "515px",
                                     width: "357px",
                                     overflowY: 'scroll'
                                 }} elevation={5}>
