@@ -31,7 +31,8 @@ class Homepage extends Component {
             currentAverage: 0,
             newsMessage: "Based on our predictions, you will be getting more customers on average next week! Here is some news regarding handling extra customers during COVID19.",
             customerMessage: "",
-            customerName: ""
+            customerName: "",
+            urlList: ""
         };
     }
 
@@ -45,7 +46,7 @@ class Homepage extends Component {
                 labels: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
                 datasets: [
                     {
-                        label: "Customers",
+                        label: "Daily Customers",
                         data: this.state.currentData,
                         backgroundColor: 'rgba(0,0,0,0)',
                         borderColor: 'rgba(0, 0, 0, 1)',
@@ -78,33 +79,38 @@ class Homepage extends Component {
             });
 
             axios.post('http://127.0.0.1:5000/analyzeCustomerData', { 'data': inputData }).then(res => {
+                var pastData = inputData;
+                var resData = res.data.data;
+                console.log(resData);
+                console.log(pastData);
+                var calculatedData = [];
+                var topper = resData[0];
+                var tempAvg = 0;
+
+                for (var i = 1; i < 8; i++) {
+                    calculatedData.push(pastData[pastData.length - 8 + i] + resData[i - 1] - topper);
+                    tempAvg += pastData[pastData.length - i];
+                }
+
                 globalThis.setState({
-                    mlData: res.data
+                    mlData: calculatedData
                 });
 
                 if (tempChart != null && !stop) {
-                    tempChart.data.datasets[0].data = globalThis.state.mlData.data;
+                    tempChart.data.datasets[0].data = globalThis.state.mlData;
                     tempChart.update();
                     stop = true;
                 }
-
-                var pastData = inputData;
-                var tempAvg = 0;
-                for (var i = 1; i < 8; i++) {
-                    tempAvg += pastData[pastData.length - i];
-                }
-                tempAvg /= pastData.length;
 
                 globalThis.setState({
                     runningAverage: tempAvg | 0
                 });
 
                 tempAvg = 0;
-                pastData = globalThis.state.mlData.data;
+                pastData = globalThis.state.mlData;
                 for (var a = 0; a < pastData.length; a++) {
                     tempAvg += pastData[a];
                 }
-                tempAvg /= pastData.length;
 
                 globalThis.setState({
                     currentAverage: tempAvg | 0
@@ -115,7 +121,7 @@ class Homepage extends Component {
                 if (globalThis.state.currentAverage < globalThis.state.runningAverage) {
                     amount = "less";
                     globalThis.setState({
-                        newsMessage: "Based on our predictions, you will be getting less customers on average next week. Here are some articles on maintaining customers and popularity in your resturaunt during COVID19."
+                        newsMessage: "Based on our predictions, you will be getting less customers next week. Here are some articles on maintaining customers and popularity in your resturaunt during COVID19."
                     });
                 }
 
@@ -127,7 +133,15 @@ class Homepage extends Component {
             });
 
             axios.post('http://127.0.0.1:5000/getNewsUrls', { 'country': country }).then(res => {
-                console.log(res);
+                var urlList = [];
+                for(var i = 0; i < 10; i++) {
+                    urlList.push(res.data[i.toString()]);
+                    urlList.push("\n");
+                }
+                globalThis.setState({
+                    urlList: urlList
+                });
+                console.log(globalThis.state.urlList);
             });
         });
     }
@@ -152,13 +166,13 @@ class Homepage extends Component {
                             color="inherit"
                             onClick = {this.changePage}
                         >
-                            Input Weekly Data!
+                            <Typography>Input Weekly Data!</Typography>
                         </IconButton>
                     </Toolbar>
                 </AppBar>
                 <Grid container justify="center" style={{ paddingTop: "25px" }}>
                     <Grid item xs={9} style={{ paddingLeft: "25px", paddingRight: "25px" }}>
-                        <Grid container spacing={3} justify="center">
+                        <Grid container spacing={3} justify="center" direction = "row">
                             <Grid item xs={12}>
                                 <Paper style={{
                                     backgroundColor: "white",
@@ -174,20 +188,21 @@ class Homepage extends Component {
                                     </div>
                                 </Paper>
                             </Grid>
-                            <Grid item xs={4}>
+                            <Grid item>
                                 <Paper style={{
                                     backgroundColor: "white",
-                                    height: "200px"
+                                    height: "150px",
+                                    width: "532px"
                                 }} elevation={5}>
                                 </Paper>
                             </Grid>
-                            <Grid item xs={8}>
+                            <Grid item>
                                 <Paper style={{
                                     backgroundColor: "white",
-                                    height: "200px",
-                                    padding: "10px"
+                                    height: "150px",
+                                    width: "532px"
                                 }} elevation={5}>
-                                    <Typography>{this.state.customerMessage}</Typography>
+                                    <Typography style = {{padding: "10px"}}>{this.state.customerMessage}</Typography>
                                 </Paper>
                             </Grid>
                         </Grid>
@@ -201,15 +216,18 @@ class Homepage extends Component {
                                     padding: "10px"
                                 }} elevation={5}>
                                     <Typography>{this.state.newsMessage}</Typography>
-                                    <Typography>Predicted Average (customers per week): {this.state.currentAverage}</Typography>
-                                    <Typography>Recorded Average (customers per week): {this.state.runningAverage}</Typography>
+                                    <Typography>Predicted Number (customers per week): {this.state.currentAverage}</Typography>
+                                    <Typography>Recorded Number (customers per week): {this.state.runningAverage}</Typography>
                                 </Paper>
                             </Grid>
                             <Grid item xs={12}>
                                 <Paper style={{
                                     backgroundColor: "white",
-                                    height: "650px"
+                                    height: "525px",
+                                    width: "357px",
+                                    overflowY: 'scroll'
                                 }} elevation={5}>
+                                    <Typography>{this.state.urlList}</Typography>
                                 </Paper>
                             </Grid>
                         </Grid>
