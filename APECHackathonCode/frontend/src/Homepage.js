@@ -21,7 +21,9 @@ import TextField from "@material-ui/core/TextField";
 import DialogActions from "@material-ui/core/DialogActions";
 import Dialog from "@material-ui/core/Dialog";
 
+// ADD ANOTHER DATA LINE FOR COVID DATA TO SPAN COVID DATA TO YOUR RESTURAUNT DATA
 var globalThis;
+const weeks = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"];
 
 class Homepage extends Component {
     constructor(props) {
@@ -75,15 +77,17 @@ class Homepage extends Component {
         var inputData = [];
         var stop = false;
         var name = this.state.restaurauntName;
-        var personalName = "";
 
         firebase.database().ref("Accounts").once('value').then(function (snapshot) {
             snapshot.forEach(childSnapshot => {
                 if (childSnapshot.child("resturauntName").val() === name) {
                     inputData = childSnapshot.child("customersPerWeek").val();
-                    personalName = childSnapshot.child("name").val();
                 }
             });
+
+            globalThis.setState({
+                customerName: name
+            })
 
             axios.post('http://127.0.0.1:5000/analyzeCustomerData', { 'data': inputData }).then(res => {
                 var pastData = inputData;
@@ -158,22 +162,46 @@ class Homepage extends Component {
         window.close("/Homepage/" + this.state.restaurauntName);
     }
 
-    render() {
-        const handleClickOpen = () => {
-            this.setState({open: true});
-        };
+    handleClickOpen = () => {
+        this.setState({open: true});
+    };
 
-        const handleClose = () => {
-            this.setState({open: false});
-        };
+    handleClose = () => {
+        this.setState({open: false});
+
+        var input = 0;
+        var name = this.state.restaurauntName;
+        firebase.database().ref("Accounts").once('value').then(function(snapshot) {
+            snapshot.forEach(childSnapshot => {
+                if(childSnapshot.child("resturauntName").val() === name) {
+                    if(childSnapshot.child("customersPerWeek").val() != null) {
+                        input = childSnapshot.child("customersPerWeek").val();
+                    }
+                }
+            });
+
+            for(var i = 0; i < 7; i++) {
+                var upload = document.getElementById(weeks[i]).value;
+                upload = parseInt(upload);
+                input.push(upload);
+            }
+    
+            firebase.database().ref("Accounts").child(name).child("customersPerWeek").set(input);
+
+            window.open("/Homepage/" + name);
+            window.close("/InputData/" + name);
+        });
+    };
+
+    render() {
         return (
             <div>
                 <AppBar position="static">
                     <Toolbar>
                         <Typography style={{ flexGrow: "1" }} variant="h6" >
-                            Octo Dashboard
+                            Octo Dashboard - {this.state.customerName}
                         </Typography>
-                        <Button variant="contained" onClick={handleClickOpen}>
+                        <Button variant="contained" onClick={this.handleClickOpen}>
                             Add Data!
                         </Button>
                     </Toolbar>
@@ -232,7 +260,6 @@ class Homepage extends Component {
                                 <Paper style={{
                                     backgroundColor: "white",
                                     height: "515px",
-                                    width: "357px",
                                     overflowY: 'scroll'
                                 }} elevation={5}>
                                     <Typography>{this.state.urlList}</Typography>
@@ -241,7 +268,7 @@ class Homepage extends Component {
                         </Grid>
                     </Grid>
                 </Grid>
-                <Dialog open={this.state.open} onClose={handleClose} aria-labelledby="form-dialog-title">
+                <Dialog open={this.state.open} onClose={this.handleClose} aria-labelledby="form-dialog-title">
                     <DialogTitle id="form-dialog-title">Input your weekly data</DialogTitle>
                     <DialogContent>
                         <form>
@@ -250,7 +277,7 @@ class Homepage extends Component {
                                 margin="normal"
                                 required
                                 label="Monday"
-                                id="monday"
+                                id="mon"
                                 autoFocus
                                 style={{width: "80%", marginLeft: "10%"}}
                             />
@@ -259,7 +286,7 @@ class Homepage extends Component {
                                 margin="normal"
                                 required
                                 label="Tuesday"
-                                id="tuesday"
+                                id="tue"
                                 autoFocus
                                 style={{width: "80%", marginLeft: "10%"}}
                             />
@@ -268,7 +295,7 @@ class Homepage extends Component {
                                 margin="normal"
                                 required
                                 label="Wednesday"
-                                id="wednesday"
+                                id="wed"
                                 autoFocus
                                 style={{width: "80%", marginLeft: "10%"}}
                             />
@@ -277,7 +304,7 @@ class Homepage extends Component {
                                 margin="normal"
                                 required
                                 label="Thursday"
-                                id="thursday"
+                                id="thu"
                                 autoFocus
                                 style={{width: "80%", marginLeft: "10%"}}
                             />
@@ -286,7 +313,7 @@ class Homepage extends Component {
                                 margin="normal"
                                 required
                                 label="Friday"
-                                id="friday"
+                                id="fri"
                                 autoFocus
                                 style={{width: "80%", marginLeft: "10%"}}
                             />
@@ -295,7 +322,7 @@ class Homepage extends Component {
                                 margin="normal"
                                 required
                                 label="Saturday"
-                                id="saturday"
+                                id="sat"
                                 autoFocus
                                 style={{width: "80%", marginLeft: "10%"}}
                             />
@@ -304,17 +331,17 @@ class Homepage extends Component {
                                 margin="normal"
                                 required
                                 label="Sunday"
-                                id="sunday"
+                                id="sun"
                                 autoFocus
                                 style={{width: "80%", marginLeft: "10%"}}
                             />
                         </form>
                     </DialogContent>
                     <DialogActions>
-                        <Button onClick={handleClose} color="primary">
+                        <Button onClick={this.handleClose} color="primary">
                             Cancel
                         </Button>
-                        <Button onClick={handleClose} color="primary">
+                        <Button onClick={this.handleClose} color="primary">
                             Submit
                         </Button>
                     </DialogActions>
