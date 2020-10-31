@@ -38,10 +38,13 @@ class Homepage extends Component {
             currentData: [],
             runningAverage: 0,
             currentAverage: 0,
+            overallAverage: 0,
             newsMessage: "Based on our predictions, you will be getting more customers on average next week! Here is some news regarding handling extra customers during COVID19.",
             customerMessage: "",
             customerName: "",
             urlList: "",
+            casesPerDay: [],
+            open: false
             color: "#66cc66",
             open: false,
             percent: "",
@@ -79,6 +82,12 @@ class Homepage extends Component {
                         data: this.state.currentData,
                         backgroundColor: 'rgba(0,0,0,0)',
                         borderColor: 'rgba(0, 0, 0, 1)',
+                    }, 
+                    {
+                        label: "Daily Covid Cases",
+                        data: this.state.casesPerDay,
+                        backgroundColor: 'rgba(0, 0, 0, 0)',
+                        borderColor: 'rgba(200, 200, 200, 255)',
                     }
                 ]
             },
@@ -111,7 +120,6 @@ class Homepage extends Component {
         });
 
         var inputData = [];
-        var stop = false;
         var name = this.state.restaurauntName;
 
         firebase.database().ref("Accounts").once('value').then(function (snapshot) {
@@ -128,8 +136,6 @@ class Homepage extends Component {
             axios.post('http://127.0.0.1:5000/analyzeCustomerData', { 'data': inputData }).then(res => {
                 var pastData = inputData;
                 var resData = res.data.data;
-                console.log(resData);
-                console.log(pastData);
                 var calculatedData = [];
                 var topper = resData[0];
                 var tempAvg = 0;
@@ -143,14 +149,23 @@ class Homepage extends Component {
                     mlData: calculatedData
                 });
 
-                if (tempChart != null && !stop) {
+                if (tempChart != null) {
                     tempChart.data.datasets[0].data = globalThis.state.mlData;
                     tempChart.update();
-                    stop = true;
                 }
 
                 globalThis.setState({
                     runningAverage: tempAvg | 0
+                });
+
+                tempAvg = 0;
+                for (var b = 0; b < pastData.length; b++) {
+                    tempAvg += pastData[b];
+                }
+                tempAvg /= (pastData.length / 7);
+
+                globalThis.setState({
+                    overallAverage: tempAvg | 0
                 });
 
                 tempAvg = 0;
@@ -193,6 +208,41 @@ class Homepage extends Component {
                 });
                 console.log(globalThis.state.urlList);
             });
+
+            axios.post('http://127.0.0.1:5000/covidData', { 'country': country }).then(res => {
+                var covidData = [];
+                const len = Object.keys(res.data).length;
+                const data = res.data;
+                for (var i = len - 1; i > len - 8; i--) {
+                    covidData.push(data[i].cases);
+                }
+
+                axios.post('http://127.0.0.1:5000/analyzeCustomerData', { 'data': covidData }).then(res => {
+                    var resData = res.data.data;
+                    var calculatedData = [];
+                    var topper = resData[0];
+                    var divisor = 1000;
+                    var divisorMessage = "(Thousands)";
+                    if(globalThis.state.currentAverage > 500) {
+                        divisor = 100;
+                        divisorMessage = "(Hundreds)";
+                    }
+
+                    for (var i = 1; i < 8; i++) {
+                        calculatedData.push((covidData[covidData.length - 8 + i] + resData[i - 1] - topper)/divisor | 0);
+                    }
+
+                    globalThis.setState({
+                        casesPerDay: calculatedData
+                    });
+
+                    if (tempChart != null) {
+                        tempChart.data.datasets[1].label = "Daily COVID Cases " + divisorMessage;
+                        tempChart.data.datasets[1].data = globalThis.state.casesPerDay;
+                        tempChart.update();
+                    }
+                });
+            });
         });
     }
 
@@ -202,29 +252,33 @@ class Homepage extends Component {
     }
 
     handleClickOpen = () => {
-        this.setState({open: true});
-    };
+        this.setState({ open: true });
+    }
+
+    handleCloseNoData = () => {
+        this.setState({ open: false });
+    }
 
     handleClose = () => {
-        this.setState({open: false});
+        this.setState({ open: false });
 
         var input = 0;
         var name = this.state.restaurauntName;
-        firebase.database().ref("Accounts").once('value').then(function(snapshot) {
+        firebase.database().ref("Accounts").once('value').then(function (snapshot) {
             snapshot.forEach(childSnapshot => {
-                if(childSnapshot.child("resturauntName").val() === name) {
-                    if(childSnapshot.child("customersPerWeek").val() != null) {
+                if (childSnapshot.child("resturauntName").val() === name) {
+                    if (childSnapshot.child("customersPerWeek").val() != null) {
                         input = childSnapshot.child("customersPerWeek").val();
                     }
                 }
             });
 
-            for(var i = 0; i < 7; i++) {
+            for (var i = 0; i < 7; i++) {
                 var upload = document.getElementById(weeks[i]).value;
                 upload = parseInt(upload);
                 input.push(upload);
             }
-    
+
             firebase.database().ref("Accounts").child(name).child("customersPerWeek").set(input);
 
             window.open("/Homepage/" + name);
@@ -263,7 +317,7 @@ class Homepage extends Component {
                                     backgroundColor: "white",
                                 }} elevation={5}>
                                     <Typography style={{ textAlign: "center", paddingTop: "15px" }}>
-                                        Predicted Number of Customers Next Week
+                                        Predicted Number of COVID Cases and Customers Next Week
                                     </Typography>
                                     <div class="chart-container" style={{ margin: "auto" }}>
                                         <canvas
@@ -299,6 +353,8 @@ class Homepage extends Component {
                                     <Typography variant="subtitle2">
                                         Customers this week
                                     </Typography>
+                                    <Typography style={{ padding: "10px", paddingBottom: "0px" }}>{this.state.customerMessage}</Typography>
+                                    <Typography style={{ padding: "10px", paddingTop: "0px" }}>Your average number of customers per week since you started using Octo is {this.state.overallAverage}.</Typography>
                                 </Paper>
                             </Grid>
                             <Grid item xs={6}>
@@ -366,7 +422,7 @@ class Homepage extends Component {
                                 label="Monday"
                                 id="mon"
                                 autoFocus
-                                style={{width: "80%", marginLeft: "10%"}}
+                                style={{ width: "80%", marginLeft: "10%" }}
                             />
                             <TextField
                                 variant="outlined"
@@ -375,7 +431,7 @@ class Homepage extends Component {
                                 label="Tuesday"
                                 id="tue"
                                 autoFocus
-                                style={{width: "80%", marginLeft: "10%"}}
+                                style={{ width: "80%", marginLeft: "10%" }}
                             />
                             <TextField
                                 variant="outlined"
@@ -384,7 +440,7 @@ class Homepage extends Component {
                                 label="Wednesday"
                                 id="wed"
                                 autoFocus
-                                style={{width: "80%", marginLeft: "10%"}}
+                                style={{ width: "80%", marginLeft: "10%" }}
                             />
                             <TextField
                                 variant="outlined"
@@ -393,7 +449,7 @@ class Homepage extends Component {
                                 label="Thursday"
                                 id="thu"
                                 autoFocus
-                                style={{width: "80%", marginLeft: "10%"}}
+                                style={{ width: "80%", marginLeft: "10%" }}
                             />
                             <TextField
                                 variant="outlined"
@@ -402,7 +458,7 @@ class Homepage extends Component {
                                 label="Friday"
                                 id="fri"
                                 autoFocus
-                                style={{width: "80%", marginLeft: "10%"}}
+                                style={{ width: "80%", marginLeft: "10%" }}
                             />
                             <TextField
                                 variant="outlined"
@@ -411,7 +467,7 @@ class Homepage extends Component {
                                 label="Saturday"
                                 id="sat"
                                 autoFocus
-                                style={{width: "80%", marginLeft: "10%"}}
+                                style={{ width: "80%", marginLeft: "10%" }}
                             />
                             <TextField
                                 variant="outlined"
@@ -420,12 +476,12 @@ class Homepage extends Component {
                                 label="Sunday"
                                 id="sun"
                                 autoFocus
-                                style={{width: "80%", marginLeft: "10%"}}
+                                style={{ width: "80%", marginLeft: "10%" }}
                             />
                         </form>
                     </DialogContent>
                     <DialogActions>
-                        <Button onClick={this.handleClose} color="primary">
+                        <Button onClick={this.handleCloseNoData} color="primary">
                             Cancel
                         </Button>
                         <Button onClick={this.handleClose} color="primary">

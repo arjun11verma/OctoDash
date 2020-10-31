@@ -77,18 +77,20 @@ def covidData():
     r = requests.get('https://disease.sh/v3/covid-19/historical/{0}'.format(country), params=payload)
     json_data = json.loads(r.text)
 
+    num = 0
     output = {}
     startdate = list(json_data["timeline"]["cases"].keys())[0]
     cases = json_data["timeline"]["cases"][startdate]
     deaths = json_data["timeline"]["deaths"][startdate]
     recovered = json_data["timeline"]["recovered"][startdate]
     for key in json_data["timeline"]["cases"].keys():
-        output[key] = {"cases": json_data["timeline"]["cases"][key] - cases,
+        output[num] = {"cases": json_data["timeline"]["cases"][key] - cases,
                        "deaths": json_data["timeline"]["deaths"][key] - deaths,
                        "recovered": json_data["timeline"]["recovered"][key] - recovered}
         cases = json_data["timeline"]["cases"][key]
         deaths = json_data["timeline"]["deaths"][key]
         recovered = json_data["timeline"]["recovered"][key]
+        num += 1
     return output
 
 
