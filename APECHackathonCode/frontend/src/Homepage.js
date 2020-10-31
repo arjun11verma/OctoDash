@@ -44,9 +44,8 @@ class Homepage extends Component {
                     {
                         label: "Customers",
                         data: this.state.currentData,
-                        backgroundColor: [
-                            'rgba(0,0,0,0)',
-                        ]
+                        backgroundColor: 'rgba(0,0,0,0)',
+                        //borderColor: 'rgba(255, 255, 255, 1)',
 
                     }
                 ]
