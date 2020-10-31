@@ -27,9 +27,7 @@ class InputData extends Component {
                     }
                 }
             });
-        });
 
-        setTimeout(() => { 
             for(var i = 0; i < 7; i++) {
                 var upload = document.getElementById(weeks[i]).value;
                 upload = parseInt(upload);
@@ -40,7 +38,7 @@ class InputData extends Component {
 
             window.open("/Homepage/" + name);
             window.close("/InputData/" + name);
-        }, 600);
+        });
     }
 
     render() {

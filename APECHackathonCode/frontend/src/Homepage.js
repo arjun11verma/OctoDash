@@ -123,29 +123,27 @@ class Homepage extends Component {
         });
     }
 
+    changePage = () => {
+        window.open("/InputData/" + this.state.restaurauntName);
+        window.close("/Homepage/" + this.state.restaurauntName);
+    }
+
     render() {
         return (
             <div>
                 <AppBar position="static">
                     <Toolbar>
-                        <IconButton edge="start" color="inherit" aria-label="menu">
-                            <MenuIcon />
-                        </IconButton>
                         <Typography style={{ flexGrow: "1" }} variant="h6" >
                             lavaLAMP
                         </Typography>
-                        <IconButton aria-label="show 17 new notifications" color="inherit">
-                            <Badge badgeContent={17} color="secondary">
-                                <NotificationsIcon />
-                            </Badge>
-                        </IconButton>
                         <IconButton
                             edge="end"
                             aria-label="account of current user"
                             aria-haspopup="true"
                             color="inherit"
+                            onClick = {this.changePage}
                         >
-                            <AccountCircle />
+                            Input Weekly Data!
                         </IconButton>
                     </Toolbar>
                 </AppBar>
