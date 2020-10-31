@@ -28,7 +28,8 @@ class Homepage extends Component {
             runningAverage: 0,
             currentAverage: 0,
             newsMessage: "Based on our predictions, you will be getting more customers on average next week! Here is some news regarding handling extra customers during COVID19.",
-            customerMessage: ""
+            customerMessage: "",
+            customerName: ""
         };
     }
 
@@ -45,8 +46,7 @@ class Homepage extends Component {
                         label: "Customers",
                         data: this.state.currentData,
                         backgroundColor: 'rgba(0,0,0,0)',
-                        //borderColor: 'rgba(255, 255, 255, 1)',
-
+                        borderColor: 'rgba(0, 0, 0, 1)',
                     }
                 ]
             },
@@ -60,11 +60,13 @@ class Homepage extends Component {
         var inputData = [];
         var stop = false;
         var name = this.state.restaurauntName;
+        var personalName = "";
 
         firebase.database().ref("Accounts").once('value').then(function (snapshot) {
             snapshot.forEach(childSnapshot => {
                 if (childSnapshot.child("resturauntName").val() === name) {
                     inputData = childSnapshot.child("customersPerWeek").val();
+                    personalName = childSnapshot.child("name").val();
                 }
             });
 

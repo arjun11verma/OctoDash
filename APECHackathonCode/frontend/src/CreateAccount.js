@@ -22,13 +22,15 @@ class CreateAccount extends Component {
         var password = document.getElementById("password").value;
         var resturauntName = document.getElementById("resturauntName").value;
         var country = document.getElementById("country").value;
+        var name = document.getElementById("name").value;
 
         firebase.database().ref("Accounts").child(resturauntName).child("resturauntName").set(resturauntName);
         firebase.database().ref("Accounts").child(resturauntName).child("username").set(username);
         firebase.database().ref("Accounts").child(resturauntName).child("password").set(password);
         firebase.database().ref("Accounts").child(resturauntName).child("country").set(country);
-        firebase.database().ref("Accounts").child(resturauntName).child("suppliesPerWeek").set([]);
-        firebase.database().ref("Accounts").child(resturauntName).child("customersPerWeek").set([]);
+        firebase.database().ref("Accounts").child(resturauntName).child("suppliesPerWeek").set([0]);
+        firebase.database().ref("Accounts").child(resturauntName).child("customersPerWeek").set([0]);
+        firebase.database().ref("Accounts").child(resturauntName).child("name").set(name);
         
         setTimeout(() => {
             window.close("/CreateAccount");
