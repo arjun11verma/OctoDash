@@ -17,17 +17,15 @@ app = Flask(__name__)
 
 cors = CORS(app)
 
-class SimpleNet(nn.Module):
+class LogisticRegression(nn.Module):
     def __init__(self, input, output):
-        super().__init__()
-        self.linear1 = nn.Linear(input, output) 
-        self.act1 = nn.ReLU()
-        self.linear2 = nn.Linear(output, input)
+        super(LogisticRegression, self).__init__()
+        self.linear1 = nn.Linear(input, output)
+        self.sigmoid1 = nn.Sigmoid()
 
     def forward(self, x):
         y_prediction = self.linear1(x)
-        #y_prediction = self.act1(y_prediction)
-        #y_prediction = self.linear2(y_prediction)
+        y_prediction = self.sigmoid1(y_prediction)
         return y_prediction
 
 @app.route('/analyzeCustomerData', methods=['POST', 'GET'])
@@ -48,9 +46,9 @@ def analyzeCustomerData():
     x_data = Variable(torch.tensor(x_data))
     y_data = Variable(torch.tensor(y_data))
     
-    model = SimpleNet(1, 1)
+    model = LogisticRegression(1, 1)
 
-    criterion = torch.nn.MSELoss(size_average = False) 
+    criterion = torch.nn.BCELoss(size_average = False) 
     optimizer = torch.optim.SGD(model.parameters(), lr = 0.01)
     for epoch in range(250): 
         optimizer.zero_grad() 

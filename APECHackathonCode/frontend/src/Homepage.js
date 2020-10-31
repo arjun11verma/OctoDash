@@ -27,7 +27,8 @@ class Homepage extends Component {
             currentData: [],
             runningAverage: 0,
             currentAverage: 0,
-            newsMessage: "Based on our predictions, you will be getting more customers on average next week! Here is some news regarding handling extra customers during COVID19."
+            newsMessage: "Based on our predictions, you will be getting more customers on average next week! Here is some news regarding handling extra customers during COVID19.",
+            customerMessage: ""
         };
     }
 
@@ -81,8 +82,8 @@ class Homepage extends Component {
 
                 var pastData = inputData;
                 var tempAvg = 0;
-                for (var i = 0; i < pastData.length; i++) {
-                    tempAvg += pastData[i];
+                for (var i = 1; i < 8; i++) {
+                    tempAvg += pastData[pastData.length - i];
                 }
                 tempAvg /= pastData.length;
 
@@ -100,13 +101,22 @@ class Homepage extends Component {
                 globalThis.setState({
                     currentAverage: tempAvg | 0
                 });
-            });
 
-            if (globalThis.state.currentAverage < globalThis.state.runningAverage) {
+                var amount = "more";
+
+                if (globalThis.state.currentAverage < globalThis.state.runningAverage) {
+                    amount = "less";
+                    globalThis.setState({
+                        newsMessage: "Based on our predictions, you will be getting less customers on average next week. Here are some articles on maintaining customers and popularity in your resturaunt during COVID19."
+                    });
+                }
+
+                var percentDifference = Math.abs(globalThis.state.runningAverage - globalThis.state.currentAverage)/(globalThis.state.runningAverage) * 100 | 0;
+                var inputMessage = "Your resturaunt had " + globalThis.state.runningAverage + " customers last week and we predict that your resturaunt will have " + globalThis.state.currentAverage + " customers next week. Based off of this, you should order " + percentDifference + "% " + amount + " supplies for next week.";
                 globalThis.setState({
-                    newsMessage: "Based on our predictions, you will be getting less customers on average next week. Here are some articles on maintaining customers and popularity in your resturaunt during COVID19."
+                    customerMessage: inputMessage
                 });
-            }
+            });
 
             axios.post('http://127.0.0.1:5000/getNewsUrls', { 'country': country }).then(res => {
                 console.log(res);
@@ -166,8 +176,10 @@ class Homepage extends Component {
                             <Grid item xs={8}>
                                 <Paper style={{
                                     backgroundColor: "white",
-                                    height: "200px"
+                                    height: "200px",
+                                    padding: "10px"
                                 }} elevation={5}>
+                                    <Typography>{this.state.customerMessage}</Typography>
                                 </Paper>
                             </Grid>
                         </Grid>
