@@ -18,7 +18,7 @@ code {
 
   -webkit-animation: Animation 10s ease infinite;
   -moz-animation: Animation 10s ease infinite;
-  animation: Animation 10s ease infinite;
+  animation: Animation 30s ease infinite;
 }
 
 @-webkit-keyframes Animation {

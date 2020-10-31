@@ -46,7 +46,7 @@ class Login extends Component {
                 <div>
                     <Container>
                         <Typography style={{paddingTop: "10%", marginBottom: "-5%", textAlign: "center"}} component="h1" variant="h3">
-                            This is <b>LavaLAMP</b>.
+                            <b>Octo Dashboard</b>
                         </Typography>
                         <Typography style={{paddingTop: "5%", textAlign: "center"}} component="h1" variant="h6">
                             Supporting local businesses during unprecedented times.

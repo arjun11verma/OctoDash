@@ -45,7 +45,7 @@ class Homepage extends Component {
                         label: "Customers",
                         data: this.state.currentData,
                         backgroundColor: 'rgba(0,0,0,0)',
-                        //borderColor: 'rgba(255, 255, 255, 1)',
+                        borderColor: 'rgba(255, 255, 255, 1)',
 
                     }
                 ]
@@ -132,7 +132,7 @@ class Homepage extends Component {
                             <MenuIcon />
                         </IconButton>
                         <Typography style={{ flexGrow: "1" }} variant="h6" >
-                            lavaLAMP
+                            Octo Dashboard
                         </Typography>
                         <IconButton aria-label="show 17 new notifications" color="inherit">
                             <Badge badgeContent={17} color="secondary">
