@@ -18,16 +18,16 @@ app = Flask(__name__)
 cors = CORS(app)
 
 class SimpleNet(nn.Module):
-    def __init__(self, xdim, ydim):
+    def __init__(self, input, output):
         super().__init__()
-        self.linear1 = nn.Linear(xdim, ydim) 
+        self.linear1 = nn.Linear(input, output) 
         self.act1 = nn.ReLU()
-        self.linear2 = nn.Linear(xdim, ydim)
+        self.linear2 = nn.Linear(output, input)
 
     def forward(self, x):
         y_prediction = self.linear1(x)
         #y_prediction = self.act1(y_prediction)
-        y_prediction = self.linear2(x)
+        #y_prediction = self.linear2(y_prediction)
         return y_prediction
 
 @app.route('/analyzeCustomerData', methods=['POST', 'GET'])
@@ -54,7 +54,7 @@ def analyzeCustomerData():
     optimizer = torch.optim.SGD(model.parameters(), lr = 0.01)
     for epoch in range(250): 
         optimizer.zero_grad() 
-        predicted_number_of_customers = model.forward(x_data) 
+        predicted_number_of_customers = model.forward(x_data)
         loss = criterion(predicted_number_of_customers, y_data) 
         loss.backward()
         optimizer.step()

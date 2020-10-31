@@ -1,19 +1,19 @@
 import React, { Component } from 'react';
 import Chart from "chart.js";
+import { Button } from '@material-ui/core';
 
 class LineGraph extends Component {
-    chartRef = React.createRef();
 
     constructor(props) {
         super(props);
         this.state = {
-            data: props.data
+            data: [],
+            chartRef: React.createRef()
         }
     }
     
     componentDidMount() {
-        const myChartRef = this.chartRef.current.getContext("2d");
-        console.log(this.state.data);
+        const myChartRef = this.state.chartRef.current.getContext("2d");
 
         new Chart(myChartRef, {
             type: "line",
@@ -44,8 +44,11 @@ class LineGraph extends Component {
                 <div class="chart-container">
                     <canvas
                         id="myChart"
-                        ref={this.chartRef}
+                        ref={this.state.chartRef}
                     />
+                    <Button onClick = {this.props.click}>
+                        Click to change the graph!
+                    </Button>
                 </div>                
             </div>
         )
