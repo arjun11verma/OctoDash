@@ -13,6 +13,8 @@ import torch
 import torch.nn as nn
 from torch.autograd import Variable
 
+from newspaper import Article
+
 app = Flask(__name__)
 
 cors = CORS(app)
@@ -116,6 +118,15 @@ def getNewsUrls():
     for index, value in enumerate(storylist):
         output[index] = value["url"]
     return output
+
+@app.route('/getArticleInfo', methods=['POST', 'GET'])
+def getArticleInfo():
+    urls = getNewsUrls()
+    for index in urls:
+        url = urls[index]
+        article = Article(url)
+        article.download()
+        article.parse()
 
 
 app.run()
