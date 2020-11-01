@@ -394,7 +394,7 @@ class Homepage extends Component {
                             Octo Dashboard - {this.state.customerName}
                         </Typography>
                         <Button variant="contained" onClick={this.handleCustomerClickOpen}>
-                            Add Data!
+                            Add Customer Data!
                         </Button>
                     </Toolbar>
                 </AppBar>
@@ -419,7 +419,14 @@ class Homepage extends Component {
                             <Grid item xs={12}>
                                 <Paper style={{
                                     backgroundColor: "white",
-                                    height: "200px"
+                                }} elevation={5}>
+                                    <Typography style = {{padding: "10px", textAlign: "center"}}>Ever since you began using the Octo terminal, {this.state.restaurauntName} has had an average of {this.state.overallAverage} customers per week!</Typography>
+                                </Paper>
+                            </Grid>
+                            <Grid item xs={12}>
+                                <Paper style={{
+                                    backgroundColor: "white",
+                                    height: "400px"
                                 }} elevation={5}>
                                     <DataGrid
                                         rows={globalThis.state.rows}
@@ -433,7 +440,6 @@ class Homepage extends Component {
                                     <Button style={{position: "relative", top: "200px"}} variant="contained" onClick={manageCategory}>
                                         Manage Supply Categories
                                     </Button>
-                                    <Typography style = {{padding: "10px"}}>Ever since you began using the Octo terminal, {this.state.restaurauntName} has had an average of {this.state.overallAverage} customers per week.</Typography>
                                 </Paper>
                             </Grid>
                         </Grid>

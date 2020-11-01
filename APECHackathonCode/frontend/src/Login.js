@@ -41,6 +41,16 @@ class Login extends Component {
     }
 
     render() {
+        const handleSubmit = e => {
+            e.preventDefault();
+            this.login()
+        };
+        const handleKeypress = e => {
+            //it triggers by pressing the enter key
+            if (e.keyCode === 13) {
+                handleSubmit();
+            }
+        };
         return (
             <div class="animated-background" style={{height: "100vh"}}>
                 <div>
@@ -84,7 +94,8 @@ class Login extends Component {
                                     style={{width: "80%", marginLeft: "10%"}}
                                 />
                                 <Button
-                                    onClick = {this.login}
+                                    onClick = {handleSubmit}
+                                    type="submit"
                                     fullWidth
                                     variant="contained"
                                     style={{width: "80%", marginLeft: "10%", marginTop: "3%", marginBottom: "5%"}}
