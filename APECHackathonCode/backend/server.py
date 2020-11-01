@@ -123,12 +123,24 @@ def getNewsUrls():
 
 @app.route('/getArticleInfo', methods=['POST', 'GET'])
 def getArticleInfo():
+    articleInfo = {}
     urls = getNewsUrls()
-    for index in urls:
-        url = urls[index]
-        article = Article(url)
+    count = 0
+    while count < len(urls):
+        article = Article(urls[count])
         article.download()
         article.parse()
-
+        if (isinstance(article.publish_date, datetime)):
+            date = article.publish_date.strftime('%m/%d/%Y')
+        else:
+            date = article.publish_date
+        authors = []
+        for x in article.authors:
+            if len(x.split(" ")) == 2:
+                authors.append(x)
+        articleInfo[count] = {"authors": authors, "date": date, "url": urls[count],
+        "imageURL": article.top_image, "title": article.title}
+        count = count + 1
+    return articleInfo
 
 app.run()
