@@ -60,6 +60,7 @@ class Homepage extends Component {
             supplyopen: false,
             categoryopen: false,
             categoryaddopen: false,
+            supplydataopen: false,
             percent: "",
             amount: "",
             activesupplyid: false,
@@ -69,8 +70,8 @@ class Homepage extends Component {
             ],
             columns: [
                 { field: 'id', headerName: 'ID', width: 70 },
-                { field: 'item', headerName: 'Item', width: 130 },
-                { field: 'category', headerName: 'Category', width: 100 },
+                { field: 'item', headerName: 'Item', width: 200 },
+                { field: 'category', headerName: 'Category', width: 200 },
                 {
                     field: 'weeklyquantity',
                     headerName: 'Weekly Quantity',
@@ -79,7 +80,7 @@ class Homepage extends Component {
                 },
                 {
                     field: 'editbutton',
-                    headerName: 'Edit',
+                    headerName: ' ',
                     width: 150,
                     renderCell: (params) => (
                         <strong>
@@ -295,6 +296,10 @@ class Homepage extends Component {
         window.close("/Homepage/" + this.state.restaurauntName);
     }
 
+    handleSupplyDataClickOpen = () => {
+        this.setState({supplydataopen: true});
+    };
+
     handleCategoryAddClickOpen = () => {
         this.setState({categoryaddopen: true});
     };
@@ -375,6 +380,12 @@ class Homepage extends Component {
         });
     };
 
+    handleSupplyDataClose = () => {
+        this.setState({
+            supplydataopen: false,
+        });
+    };
+
     render() {
         const onRowClick = (rowIdx, row) => {
             console.log(rowIdx);
@@ -393,8 +404,11 @@ class Homepage extends Component {
                         <Typography style={{ flexGrow: "1" }} variant="h6" >
                             Octo Dashboard - {this.state.customerName}
                         </Typography>
+                        <Button variant="contained" onClick={this.handleSupplyDataClickOpen} style={{marginRight: "25px"}}>
+                            Edit Supply Data
+                        </Button>
                         <Button variant="contained" onClick={this.handleCustomerClickOpen}>
-                            Add Customer Data!
+                            Add Customer Data
                         </Button>
                     </Toolbar>
                 </AppBar>
@@ -496,11 +510,9 @@ class Homepage extends Component {
                             <Grid item xs={12}>
                                 <Paper style={{
                                     backgroundColor: "white",
-                                    height: "200px",
+                                    height: "auto",
                                     padding: "10px"
                                 }} elevation={5}>
-                                    <Typography>Predicted Number (customers per week): {this.state.currentAverage}</Typography>
-                                    <Typography>Recorded Number (customers per week): {this.state.runningAverage}</Typography>
                                     <Typography>{this.state.newsMessage}</Typography>
                                 </Paper>
                             </Grid>
@@ -516,6 +528,36 @@ class Homepage extends Component {
                         </Grid>
                     </Grid>
                 </Grid>
+                <Dialog fullWidth={true} maxWidth = {'md'} open={this.state.supplydataopen} onClose={this.handleCategoryAddClose} aria-labelledby="supply-data-dialog">
+                    <DialogTitle id="supply-data-dialog">Add Categories </DialogTitle>
+                    <DialogContent>
+                        <Paper style={{
+                            backgroundColor: "white",
+                            height: "400px"
+                        }} elevation={0}>
+                            <DataGrid
+                                rows={globalThis.state.rows}
+                                columns={globalThis.state.columns}
+                                hideFooter
+                                onRowClick={onRowClick}
+                            />
+                            <div style={{padding: "25px"}}>
+                                <Button style={{position: "relative", top: "200px"}} variant="contained" onClick={createSupply}>
+                                    Add Supply Entry
+                                </Button>
+                                <Button style={{position: "relative", top: "200px"}} variant="contained" onClick={manageCategory}>
+                                    Manage Supply Categories
+                                </Button>
+                            </div>
+                        </Paper>
+                    </DialogContent>
+
+                    <DialogActions>
+                        <Button onClick={this.handleSupplyDataClose} color="primary">
+                            Done
+                        </Button>
+                    </DialogActions>
+                </Dialog>
                 <Dialog open={this.state.categoryaddopen} onClose={this.handleCategoryAddClose} aria-labelledby="category-add-dialog">
                     <DialogTitle id="category-add-dialog">Add Categories </DialogTitle>
                     <DialogContent>
