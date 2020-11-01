@@ -21,6 +21,16 @@ import TextField from "@material-ui/core/TextField";
 import DialogActions from "@material-ui/core/DialogActions";
 import Dialog from "@material-ui/core/Dialog";
 import {DataGrid} from "@material-ui/data-grid";
+import clsx from "clsx";
+import makeStyles from "@material-ui/core/styles/makeStyles";
+import List from "@material-ui/core/List";
+import ListItem from "@material-ui/core/ListItem";
+import ListItemIcon from "@material-ui/core/ListItemIcon";
+import ListItemText from "@material-ui/core/ListItemText";
+import Divider from "@material-ui/core/Divider";
+import ListItemSecondaryAction from "@material-ui/core/ListItemSecondaryAction";
+import DeleteIcon from '@material-ui/icons/Delete';
+import Autocomplete from "@material-ui/lab/Autocomplete";
 
 // ADD ANOTHER DATA LINE FOR COVID DATA TO SPAN COVID DATA TO YOUR RESTURAUNT DATA
 var globalThis;
@@ -43,9 +53,17 @@ class Homepage extends Component {
             customerName: "",
             urlList: "",
             color: "#66cc66",
-            open: false,
+            customeropen: false,
+            supplyopen: false,
+            categoryopen: false,
+            categoryaddopen: false,
             percent: "",
             amount: "",
+            activesupplyid: false,
+            categories: [
+                {id: 1, categoryName: "COVID"},
+                {id: 2, categoryName: "Food"}
+            ],
             columns: [
                 { field: 'id', headerName: 'ID', width: 70 },
                 { field: 'item', headerName: 'Item', width: 130 },
@@ -56,13 +74,34 @@ class Homepage extends Component {
                     type: 'number',
                     width: 150,
                 },
-                { field: 'editbutton', headerName: 'Edit', width: 100 },
+                {
+                    field: 'editbutton',
+                    headerName: 'Edit',
+                    width: 150,
+                    renderCell: (params) => (
+                        <strong>
+                            <Button
+                                variant="contained"
+                                color="primary"
+                                size="small"
+                                style={{ marginLeft: 16 }}
+                            >
+                                Edit
+                            </Button>
+                        </strong>
+                    )
+                }
             ],
             rows: [
                 { id: 1, item: 'Masks', category: 'COVID', weeklyquantity: 35 },
                 { id: 2, item: 'Bread', category: 'Food', weeklyquantity: 70 },
             ]
         };
+    }
+
+    editButton = (element) => {
+        console.log("row" + element.rowIndex +
+            " - column" + element.cellIndex)
     }
 
     componentDidMount = () => {
@@ -94,21 +133,7 @@ class Homepage extends Component {
             }
         });
 
-        var rows = this.state.rows;
-        console.log(rows[0])
-        for (var i = 0; i < rows.length; i++) {
-            var btn = document.createElement('input');
-            btn.type = "button";
-            btn.className = "btn-" + i;
-            btn.value = "edit"
-            rows[i]["editbutton"] = btn
-        }
 
-        /*  */
-        console.log(rows)
-        globalThis.setState({
-            rows: rows
-        });
 
         var inputData = [];
         var stop = false;
@@ -196,16 +221,61 @@ class Homepage extends Component {
         });
     }
 
+    returnList = () => {
+        var categories = this.state.categories;
+        var categories_listtype = []
+        for (var i = 0; i < categories.length; i++) {
+            categories_listtype.push(categories[i]["categoryName"])
+        }
+        return (
+            categories_listtype.map(text =>
+                <ListItem button>
+                    <ListItemText primary={text}/>
+                    <ListItemSecondaryAction>
+                        <IconButton edge="end" aria-lavel="delete">
+                            <DeleteIcon />
+                        </IconButton>
+                    </ListItemSecondaryAction>
+                </ListItem>)
+        )
+    }
+
     changePage = () => {
         window.open("/InputData/" + this.state.restaurauntName);
         window.close("/Homepage/" + this.state.restaurauntName);
     }
 
-    handleClickOpen = () => {
-        this.setState({open: true});
+    handleCategoryAddClickOpen = () => {
+        this.setState({categoryaddopen: true});
     };
 
-    handleClose = () => {
+    handleCustomerClickOpen = () => {
+        this.setState({customeropen: true});
+    };
+
+    handleCategoryClickOpen = () => {
+        this.setState({categoryopen: true});
+    };
+
+    handleSupplyClickOpen = (id) => {
+        if (id != "new")
+        {
+            this.setState({
+                supplyopen: true,
+                activesupplyid: id
+            });
+        }
+        else {
+            {
+                this.setState({
+                    supplyopen: true,
+                    activesupplyid: id
+                });
+            }
+        }
+    };
+
+    handleCustomerClose = () => {
         this.setState({open: false});
 
         var input = 0;
@@ -224,7 +294,7 @@ class Homepage extends Component {
                 upload = parseInt(upload);
                 input.push(upload);
             }
-    
+
             firebase.database().ref("Accounts").child(name).child("customersPerWeek").set(input);
 
             window.open("/Homepage/" + name);
@@ -232,17 +302,40 @@ class Homepage extends Component {
         });
     };
 
-    render() {
-        const dataTable = props => {
-            return (
-                <DataGrid
-                    rows={this.state.rows}
-                    olumns={this.state.columns}
-                    checkboxSelection
-                />
-            );
-        };
+    handleSupplyClose = () => {
+        this.setState({
+            supplyopen: false,
+            activesupplyid: false
+        });
+    };
 
+    handleCategoryClose = () => {
+        this.setState({
+            categoryopen: false,
+        });
+    };
+
+    handleCategoryAddClose = () => {
+        var upload = document.getElementById("category").value;
+        var categories = this.state.categories;
+        categories.push({id: 0, categoryName: upload})
+        this.setState({
+            categoryaddopen: false,
+            categories: categories
+        });
+    };
+
+    render() {
+        const onRowClick = (rowIdx, row) => {
+            console.log(rowIdx);
+            this.handleSupplyClickOpen(rowIdx["data"]["id"])
+        }
+        const createSupply = () => {
+            this.handleSupplyClickOpen("new")
+        }
+        const manageCategory = () => {
+            this.handleCategoryClickOpen()
+        }
         return (
             <div>
                 <AppBar position="static">
@@ -250,7 +343,7 @@ class Homepage extends Component {
                         <Typography style={{ flexGrow: "1" }} variant="h6" >
                             Octo Dashboard - {this.state.customerName}
                         </Typography>
-                        <Button variant="contained" onClick={this.handleClickOpen}>
+                        <Button variant="contained" onClick={this.handleCustomerClickOpen}>
                             Add Data!
                         </Button>
                     </Toolbar>
@@ -278,7 +371,18 @@ class Homepage extends Component {
                                     backgroundColor: "white",
                                     height: "500px"
                                 }} elevation={5}>
-                                    {dataTable}
+                                    <DataGrid
+                                        rows={globalThis.state.rows}
+                                        columns={globalThis.state.columns}
+                                        hideFooter
+                                        onRowClick={onRowClick}
+                                    />
+                                    <Button style={{position: "relative", top: "200px"}} variant="contained" onClick={createSupply}>
+                                        Add Supply Entry
+                                    </Button>
+                                    <Button style={{position: "relative", top: "200px"}} variant="contained" onClick={manageCategory}>
+                                        Manage Supply Categories
+                                    </Button>
                                 </Paper>
                             </Grid>
                         </Grid>
@@ -355,7 +459,88 @@ class Homepage extends Component {
                         </Grid>
                     </Grid>
                 </Grid>
-                <Dialog open={this.state.open} onClose={this.handleClose} aria-labelledby="form-dialog-title">
+                <Dialog open={this.state.categoryaddopen} onClose={this.handleCategoryAddClose} aria-labelledby="category-add-dialog">
+                    <DialogTitle id="category-add-dialog">Add Categories </DialogTitle>
+                    <DialogContent>
+                        <form>
+                            <TextField
+                                variant="outlined"
+                                margin="normal"
+                                required
+                                label="Category"
+                                id="category"
+                                autoFocus
+                                style={{width: "80%", marginLeft: "10%"}}
+                            />
+                        </form>
+                    </DialogContent>
+                    <DialogActions>
+                        <Button onClick={this.handleCategoryAddClose} color="primary">
+                            Cancel
+                        </Button>
+                        <Button onClick={this.handleCategoryAddClose} color="primary">
+                            Submit
+                        </Button>
+                    </DialogActions>
+                </Dialog>
+                <Dialog open={this.state.categoryopen} onClose={this.handleCategoryClose} aria-labelledby="category-dialog">
+                    <DialogTitle id="category-dialog">Edit Categories </DialogTitle>
+                    <DialogContent>
+                        <form>
+                            <List component="categories" aria-label="categorylist">
+                                {this.returnList()}
+                            </List>
+                        </form>
+                    </DialogContent>
+                    <DialogActions>
+                        <Button onClick={this.handleCategoryAddClickOpen} color="primary">
+                            Add Category
+                        </Button>
+                        <Button onClick={this.handleCategoryClose} color="primary">
+                            Done
+                        </Button>
+                    </DialogActions>
+                </Dialog>
+                <Dialog open={this.state.supplyopen} onClose={this.handleSupplyClose} aria-labelledby="supply-dialog">
+                    <DialogTitle id="supply-dialog">Input your weekly data for {this.state.activesupplyid}</DialogTitle>
+                    <DialogContent>
+                        <form>
+                            <TextField
+                                variant="outlined"
+                                margin="normal"
+                                required
+                                label="Supply Name"
+                                id="supply_name"
+                                autoFocus
+                                style={{width: "80%", marginLeft: "10%"}}
+                            />
+                            <Autocomplete
+                                id="category_list"
+                                options={this.state.categories}
+                                getOptionLabel={(option) => option.categoryName}
+                                style={{width: "80%", marginLeft: "10%"}}
+                                renderInput={(params) => <TextField {...params} label="Category" variant="outlined" />}
+                            />
+                            <TextField
+                                variant="outlined"
+                                margin="normal"
+                                required
+                                label="Weekly Quantity"
+                                id="supply_quantity"
+                                style={{width: "80%", marginLeft: "10%"}}
+                            />
+                        </form>
+                    </DialogContent>
+                    <DialogActions>
+                        <Button onClick={this.handleSupplyClose} color="primary">
+                            Cancel
+                        </Button>
+                        <Button onClick={this.handleSupplyClose} color="primary">
+                            Add Entry
+                        </Button>
+                    </DialogActions>
+                </Dialog>
+                <Dialog open={this.state.customeropen} onClose={this.handleCustomerClose} aria-labelledby="form-dialog-title">
                     <DialogTitle id="form-dialog-title">Input your weekly data</DialogTitle>
                     <DialogContent>
                         <form>
@@ -425,10 +610,10 @@ class Homepage extends Component {
                         </form>
                     </DialogContent>
                     <DialogActions>
-                        <Button onClick={this.handleClose} color="primary">
+                        <Button onClick={this.handleCustomerClose} color="primary">
                             Cancel
                         </Button>
-                        <Button onClick={this.handleClose} color="primary">
+                        <Button onClick={this.handleCustomerClose} color="primary">
                             Submit
                         </Button>
                     </DialogActions>
