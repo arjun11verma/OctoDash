@@ -13,6 +13,8 @@ import torch
 import torch.nn as nn
 from torch.autograd import Variable
 
+from newspaper import Article
+
 app = Flask(__name__)
 
 cors = CORS(app)
@@ -35,7 +37,7 @@ def analyzeCustomerData():
     xlen = 0
     return_data = []
 
-    stopping_point = len(data) - 5 if len(data) > 5 else 0
+    stopping_point = len(data) - 6 if len(data) > 6 else 0
     for i in range(stopping_point, len(data)):
         y_data.append([[float(data[i])]])
         x_data.append([[float(i+1-stopping_point)]])
@@ -77,18 +79,20 @@ def covidData():
     r = requests.get('https://disease.sh/v3/covid-19/historical/{0}'.format(country), params=payload)
     json_data = json.loads(r.text)
 
+    num = 0
     output = {}
     startdate = list(json_data["timeline"]["cases"].keys())[0]
     cases = json_data["timeline"]["cases"][startdate]
     deaths = json_data["timeline"]["deaths"][startdate]
     recovered = json_data["timeline"]["recovered"][startdate]
     for key in json_data["timeline"]["cases"].keys():
-        output[key] = {"cases": json_data["timeline"]["cases"][key] - cases,
+        output[num] = {"cases": json_data["timeline"]["cases"][key] - cases,
                        "deaths": json_data["timeline"]["deaths"][key] - deaths,
                        "recovered": json_data["timeline"]["recovered"][key] - recovered}
         cases = json_data["timeline"]["cases"][key]
         deaths = json_data["timeline"]["deaths"][key]
         recovered = json_data["timeline"]["recovered"][key]
+        num += 1
     return output
 
 
@@ -117,5 +121,26 @@ def getNewsUrls():
         output[index] = value["url"]
     return output
 
+@app.route('/getArticleInfo', methods=['POST', 'GET'])
+def getArticleInfo():
+    articleInfo = {}
+    urls = getNewsUrls()
+    count = 0
+    while count < len(urls):
+        article = Article(urls[count])
+        article.download()
+        article.parse()
+        if (isinstance(article.publish_date, datetime)):
+            date = article.publish_date.strftime('%m/%d/%Y')
+        else:
+            date = article.publish_date
+        authors = []
+        for x in article.authors:
+            if len(x.split(" ")) == 2:
+                authors.append(x)
+        articleInfo[count] = {"authors": authors, "date": date, "url": urls[count],
+        "imageURL": article.top_image, "title": article.title}
+        count = count + 1
+    return articleInfo
 
 app.run()
