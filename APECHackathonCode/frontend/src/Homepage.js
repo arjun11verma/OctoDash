@@ -301,18 +301,18 @@ class Homepage extends Component {
                     <Paper style={{
                         backgroundColor: "white",
                     }} elevation={5}>
-                        <Grid container spacing={0} justify="center" direction="row">
-                            <Grid item xs={6} style={{display: "flex", flexDirection: "column", justifyContent: "center"}}>
-                                <Typography variant="h5" style={{ textAlign: "right"}}>
+                        <Grid container spacing={0} justify="center" direction="row" margin="25px">
+                            <Grid item xs={5} style={{display: "flex", flexDirection: "column", justifyContent: "center"}}>
+                                <Typography variant="h6" style={{ textAlign: "right"}}>
                                     {text.item}
                                 </Typography>
                             </Grid>
                             <Grid item xs={2} style={{display: "flex", flexDirection: "column", justifyContent: "center"}}>
-                                <Typography variant="h5" style={{ textAlign: "center"}}>
+                                <Typography variant="h7" style={{ textAlign: "center"}}>
                                     {text.weeklyquantity}
                                 </Typography>
                             </Grid>
-                            <Grid item xs={4} style={{display: "flex", flexDirection: "column", justifyContent: "center"}}>
+                            <Grid item xs={5} style={{display: "flex", flexDirection: "column", justifyContent: "center"}}>
                                 <Typography variant="h4" style={{ textAlign: "left", color: this.state.color}}>
                                     {this.state.arrow}{text.predictedquantity}
                                 </Typography>
@@ -541,7 +541,7 @@ class Homepage extends Component {
                         </Menu>
                     </Toolbar>
                 </AppBar>
-                <Grid container justify="center" style={{ paddingTop: "25px", backgroundColor: "#F5F5F5"}}>
+                <Grid container justify="center" style={{ paddingTop: "25px", backgroundColor: "#F5F5F5", height: "100vh"}}>
                     <Grid item xs={9} style={{ paddingLeft: "25px", paddingRight: "25px"}}>
                         <Grid container spacing={3} justify="center" direction="row">
                             <Grid item xs={12}>
