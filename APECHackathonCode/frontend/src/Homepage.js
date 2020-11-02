@@ -24,6 +24,7 @@ import Autocomplete from "@material-ui/lab/Autocomplete";
 import MenuItem from "@material-ui/core/MenuItem";
 import Menu from "@material-ui/core/Menu";
 import {AccountCircle} from "@material-ui/icons"
+import { Textfit } from 'react-textfit';
 
 // ADD ANOTHER DATA LINE FOR COVID DATA TO SPAN COVID DATA TO YOUR RESTURAUNT DATA
 var globalThis;
@@ -334,28 +335,52 @@ class Homepage extends Component {
 
     returnSupplyHomepage = () => {
         var rows = this.state.rows;
+        var mult1 = 9;
+        var add1 = 2;
+        var mult2 = 6;
+        var add2 = 5;
+        console.log((((rows[0].item.length + rows[0].predictedquantity.toString().length) - ((rows[0].item.length + rows[0].predictedquantity.toString().length ) % mult1)) / mult1) + add1)
         console.log(rows)
         return (
             rows.map(text =>
-                <Grid item xs={3}>
+                <Grid item xs={(((text.item.length + text.predictedquantity.toString().length) - ((text.item.length + text.predictedquantity.toString().length ) % mult1)) / mult1) + add1}>
                     <Paper style={{
                         backgroundColor: "white",
                     }} elevation={5}>
                         <Grid container spacing={0} justify="center" direction="row" margin="25px">
-                            <Grid item xs={5} style={{display: "flex", flexDirection: "column", justifyContent: "center"}}>
-                                <Typography variant="h6" style={{ textAlign: "right"}}>
+                            <Grid item xs={((((text.item.length) - (text.item.length % mult2)) / mult2) + add2)} style={{display: "flex",
+                                flexDirection: "column",
+                                justifyContent: "center",
+                                height: "7vh"
+                            }}>
+                                <Textfit min={18} max={22} mode="single" forceSingleModeWidth={false} style={{
+                                    textAlign: "right",
+                                }}>
                                     {text.item}
-                                </Typography>
+                                </Textfit>
                             </Grid>
-                            <Grid item xs={2} style={{display: "flex", flexDirection: "column", justifyContent: "center"}}>
-                                <Typography variant="h7" style={{ textAlign: "center"}}>
+                            <Grid item xs={1} style={{
+                                display: "flex",
+                                flexDirection: "column",
+                                justifyContent: "center",
+                            }}>
+                                <Textfit min={8} max={13} mode="single" forceSingleModeWidth={false} style={{
+                                    textAlign: "center",
+                                }}>
                                     {text.weeklyquantity}
-                                </Typography>
+                                </Textfit>
                             </Grid>
-                            <Grid item xs={5} style={{display: "flex", flexDirection: "column", justifyContent: "center"}}>
-                                <Typography variant="h4" style={{ textAlign: "left", color: this.state.color}}>
+                            <Grid item xs={11-((((text.item.length) - (text.item.length % mult2)) / mult2) + add2)} style={{
+                                display: "flex",
+                                flexDirection: "column",
+                                justifyContent: "center"
+                            }}>
+                                <Textfit min={20} mode="single" forceSingleModeWidth={false} style={{
+                                    textAlign: "left",
+                                    color: this.state.color,
+                                }}>
                                     {this.state.arrow}{text.predictedquantity}
-                                </Typography>
+                                </Textfit>
                             </Grid>
                         </Grid>
                     </Paper>
@@ -540,11 +565,16 @@ class Homepage extends Component {
         })
     }
 
+    logOut = () => {
+        window.open("/");
+        window.close("/Homepage/" + this.state.customerName);
+    }
+
     render() {
         return (
             <div>
                 <AppBar position="static" style={{ backgroundColor: "#283B63"}}>
-                    <Toolbar>
+                    <Toolbar style={{minHeight: "7vh"}}>
                         <Typography style={{ flexGrow: "1"}} variant="h6" >
                             Octo Dashboard - {this.state.customerName}
                         </Typography>
@@ -578,12 +608,12 @@ class Homepage extends Component {
                             open={Boolean(this.state.AnchorEl)}
                             onClose={this.handleMenuClose}
                         >
-                            <MenuItem onClick={this.handleMenuClose}>Profile</MenuItem>
-                            <MenuItem onClick={this.handleMenuClose}>My account</MenuItem>
+                            <MenuItem onClick={this.handleMenuClose}>My Account</MenuItem>
+                            <MenuItem onClick={this.logOut}>Log Out</MenuItem>
                         </Menu>
                     </Toolbar>
                 </AppBar>
-                <Grid container justify="center" style={{ paddingTop: "25px", backgroundColor: "#F5F5F5", height: "100vh"}}>
+                <Grid container justify="center" style={{ paddingTop: "25px", backgroundColor: "#F5F5F5", height: "93vh"}}>
                     <Grid item xs={9} style={{ paddingLeft: "25px", paddingRight: "25px"}}>
                         <Grid container spacing={3} justify="center" direction="row">
                             <Grid item xs={12}>
