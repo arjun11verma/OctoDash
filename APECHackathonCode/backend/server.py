@@ -95,11 +95,7 @@ def covidData():
         num += 1
     return output
 
-
-@app.route('/getNewsUrls', methods=['POST', 'GET'])
-def getNewsUrls():
-    post_data = (literal_eval(request.data.decode('utf8')))
-
+def getNewsUrls(country):
     API_KEY = '25c5b9ccc207e7f56ce93f920a0253064a3b6c4fcbde0cedd7e5145d631c49c6'
     mc = mediacloud.api.MediaCloud(API_KEY)
 
@@ -108,7 +104,6 @@ def getNewsUrls():
     stopsearch = dateTimeObj.strftime("%Y-%m-%dT%H:%M:%SZ")
 
     storylimit = 10
-    country = post_data["country"]
     tag_id_dict = {"MYS": 38380297, "USA": 34412234}
 
     storylist = mc.storyList(
@@ -123,24 +118,31 @@ def getNewsUrls():
 
 @app.route('/getArticleInfo', methods=['POST', 'GET'])
 def getArticleInfo():
+    post_data = (literal_eval(request.data.decode('utf8')))
+    country = post_data["country"]
     articleInfo = {}
-    urls = getNewsUrls()
+    urls = getNewsUrls(country)
     count = 0
     while count < len(urls):
         article = Article(urls[count])
-        article.download()
-        article.parse()
-        if (isinstance(article.publish_date, datetime)):
-            date = article.publish_date.strftime('%m/%d/%Y')
-        else:
-            date = article.publish_date
-        authors = []
-        for x in article.authors:
-            if len(x.split(" ")) == 2:
-                authors.append(x)
-        articleInfo[count] = {"authors": authors, "date": date, "url": urls[count],
-        "imageURL": article.top_image, "title": article.title}
-        count = count + 1
+        try:
+            print(" article")
+            article.download()
+            article.parse()
+            if (isinstance(article.publish_date, datetime)):
+                date = article.publish_date.strftime('%m/%d/%Y')
+            else:
+                date = article.publish_date
+            authors = []
+            for x in article.authors:
+                if len(x.split(" ")) == 2:
+                    authors.append(x)
+            articleInfo[count] = {"authors": authors, "date": date, "url": urls[count],
+            "imageURL": article.top_image, "title": article.title}
+            count = count + 1
+        except:
+            count = count + 1 
+            print("bad article")
     return articleInfo
 
 app.run()
