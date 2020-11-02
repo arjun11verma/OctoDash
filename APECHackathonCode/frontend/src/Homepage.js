@@ -165,9 +165,7 @@ class Homepage extends Component {
                     var supplyList = [];
                     childSnapshot.child("Supplies").forEach(supply => {
                         supplyList.push({id: supplyList.length + 1,item: supply.child("name").val(), category: supply.child("category").val(), weeklyquantity: (supply.child("quantity").val())[(supply.child("quantity").val()).length - 1], predictedquantity: 0});
-                    })
-                    console.log(supplyList);
-                    console.log(globalThis.state.rows);
+                    });
                     globalThis.setState({
                         rows: supplyList
                     });
@@ -236,10 +234,18 @@ class Homepage extends Component {
 
                 var percentDifference = Math.abs(globalThis.state.runningAverage - globalThis.state.currentAverage) / (globalThis.state.runningAverage) * 100 | 0;
                 var inputMessage = "Your restaurant had " + globalThis.state.runningAverage + " customers last week and we predict that your restaurant will have " + globalThis.state.currentAverage + " customers next week. Based off of this, you should order " + percentDifference + "% " + amount + " supplies for next week.";
+
+                var supplyInputData = globalThis.state.rows;
+                for(var x = 0; x < supplyInputData.length; x++) {
+                    var data = (supplyInputData[x].weeklyquantity * percentDifference / 100 | 0);
+                    supplyInputData[x].predictedquantity = data + parseInt(supplyInputData[x].weeklyquantity);
+                }
+
                 globalThis.setState({
                     customerMessage: inputMessage,
                     percent: percentDifference,
-                    amount: amount
+                    amount: amount,
+                    rows: supplyInputData
                 });
             });
 
@@ -248,11 +254,7 @@ class Homepage extends Component {
                 console.log(res);
                 for (var i = 0; i < 10; i++) {
                     urlList.push(res.data[i.toString()]);
-                    urlList.push("\n");
                 }
-                globalThis.setState({
-                    urlList: urlList
-                });
                 console.log(globalThis.state.urlList);
             });
 
@@ -643,7 +645,7 @@ class Homepage extends Component {
                     </Grid>
                 </Grid>
                 <Dialog fullWidth={true} maxWidth = {'md'} open={this.state.supplydataopen} onClose={this.handleCategoryAddClose} aria-labelledby="supply-data-dialog">
-                    <DialogTitle id="supply-data-dialog">Add Categories </DialogTitle>
+                    <DialogTitle id="supply-data-dialog">Resturaunt Supplies Used</DialogTitle>
                     <DialogContent>
                         <Paper style={{
                             backgroundColor: "white",
