@@ -130,7 +130,7 @@ class Homepage extends Component {
                         label: "Daily Covid Cases",
                         data: this.state.casesPerDay,
                         backgroundColor: 'rgba(0, 0, 0, 0)',
-                        borderColor: 'rgba(200, 200, 200, 255)',
+                        borderColor: 'rgba(200, 0, 0, .3)',
                     }
                 ]
             },
@@ -212,8 +212,8 @@ class Homepage extends Component {
                 if (globalThis.state.currentAverage < globalThis.state.runningAverage) {
                     amount = "less";
                     globalThis.setState({
-                        newsMessage: "Based on our predictions, you will be getting less customers next week. Here is some news regarding maintaining popularity and customer base during COVID19.",
-                        color: "#ff6666"
+                        newsMessage: "Based on our predictions, you will be getting less customers on average next week. Here is some news regarding maintaining popularity and customer base during COVID19.",
+                        color: "#FF584F"
                     });
                 }
 
@@ -311,7 +311,7 @@ class Homepage extends Component {
                 <ListItem button>
                     <ListItemText primary={text}/>
                     <ListItemSecondaryAction>
-                        <IconButton edge="end" aria-lavel="delete">
+                        <IconButton edge="end" aria-label="delete">
                             <DeleteIcon />
                         </IconButton>
                     </ListItemSecondaryAction>
@@ -473,15 +473,15 @@ class Homepage extends Component {
     render() {
         return (
             <div>
-                <AppBar position="static">
+                <AppBar position="static" style={{ backgroundColor: "#283B63"}}>
                     <Toolbar>
-                        <Typography style={{ flexGrow: "1" }} variant="h6" >
+                        <Typography style={{ flexGrow: "1"}} variant="h6" >
                             Octo Dashboard - {this.state.customerName}
                         </Typography>
-                        <Button variant="contained" onClick={this.handleSupplyDataClickOpen} style={{marginRight: "25px"}}>
+                        <Button variant="contained" onClick={this.handleSupplyDataClickOpen} style={{marginRight: "25px", backgroundColor: "#BFC0C0"}}>
                             Edit Supply Data
                         </Button>
-                        <Button variant="contained" onClick={this.handleCustomerClickOpen}>
+                        <Button variant="contained" onClick={this.handleCustomerClickOpen} style={{backgroundColor: "#B9C0C0"}}>
                             Add Customer Data
                         </Button>
                         <IconButton
@@ -513,8 +513,8 @@ class Homepage extends Component {
                         </Menu>
                     </Toolbar>
                 </AppBar>
-                <Grid container justify="center" style={{ paddingTop: "25px" }}>
-                    <Grid item xs={9} style={{ paddingLeft: "25px", paddingRight: "25px" }}>
+                <Grid container justify="center" style={{ paddingTop: "25px", backgroundColor: "#F5F5F5"}}>
+                    <Grid item xs={9} style={{ paddingLeft: "25px", paddingRight: "25px"}}>
                         <Grid container spacing={3} justify="center" direction="row">
                             <Grid item xs={12}>
                                 <Paper style={{
@@ -549,7 +549,7 @@ class Homepage extends Component {
                                         hideFooter
                                         onRowClick={this.onRowClick}
                                     />
-                                    <Button style={{position: "relative", top: "200px"}} variant="contained" onClick={this.createSupply}>
+                                    <Button style={{position: "relative", top: "200px",  backgroundColor: ""}} variant="contained" onClick={createSupply}>
                                         Add Supply Entry
                                     </Button>
                                     <Button style={{position: "relative", top: "200px"}} variant="contained" onClick={this.manageCategory}>
