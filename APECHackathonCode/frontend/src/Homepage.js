@@ -21,6 +21,8 @@ import ListItemText from "@material-ui/core/ListItemText";
 import ListItemSecondaryAction from "@material-ui/core/ListItemSecondaryAction";
 import DeleteIcon from '@material-ui/icons/Delete';
 import Autocomplete from "@material-ui/lab/Autocomplete";
+import MenuItem from "@material-ui/core/MenuItem";
+import Menu from "@material-ui/core/Menu";
 
 // ADD ANOTHER DATA LINE FOR COVID DATA TO SPAN COVID DATA TO YOUR RESTURAUNT DATA
 var globalThis;
@@ -61,6 +63,7 @@ class Homepage extends Component {
             categoryopen: false,
             categoryaddopen: false,
             supplydataopen: false,
+            AnchorEl: null,
             percent: "",
             amount: "",
             activesupplyid: false,
@@ -271,6 +274,31 @@ class Homepage extends Component {
         });
     }
 
+
+
+    returnSupplyHomepage = () => {
+        var rows = this.state.rows;
+        console.log(rows)
+        return (
+            rows.map(text =>
+                <Grid item xs={3}>
+                    <Paper style={{
+                        backgroundColor: "white",
+                    }} elevation={5}>
+                        <Typography style={{ textAlign: "left", paddingTop: "15px" }}>
+                            {text.item}
+                        </Typography>
+                        <Typography style={{ textAlign: "center", paddingTop: "15px"}}>
+                            {text.weeklyquantity}
+                        </Typography>
+                        <Typography style={{ textAlign: "center", paddingTop: "15px", color: this.state.color}}>
+                            {text.weeklypredicted}
+                        </Typography>
+                    </Paper>
+                </Grid>)
+        )
+    }
+
     returnList = () => {
         var categories = this.state.categories;
         var categories_listtype = []
@@ -429,6 +457,18 @@ class Homepage extends Component {
         });
     }
 
+    handleMenuClose = () => {
+        this.setState({
+            AnchorEl: null
+        })
+    }
+
+    handleMenu = (event) => {
+        this.setState({
+            AnchorEl: event.currentTarget
+        })
+    }
+
     render() {
         return (
             <div>
@@ -443,6 +483,33 @@ class Homepage extends Component {
                         <Button variant="contained" onClick={this.handleCustomerClickOpen}>
                             Add Customer Data
                         </Button>
+                        <IconButton
+                            aria-label="account of current user"
+                            aria-controls="menu-appbar"
+                            aria-haspopup="true"
+                            onClick={this.handleMenu}
+                            color="inherit"
+                        >
+                            <AccountCircle />
+                        </IconButton>
+                        <Menu
+                            id="menu-appbar"
+                            anchorEl={this.state.AnchorEl}
+                            anchorOrigin={{
+                                vertical: 'top',
+                                horizontal: 'right',
+                            }}
+                            keepMounted
+                            transformOrigin={{
+                                vertical: 'top',
+                                horizontal: 'right',
+                            }}
+                            open={Boolean(this.state.AnchorEl)}
+                            onClose={this.handleMenuClose}
+                        >
+                            <MenuItem onClick={this.handleMenuClose}>Profile</MenuItem>
+                            <MenuItem onClick={this.handleMenuClose}>My account</MenuItem>
+                        </Menu>
                     </Toolbar>
                 </AppBar>
                 <Grid container justify="center" style={{ paddingTop: "25px" }}>
@@ -468,6 +535,25 @@ class Homepage extends Component {
                                     backgroundColor: "white",
                                 }} elevation={5}>
                                     <Typography style = {{padding: "10px", textAlign: "center"}}>Ever since you began using the Octo terminal, {this.state.restaurauntName} has had an average of {this.state.overallAverage} customers per week!</Typography>
+                                </Paper>
+                            </Grid>
+                            <Grid item xs={12}>
+                                <Paper style={{
+                                    backgroundColor: "white",
+                                    height: "400px"
+                                }} elevation={5}>
+                                    <DataGrid
+                                        rows={globalThis.state.rows}
+                                        columns={globalThis.state.columns}
+                                        hideFooter
+                                        onRowClick={onRowClick}
+                                    />
+                                    <Button style={{position: "relative", top: "200px"}} variant="contained" onClick={createSupply}>
+                                        Add Supply Entry
+                                    </Button>
+                                    <Button style={{position: "relative", top: "200px"}} variant="contained" onClick={manageCategory}>
+                                        Manage Supply Categories
+                                    </Button>
                                 </Paper>
                             </Grid>
                         </Grid>

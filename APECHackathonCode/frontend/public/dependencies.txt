@@ -1,0 +1,16 @@
+Frontend
+
+material-ui/icons
+material-ui
+react
+react-router-dom
+firebase?
+
+
+
+Server
+
+Flask
+Torch
+mediacloud
+newspaper
