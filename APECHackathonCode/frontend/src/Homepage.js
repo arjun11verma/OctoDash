@@ -84,6 +84,12 @@ class Homepage extends Component {
                     width: 150,
                 },
                 {
+                    field: 'predictedquantity',
+                    headerName: 'Weekly Quantity',
+                    type: 'number',
+                    width: 150,
+                },
+                {
                     field: 'editbutton',
                     headerName: ' ',
                     width: 150,
@@ -156,6 +162,15 @@ class Homepage extends Component {
             snapshot.forEach(childSnapshot => {
                 if (childSnapshot.child("resturauntName").val() === name) {
                     inputData = childSnapshot.child("customersPerWeek").val();
+                    var supplyList = [];
+                    childSnapshot.child("Supplies").forEach(supply => {
+                        supplyList.push({id: supplyList.length + 1,item: supply.child("name").val(), category: supply.child("category").val(), weeklyquantity: (supply.child("quantity").val())[(supply.child("quantity").val()).length - 1], predictedquantity: 0});
+                    })
+                    console.log(supplyList);
+                    console.log(globalThis.state.rows);
+                    globalThis.setState({
+                        rows: supplyList
+                    });
                 }
             });
 
@@ -457,8 +472,9 @@ class Homepage extends Component {
                         for(var i = 1; i < Object.keys(supplyData).length; i++) {
                             var quantity = childSnapshot.hasChild(supplyData[i].item) ? childSnapshot.child(supplyData[i].item).child("quantity").val() : [];
                             quantity.push(supplyData[i].weeklyquantity);
-                            db.child(name).child(supplyData[i].item).child("quantity").set(quantity);
-                            db.child(name).child(supplyData[i].item).child("category").set(supplyData[i].category);
+                            db.child(name).child("Supplies").child(supplyData[i].item).child("name").set(supplyData[i].item);
+                            db.child(name).child("Supplies").child(supplyData[i].item).child("quantity").set(quantity);
+                            db.child(name).child("Supplies").child(supplyData[i].item).child("category").set(supplyData[i].category);
                         }
                     }
 
