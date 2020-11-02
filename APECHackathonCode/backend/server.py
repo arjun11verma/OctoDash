@@ -112,7 +112,7 @@ def getNewsUrls():
     tag_id_dict = {"MYS": 38380297, "USA": 34412234}
 
     storylist = mc.storyList(
-        solr_query="(title:(covid OR coronavirus OR covid-19)) AND tags_id_media:{0}".format(tag_id_dict[country]),
+        solr_query="(title:((covid OR coronavirus OR covid-19) AND (food OR resturant OR local resturant OR small buisness))) AND tags_id_media:{0}".format(tag_id_dict[country]),
         solr_filter="publish_day:[{0} TO {1}]".format(startsearch, stopsearch),
         rows=storylimit)
 
