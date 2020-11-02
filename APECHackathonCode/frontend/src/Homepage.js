@@ -101,7 +101,7 @@ class Homepage extends Component {
                 }
             ],
             rows: [
-                { id: 1, item: 'Enter Items', category: 'None', weeklyquantity: 0 },
+                { id: 1, item: 'Enter Items', category: 'None', weeklyquantity: 0, predictedquantity: 0},
             ]
         };
     }
@@ -536,14 +536,7 @@ class Homepage extends Component {
                                     <Typography style = {{padding: "10px", textAlign: "center"}}>Ever since you began using the Octo terminal, {this.state.restaurauntName} has had an average of {this.state.overallAverage} customers per week!</Typography>
                                 </Paper>
                             </Grid>
-                            <Grid item xs={12}>
-                                <Paper style={{
-                                    backgroundColor: "white",
-                                    height: "400px"
-                                }} elevation={5}>
-                                    {this.returnSupplyHomepage()}
-                                </Paper>
-                            </Grid>
+                            {this.returnSupplyHomepage()}
                         </Grid>
                     </Grid>
                     <Grid item xs={3} style={{ paddingRight: "25px" }}>
