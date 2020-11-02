@@ -549,7 +549,7 @@ class Homepage extends Component {
                                         hideFooter
                                         onRowClick={this.onRowClick}
                                     />
-                                    <Button style={{position: "relative", top: "200px",  backgroundColor: ""}} variant="contained" onClick={createSupply}>
+                                    <Button style={{position: "relative", top: "200px",  backgroundColor: ""}} variant="contained" onClick={this.createSupply}>
                                         Add Supply Entry
                                     </Button>
                                     <Button style={{position: "relative", top: "200px"}} variant="contained" onClick={this.manageCategory}>
