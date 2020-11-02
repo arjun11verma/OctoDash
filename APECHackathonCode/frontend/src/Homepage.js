@@ -275,8 +275,6 @@ class Homepage extends Component {
         });
     }
 
-
-
     returnSupplyHomepage = () => {
         var rows = this.state.rows;
         console.log(rows)
@@ -543,18 +541,7 @@ class Homepage extends Component {
                                     backgroundColor: "white",
                                     height: "400px"
                                 }} elevation={5}>
-                                    <DataGrid
-                                        rows={this.state.rows}
-                                        columns={this.state.columns}
-                                        hideFooter
-                                        onRowClick={this.onRowClick}
-                                    />
-                                    <Button style={{position: "relative", top: "200px",  backgroundColor: ""}} variant="contained" onClick={this.createSupply}>
-                                        Add Supply Entry
-                                    </Button>
-                                    <Button style={{position: "relative", top: "200px"}} variant="contained" onClick={this.manageCategory}>
-                                        Manage Supply Categories
-                                    </Button>
+                                    {this.returnSupplyHomepage()}
                                 </Paper>
                             </Grid>
                         </Grid>
