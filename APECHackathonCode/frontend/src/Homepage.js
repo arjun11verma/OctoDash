@@ -6,14 +6,8 @@ import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
 import IconButton from "@material-ui/core/IconButton";
 import Typography from "@material-ui/core/Typography";
-import MenuIcon from "@material-ui/icons/Menu";
-import NotificationsIcon from "@material-ui/icons/Notifications";
-import Badge from "@material-ui/core/Badge";
-import AccountCircle from "@material-ui/icons/AccountCircle";
 import { Paper } from "@material-ui/core";
 import Grid from "@material-ui/core/Grid";
-import AddIcon from "@material-ui/icons/Add"
-import Fab from "@material-ui/core/Fab"
 import Button from "@material-ui/core/Button";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import DialogContent from "@material-ui/core/DialogContent";
@@ -21,13 +15,9 @@ import TextField from "@material-ui/core/TextField";
 import DialogActions from "@material-ui/core/DialogActions";
 import Dialog from "@material-ui/core/Dialog";
 import {DataGrid} from "@material-ui/data-grid";
-import clsx from "clsx";
-import makeStyles from "@material-ui/core/styles/makeStyles";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
-import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
-import Divider from "@material-ui/core/Divider";
 import ListItemSecondaryAction from "@material-ui/core/ListItemSecondaryAction";
 import DeleteIcon from '@material-ui/icons/Delete';
 import Autocomplete from "@material-ui/lab/Autocomplete";
@@ -35,6 +25,17 @@ import Autocomplete from "@material-ui/lab/Autocomplete";
 // ADD ANOTHER DATA LINE FOR COVID DATA TO SPAN COVID DATA TO YOUR RESTURAUNT DATA
 var globalThis;
 const weeks = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"];
+var currentDate = new Date();
+var sideDate = new Date();
+var dateLabelsChart = [currentDate.toDateString()];
+var dateLabels = [sideDate.toDateString()];
+for(var i = 1; i < 7; i++) {
+    currentDate.setDate(currentDate.getDate() + 1);
+    sideDate.setDate(sideDate.getDate() - 1);
+    dateLabelsChart.push(currentDate.toDateString());
+    dateLabels.push(sideDate.toDateString());
+}
+dateLabels.push(sideDate.toDateString());
 
 class Homepage extends Component {
     constructor(props) {
@@ -50,11 +51,10 @@ class Homepage extends Component {
             currentAverage: 0,
             overallAverage: 0,
             customerMessage: "",
-            newsMessage: "Based on our predictions, you will be getting more customers on average next week! Here is some news regarding handling extra customers during COVID19.",
+            newsMessage: "Based on our predictions, you will be getting more customers next week! Here is some news regarding handling extra customers during COVID19.",
             customerName: "",
             urlList: "",
             casesPerDay: [],
-            open: false,
             color: "#66cc66",
             customeropen: false,
             supplyopen: false,
@@ -97,8 +97,7 @@ class Homepage extends Component {
                 }
             ],
             rows: [
-                { id: 1, item: 'Masks', category: 'COVID', weeklyquantity: 35 },
-                { id: 2, item: 'Bread', category: 'Food', weeklyquantity: 70 },
+                { id: 1, item: 'Enter Items', category: 'None', weeklyquantity: 0 },
             ]
         };
     }
@@ -115,7 +114,7 @@ class Homepage extends Component {
         var tempChart = new Chart(myChartRef, {
             type: "line",
             data: {
-                labels: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
+                labels: dateLabelsChart,
                 datasets: [
                     {
                         label: "Daily Customers",
@@ -209,7 +208,7 @@ class Homepage extends Component {
                 if (globalThis.state.currentAverage < globalThis.state.runningAverage) {
                     amount = "less";
                     globalThis.setState({
-                        newsMessage: "Based on our predictions, you will be getting less customers on average next week. Here is some news regarding maintaining popularity and customer base during COVID19.",
+                        newsMessage: "Based on our predictions, you will be getting less customers next week. Here is some news regarding maintaining popularity and customer base during COVID19.",
                         color: "#ff6666"
                     });
                 }
@@ -291,11 +290,6 @@ class Homepage extends Component {
         )
     }
 
-    changePage = () => {
-        window.open("/InputData/" + this.state.restaurauntName);
-        window.close("/Homepage/" + this.state.restaurauntName);
-    }
-
     handleSupplyDataClickOpen = () => {
         this.setState({supplydataopen: true});
     };
@@ -313,7 +307,7 @@ class Homepage extends Component {
     };
 
     handleSupplyClickOpen = (id) => {
-        if (id != "new")
+        if (id !== "new")
         {
             this.setState({
                 supplyopen: true,
@@ -321,17 +315,19 @@ class Homepage extends Component {
             });
         }
         else {
-            {
-                this.setState({
-                    supplyopen: true,
-                    activesupplyid: id
-                });
-            }
+            this.setState({
+                supplyopen: true,
+                activesupplyid: id
+            });
         }
     };
 
+    handleCustomerDataClose = () => {
+        this.setState({customeropen: false});
+    }
+
     handleCustomerClose = () => {
-        this.setState({open: false});
+        this.setState({customeropen: false});
 
         var input = 0;
         var name = this.state.restaurauntName;
@@ -351,17 +347,31 @@ class Homepage extends Component {
             }
 
             firebase.database().ref("Accounts").child(name).child("customersPerWeek").set(input);
-
-            window.open("/Homepage/" + name);
-            window.close("/InputData/" + name);
         });
     };
 
     handleSupplyClose = () => {
+        var list = this.state.rows;
+        list.push({ id: Object.keys(list).length + 1, item: document.getElementById('supply_name').value, category: document.getElementById('category_list').value, weeklyquantity: document.getElementById('supply_quantity').value });
+        
+        this.setState({
+            rows: list
+        });
+
         this.setState({
             supplyopen: false,
             activesupplyid: false
         });
+
+        this.setState({
+            supplydataopen: false,
+        });
+
+        setTimeout(() => {
+            this.setState({
+                supplydataopen: true,
+            });
+        }, 300);
     };
 
     handleCategoryClose = () => {
@@ -386,17 +396,40 @@ class Homepage extends Component {
         });
     };
 
+    onRowClick = (rowIdx, row) => {
+        this.handleSupplyClickOpen(rowIdx["data"]["id"])
+    }
+    
+    createSupply = () => {
+        this.handleSupplyClickOpen("new")
+    }
+
+    manageCategory = () => {
+        this.handleCategoryClickOpen()
+    }
+
+    updateSupplyData =() => {
+        var db = firebase.database().ref("Accounts");
+        var supplyData = this.state.rows;
+        var name = this.state.restaurauntName;
+
+        db.once('value').then(function (snapshot) {
+            snapshot.forEach(childSnapshot => {
+                if (childSnapshot.child("resturauntName").val() === name) {
+                    if (childSnapshot.child("customersPerWeek").val() != null) {
+                        for(var i = 1; i < Object.keys(supplyData).length; i++) {
+                            var quantity = childSnapshot.hasChild(supplyData[i].item) ? db.child(supplyData[i].item).val() : [];
+                            quantity.push(supplyData[i].weeklyquantity);
+                            db.child(name).child(supplyData[i].item).child("quantity").set(quantity);
+                            db.child(name).child(supplyData[i].item).child("category").set(supplyData[i].category);
+                        }
+                    }
+                }
+            });
+        });
+    }
+
     render() {
-        const onRowClick = (rowIdx, row) => {
-            console.log(rowIdx);
-            this.handleSupplyClickOpen(rowIdx["data"]["id"])
-        }
-        const createSupply = () => {
-            this.handleSupplyClickOpen("new")
-        }
-        const manageCategory = () => {
-            this.handleCategoryClickOpen()
-        }
         return (
             <div>
                 <AppBar position="static">
@@ -435,25 +468,6 @@ class Homepage extends Component {
                                     backgroundColor: "white",
                                 }} elevation={5}>
                                     <Typography style = {{padding: "10px", textAlign: "center"}}>Ever since you began using the Octo terminal, {this.state.restaurauntName} has had an average of {this.state.overallAverage} customers per week!</Typography>
-                                </Paper>
-                            </Grid>
-                            <Grid item xs={12}>
-                                <Paper style={{
-                                    backgroundColor: "white",
-                                    height: "400px"
-                                }} elevation={5}>
-                                    <DataGrid
-                                        rows={globalThis.state.rows}
-                                        columns={globalThis.state.columns}
-                                        hideFooter
-                                        onRowClick={onRowClick}
-                                    />
-                                    <Button style={{position: "relative", top: "200px"}} variant="contained" onClick={createSupply}>
-                                        Add Supply Entry
-                                    </Button>
-                                    <Button style={{position: "relative", top: "200px"}} variant="contained" onClick={manageCategory}>
-                                        Manage Supply Categories
-                                    </Button>
                                 </Paper>
                             </Grid>
                         </Grid>
@@ -536,16 +550,16 @@ class Homepage extends Component {
                             height: "400px"
                         }} elevation={0}>
                             <DataGrid
-                                rows={globalThis.state.rows}
-                                columns={globalThis.state.columns}
+                                rows={this.state.rows}
+                                columns={this.state.columns}
                                 hideFooter
-                                onRowClick={onRowClick}
+                                onRowClick={this.onRowClick}
                             />
                             <div style={{padding: "25px"}}>
-                                <Button style={{position: "relative", top: "200px"}} variant="contained" onClick={createSupply}>
+                                <Button style={{position: "relative", top: "200px"}} variant="contained" onClick={this.createSupply}>
                                     Add Supply Entry
                                 </Button>
-                                <Button style={{position: "relative", top: "200px"}} variant="contained" onClick={manageCategory}>
+                                <Button style={{position: "relative", top: "200px"}} variant="contained" onClick={this.manageCategory}>
                                     Manage Supply Categories
                                 </Button>
                             </div>
@@ -554,7 +568,10 @@ class Homepage extends Component {
 
                     <DialogActions>
                         <Button onClick={this.handleSupplyDataClose} color="primary">
-                            Done
+                            Cancel
+                        </Button>
+                        <Button onClick={this.updateSupplyData} color="primary">
+                            Submit
                         </Button>
                     </DialogActions>
                 </Dialog>
@@ -647,7 +664,7 @@ class Homepage extends Component {
                                 variant="outlined"
                                 margin="normal"
                                 required
-                                label="Monday"
+                                label= {dateLabels[6]}
                                 id="mon"
                                 autoFocus
                                 style={{ width: "80%", marginLeft: "10%" }}
@@ -656,7 +673,7 @@ class Homepage extends Component {
                                 variant="outlined"
                                 margin="normal"
                                 required
-                                label="Tuesday"
+                                label= {dateLabels[5]}
                                 id="tue"
                                 autoFocus
                                 style={{ width: "80%", marginLeft: "10%" }}
@@ -665,7 +682,7 @@ class Homepage extends Component {
                                 variant="outlined"
                                 margin="normal"
                                 required
-                                label="Wednesday"
+                                label= {dateLabels[4]}
                                 id="wed"
                                 autoFocus
                                 style={{ width: "80%", marginLeft: "10%" }}
@@ -674,7 +691,7 @@ class Homepage extends Component {
                                 variant="outlined"
                                 margin="normal"
                                 required
-                                label="Thursday"
+                                label= {dateLabels[3]}
                                 id="thu"
                                 autoFocus
                                 style={{ width: "80%", marginLeft: "10%" }}
@@ -683,7 +700,7 @@ class Homepage extends Component {
                                 variant="outlined"
                                 margin="normal"
                                 required
-                                label="Friday"
+                                label= {dateLabels[2]}
                                 id="fri"
                                 autoFocus
                                 style={{ width: "80%", marginLeft: "10%" }}
@@ -692,7 +709,7 @@ class Homepage extends Component {
                                 variant="outlined"
                                 margin="normal"
                                 required
-                                label="Saturday"
+                                label= {dateLabels[1]}
                                 id="sat"
                                 autoFocus
                                 style={{ width: "80%", marginLeft: "10%" }}
@@ -701,7 +718,7 @@ class Homepage extends Component {
                                 variant="outlined"
                                 margin="normal"
                                 required
-                                label="Sunday"
+                                label= {dateLabels[0]}
                                 id="sun"
                                 autoFocus
                                 style={{ width: "80%", marginLeft: "10%" }}
@@ -709,7 +726,7 @@ class Homepage extends Component {
                         </form>
                     </DialogContent>
                     <DialogActions>
-                        <Button onClick={this.handleCustomerClose} color="primary">
+                        <Button onClick={this.handleCustomerDataClose} color="primary">
                             Cancel
                         </Button>
                         <Button onClick={this.handleCustomerClose} color="primary">
