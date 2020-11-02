@@ -13,4 +13,4 @@ Server
 Flask
 Torch
 mediacloud
-newspaper
+newspaper3k

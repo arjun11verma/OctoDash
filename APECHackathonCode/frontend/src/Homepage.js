@@ -46,7 +46,8 @@ class Homepage extends Component {
         globalThis = this;
         this.state = {
             restaurauntName: ((((window.location.pathname).split("/"))[2]).replace("%20", " ")),
-            chartRef: React.createRef(),
+            lineChartRef: React.createRef(),
+            pieChartRef: React.createRef(),
             mlData: [],
             pastData: [],
             currentData: [],
@@ -119,10 +120,10 @@ class Homepage extends Component {
     }
 
     componentDidMount = () => {
-        const myChartRef = this.state.chartRef.current.getContext("2d");
+        const myLineChartRef = this.state.lineChartRef.current.getContext("2d");
         var country = "USA";
 
-        var tempChart = new Chart(myChartRef, {
+        var tempChart = new Chart(myLineChartRef, {
             type: "line",
             data: {
                 labels: dateLabelsChart,
@@ -227,7 +228,7 @@ class Homepage extends Component {
                     amount = "less";
                     globalThis.setState({
                         newsMessage: "Based on our predictions, you will be getting less customers on average next week. Here is some news regarding maintaining popularity and customer base during COVID19.",
-                        color: "#FF584F",
+                        color: "#DC042C",
                         arrow: "▼"
                     });
                 }
@@ -293,6 +294,42 @@ class Homepage extends Component {
                 });
             });
         });
+
+        const myPieChartRef = this.state.pieChartRef.current.getContext("2d");
+
+        var tempPieChart = new Chart(myPieChartRef, {
+            type: "pie",
+            data: {
+                labels: ["test1", "test2", "test3"],
+                datasets: [{
+                        label: "Daily Customers",
+                        data: [123, 2314, 1234],
+                        backgroundColor: [
+                            "#bfc0c0",
+                            "#dc042c",
+                            "#2d3142",
+                            "#283b63",
+                            "#1b2b5f",
+                            "#f5f5f5",
+                        ],
+                        borderColor: 'rgba(0, 0, 0, 1)',
+                    }
+                ]
+            },
+            options: {
+                legend: {
+                    position: 'top',
+                },
+                layout: {
+                    padding: {
+                        left: 20,
+                        right: 40,
+                        top: 5,
+                        bottom: 15,
+                    }
+                }
+            }
+        }); 
     }
 
     returnSupplyHomepage = () => {
@@ -514,7 +551,7 @@ class Homepage extends Component {
                         <Button variant="contained" onClick={this.handleSupplyDataClickOpen} style={{marginRight: "25px", backgroundColor: "#BFC0C0"}}>
                             Edit Supply Data
                         </Button>
-                        <Button variant="contained" onClick={this.handleCustomerClickOpen} style={{backgroundColor: "#B9C0C0"}}>
+                        <Button variant="contained" onClick={this.handleCustomerClickOpen} style={{backgroundColor: "#BFC0C0"}}>
                             Add Customer Data
                         </Button>
                         <IconButton
@@ -558,8 +595,8 @@ class Homepage extends Component {
                                     </Typography>
                                     <div class="chart-container" style={{ margin: "auto" }}>
                                         <canvas
-                                            id="myChart"
-                                            ref={this.state.chartRef}
+                                            id="lineChart"
+                                            ref={this.state.lineChartRef}
                                         />
                                     </div>
                                 </Paper>
@@ -577,35 +614,41 @@ class Homepage extends Component {
                     <Grid item xs={3} style={{ paddingRight: "25px" }}>
                         <Grid container spacing={3} justify="center">
                             <Grid item xs={6}>
-                                <Paper style={{
-                                    backgroundColor: "#ffff99",
-                                    textAlign: "center",
-                                }} elevation={5}>
-                                    <Typography variant="subtitle2">
-                                        Recorded
-                                    </Typography>
-                                    <Typography variant="h5">
-                                        {this.state.runningAverage}
-                                    </Typography>
-                                    <Typography variant="subtitle2">
-                                        Customers this week
-                                    </Typography>
+                                <Paper style={{backgroundColor: "#BFC0C0", padding: "2px"}}>
+                                    <Paper style={{
+                                        textAlign: "center",
+                                        padding: "5px",
+                                    }} elevation={5}>
+                                        <Typography variant="subtitle2">
+                                            Recorded
+                                        </Typography>
+                                        <Typography variant="h5">
+                                            {this.state.runningAverage}
+                                        </Typography>
+                                        <Typography variant="subtitle2">
+                                            Customers this week
+                                        </Typography>
+                                    </Paper>
                                 </Paper>
                             </Grid>
                             <Grid item xs={6}>
-                                <Paper style={{
-                                    backgroundColor: this.state.color,
-                                    textAlign: "center"
-                                }} elevation={5}>
-                                    <Typography variant="subtitle2">
-                                        Predicted
-                                    </Typography>
-                                    <Typography variant="h5">
-                                        {this.state.currentAverage}
-                                    </Typography>
-                                    <Typography variant="subtitle2">
-                                        Customers next week
-                                    </Typography>
+                                <Paper style={{backgroundColor: this.state.color, padding: "2px"}}> 
+                                    <Paper style={{
+                                        borderColor: this.state.color,
+                                        borderWidth: "5px",
+                                        textAlign: "center",
+                                        padding: "5px",
+                                    }} elevation={5}>
+                                        <Typography variant="subtitle2">
+                                            Predicted
+                                        </Typography>
+                                        <Typography variant="h5">
+                                            {this.state.currentAverage}
+                                        </Typography>
+                                        <Typography variant="subtitle2">
+                                            Customers next week
+                                        </Typography>
+                                    </Paper>
                                 </Paper>
                             </Grid>
                             <Grid item xs={12}>
@@ -642,6 +685,25 @@ class Homepage extends Component {
                                 </Paper>
                             </Grid>
                         </Grid>
+                    </Grid>
+                    <Grid item xs={9}>
+                        <Grid container spacing={3} justify="center" direction="row">
+                            <Grid item xs={12} style={{paddingLeft: "2.5vw", paddingRight: "2.5vw"}}>
+                                <Paper elevation={5}>
+                                    <Typography style={{ textAlign: "center", paddingTop: "15px" }}>
+                                        Percentage of Total Cost Per Item
+                                    </Typography>
+                                    <div class="chart-container" style={{ margin: "auto" }}>
+                                        <canvas
+                                            id="myPieChartRef"
+                                            ref={this.state.pieChartRef}
+                                        />
+                                    </div>
+                                </Paper>
+                            </Grid>
+                        </Grid>
+                    </Grid>
+                    <Grid item xs={3}>
                     </Grid>
                 </Grid>
                 <Dialog fullWidth={true} maxWidth = {'md'} open={this.state.supplydataopen} onClose={this.handleCategoryAddClose} aria-labelledby="supply-data-dialog">
