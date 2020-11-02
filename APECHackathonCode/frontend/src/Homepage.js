@@ -23,6 +23,7 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import MenuItem from "@material-ui/core/MenuItem";
 import Menu from "@material-ui/core/Menu";
+import {AccountCircle} from "@material-ui/icons"
 
 // ADD ANOTHER DATA LINE FOR COVID DATA TO SPAN COVID DATA TO YOUR RESTURAUNT DATA
 var globalThis;
@@ -543,15 +544,15 @@ class Homepage extends Component {
                                     height: "400px"
                                 }} elevation={5}>
                                     <DataGrid
-                                        rows={globalThis.state.rows}
-                                        columns={globalThis.state.columns}
+                                        rows={this.state.rows}
+                                        columns={this.state.columns}
                                         hideFooter
-                                        onRowClick={onRowClick}
+                                        onRowClick={this.onRowClick}
                                     />
-                                    <Button style={{position: "relative", top: "200px"}} variant="contained" onClick={createSupply}>
+                                    <Button style={{position: "relative", top: "200px"}} variant="contained" onClick={this.createSupply}>
                                         Add Supply Entry
                                     </Button>
-                                    <Button style={{position: "relative", top: "200px"}} variant="contained" onClick={manageCategory}>
+                                    <Button style={{position: "relative", top: "200px"}} variant="contained" onClick={this.manageCategory}>
                                         Manage Supply Categories
                                     </Button>
                                 </Paper>
