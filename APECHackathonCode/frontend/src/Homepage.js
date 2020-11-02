@@ -400,6 +400,8 @@ class Homepage extends Component {
 
             firebase.database().ref("Accounts").child(name).child("customersPerWeek").set(input);
         });
+
+        window.location.reload(false);
     };
 
     handleSupplyClose = () => {
@@ -469,7 +471,7 @@ class Homepage extends Component {
             snapshot.forEach(childSnapshot => {
                 if (childSnapshot.child("resturauntName").val() === name) {
                     if (childSnapshot.child("customersPerWeek").val() != null) {
-                        for(var i = 1; i < Object.keys(supplyData).length; i++) {
+                        for(var i = 0; i < Object.keys(supplyData).length; i++) {
                             var quantity = childSnapshot.hasChild(supplyData[i].item) ? childSnapshot.child(supplyData[i].item).child("quantity").val() : [];
                             quantity.push(supplyData[i].weeklyquantity);
                             db.child(name).child("Supplies").child(supplyData[i].item).child("name").set(supplyData[i].item);
