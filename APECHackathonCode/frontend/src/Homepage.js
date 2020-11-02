@@ -59,6 +59,7 @@ class Homepage extends Component {
             urlList: "",
             casesPerDay: [],
             color: "#66cc66",
+            arrow: "▲",
             customeropen: false,
             supplyopen: false,
             categoryopen: false,
@@ -213,7 +214,8 @@ class Homepage extends Component {
                     amount = "less";
                     globalThis.setState({
                         newsMessage: "Based on our predictions, you will be getting less customers on average next week. Here is some news regarding maintaining popularity and customer base during COVID19.",
-                        color: "#FF584F"
+                        color: "#FF584F",
+                        arrow: "▼"
                     });
                 }
 
@@ -284,15 +286,23 @@ class Homepage extends Component {
                     <Paper style={{
                         backgroundColor: "white",
                     }} elevation={5}>
-                        <Typography style={{ textAlign: "left", paddingTop: "15px" }}>
-                            {text.item}
-                        </Typography>
-                        <Typography style={{ textAlign: "center", paddingTop: "15px"}}>
-                            {text.weeklyquantity}
-                        </Typography>
-                        <Typography style={{ textAlign: "center", paddingTop: "15px", color: this.state.color}}>
-                            {text.weeklypredicted}
-                        </Typography>
+                        <Grid container spacing={0} justify="center" direction="row">
+                            <Grid item xs={6} style={{display: "flex", flexDirection: "column", justifyContent: "center"}}>
+                                <Typography variant="h5" style={{ textAlign: "right"}}>
+                                    {text.item}
+                                </Typography>
+                            </Grid>
+                            <Grid item xs={2} style={{display: "flex", flexDirection: "column", justifyContent: "center"}}>
+                                <Typography variant="h5" style={{ textAlign: "center"}}>
+                                    {text.weeklyquantity}
+                                </Typography>
+                            </Grid>
+                            <Grid item xs={4} style={{display: "flex", flexDirection: "column", justifyContent: "center"}}>
+                                <Typography variant="h4" style={{ textAlign: "left", color: this.state.color}}>
+                                    {this.state.arrow}{text.predictedquantity}
+                                </Typography>
+                            </Grid>
+                        </Grid>
                     </Paper>
                 </Grid>)
         )
