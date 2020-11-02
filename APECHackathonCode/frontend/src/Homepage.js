@@ -31,6 +31,8 @@ import Divider from "@material-ui/core/Divider";
 import ListItemSecondaryAction from "@material-ui/core/ListItemSecondaryAction";
 import DeleteIcon from '@material-ui/icons/Delete';
 import Autocomplete from "@material-ui/lab/Autocomplete";
+import MenuItem from "@material-ui/core/MenuItem";
+import Menu from "@material-ui/core/Menu";
 
 // ADD ANOTHER DATA LINE FOR COVID DATA TO SPAN COVID DATA TO YOUR RESTURAUNT DATA
 var globalThis;
@@ -61,6 +63,7 @@ class Homepage extends Component {
             categoryopen: false,
             categoryaddopen: false,
             supplydataopen: false,
+            AnchorEl: null,
             percent: "",
             amount: "",
             activesupplyid: false,
@@ -97,8 +100,8 @@ class Homepage extends Component {
                 }
             ],
             rows: [
-                { id: 1, item: 'Masks', category: 'COVID', weeklyquantity: 35 },
-                { id: 2, item: 'Bread', category: 'Food', weeklyquantity: 70 },
+                { id: 1, item: 'Masks', category: 'COVID', weeklyquantity: 35, weeklypredicted: 60},
+                { id: 2, item: 'Bread', category: 'Food', weeklyquantity: 70, weeklypredicted: 90 },
             ]
         };
     }
@@ -272,6 +275,31 @@ class Homepage extends Component {
         });
     }
 
+
+
+    returnSupplyHomepage = () => {
+        var rows = this.state.rows;
+        console.log(rows)
+        return (
+            rows.map(text =>
+                <Grid item xs={3}>
+                    <Paper style={{
+                        backgroundColor: "white",
+                    }} elevation={5}>
+                        <Typography style={{ textAlign: "left", paddingTop: "15px" }}>
+                            {text.item}
+                        </Typography>
+                        <Typography style={{ textAlign: "center", paddingTop: "15px"}}>
+                            {text.weeklyquantity}
+                        </Typography>
+                        <Typography style={{ textAlign: "center", paddingTop: "15px", color: this.state.color}}>
+                            {text.weeklypredicted}
+                        </Typography>
+                    </Paper>
+                </Grid>)
+        )
+    }
+
     returnList = () => {
         var categories = this.state.categories;
         var categories_listtype = []
@@ -386,6 +414,18 @@ class Homepage extends Component {
         });
     };
 
+    handleMenuClose = () => {
+        this.setState({
+            AnchorEl: null
+        })
+    }
+
+    handleMenu = (event) => {
+        this.setState({
+            AnchorEl: event.currentTarget
+        })
+    }
+
     render() {
         const onRowClick = (rowIdx, row) => {
             console.log(rowIdx);
@@ -410,6 +450,33 @@ class Homepage extends Component {
                         <Button variant="contained" onClick={this.handleCustomerClickOpen} style={{backgroundColor: "#B9C0C0"}}>
                             Add Customer Data
                         </Button>
+                        <IconButton
+                            aria-label="account of current user"
+                            aria-controls="menu-appbar"
+                            aria-haspopup="true"
+                            onClick={this.handleMenu}
+                            color="inherit"
+                        >
+                            <AccountCircle />
+                        </IconButton>
+                        <Menu
+                            id="menu-appbar"
+                            anchorEl={this.state.AnchorEl}
+                            anchorOrigin={{
+                                vertical: 'top',
+                                horizontal: 'right',
+                            }}
+                            keepMounted
+                            transformOrigin={{
+                                vertical: 'top',
+                                horizontal: 'right',
+                            }}
+                            open={Boolean(this.state.AnchorEl)}
+                            onClose={this.handleMenuClose}
+                        >
+                            <MenuItem onClick={this.handleMenuClose}>Profile</MenuItem>
+                            <MenuItem onClick={this.handleMenuClose}>My account</MenuItem>
+                        </Menu>
                     </Toolbar>
                 </AppBar>
                 <Grid container justify="center" style={{ paddingTop: "25px", backgroundColor: "#F5F5F5"}}>
@@ -456,6 +523,7 @@ class Homepage extends Component {
                                     </Button>
                                 </Paper>
                             </Grid>
+                            {this.returnSupplyHomepage()}
                         </Grid>
                     </Grid>
                     <Grid item xs={3} style={{ paddingRight: "25px" }}>
