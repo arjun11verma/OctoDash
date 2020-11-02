@@ -100,8 +100,8 @@ class Homepage extends Component {
                 }
             ],
             rows: [
-                { id: 1, item: 'Masks', category: 'COVID', weeklyquantity: 35 },
-                { id: 2, item: 'Bread', category: 'Food', weeklyquantity: 70 },
+                { id: 1, item: 'Masks', category: 'COVID', weeklyquantity: 35, weeklypredicted: 60},
+                { id: 2, item: 'Bread', category: 'Food', weeklyquantity: 70, weeklypredicted: 90 },
             ]
         };
     }
@@ -273,6 +273,31 @@ class Homepage extends Component {
                 });
             });
         });
+    }
+
+
+
+    returnSupplyHomepage = () => {
+        var rows = this.state.rows;
+        console.log(rows)
+        return (
+            rows.map(text =>
+                <Grid item xs={3}>
+                    <Paper style={{
+                        backgroundColor: "white",
+                    }} elevation={5}>
+                        <Typography style={{ textAlign: "left", paddingTop: "15px" }}>
+                            {text.item}
+                        </Typography>
+                        <Typography style={{ textAlign: "center", paddingTop: "15px"}}>
+                            {text.weeklyquantity}
+                        </Typography>
+                        <Typography style={{ textAlign: "center", paddingTop: "15px", color: this.state.color}}>
+                            {text.weeklypredicted}
+                        </Typography>
+                    </Paper>
+                </Grid>)
+        )
     }
 
     returnList = () => {
@@ -498,6 +523,7 @@ class Homepage extends Component {
                                     </Button>
                                 </Paper>
                             </Grid>
+                            {this.returnSupplyHomepage()}
                         </Grid>
                     </Grid>
                     <Grid item xs={3} style={{ paddingRight: "25px" }}>
