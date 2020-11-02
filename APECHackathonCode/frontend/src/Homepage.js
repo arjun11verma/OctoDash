@@ -243,8 +243,9 @@ class Homepage extends Component {
                 });
             });
 
-            axios.post('http://127.0.0.1:5000/getNewsUrls', { 'country': country }).then(res => {
+            axios.post('http://127.0.0.1:5000/getArticleInfo', { 'country': country }).then(res => {
                 var urlList = [];
+                console.log(res);
                 for (var i = 0; i < 10; i++) {
                     urlList.push(res.data[i.toString()]);
                     urlList.push("\n");
