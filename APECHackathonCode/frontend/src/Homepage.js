@@ -31,6 +31,8 @@ import Divider from "@material-ui/core/Divider";
 import ListItemSecondaryAction from "@material-ui/core/ListItemSecondaryAction";
 import DeleteIcon from '@material-ui/icons/Delete';
 import Autocomplete from "@material-ui/lab/Autocomplete";
+import MenuItem from "@material-ui/core/MenuItem";
+import Menu from "@material-ui/core/Menu";
 
 // ADD ANOTHER DATA LINE FOR COVID DATA TO SPAN COVID DATA TO YOUR RESTURAUNT DATA
 var globalThis;
@@ -61,6 +63,7 @@ class Homepage extends Component {
             categoryopen: false,
             categoryaddopen: false,
             supplydataopen: false,
+            AnchorEl: null,
             percent: "",
             amount: "",
             activesupplyid: false,
@@ -386,6 +389,18 @@ class Homepage extends Component {
         });
     };
 
+    handleMenuClose = () => {
+        this.setState({
+            AnchorEl: null
+        })
+    }
+
+    handleMenu = (event) => {
+        this.setState({
+            AnchorEl: event.currentTarget
+        })
+    }
+
     render() {
         const onRowClick = (rowIdx, row) => {
             console.log(rowIdx);
@@ -410,6 +425,33 @@ class Homepage extends Component {
                         <Button variant="contained" onClick={this.handleCustomerClickOpen}>
                             Add Customer Data
                         </Button>
+                        <IconButton
+                            aria-label="account of current user"
+                            aria-controls="menu-appbar"
+                            aria-haspopup="true"
+                            onClick={this.handleMenu}
+                            color="inherit"
+                        >
+                            <AccountCircle />
+                        </IconButton>
+                        <Menu
+                            id="menu-appbar"
+                            anchorEl={this.state.AnchorEl}
+                            anchorOrigin={{
+                                vertical: 'top',
+                                horizontal: 'right',
+                            }}
+                            keepMounted
+                            transformOrigin={{
+                                vertical: 'top',
+                                horizontal: 'right',
+                            }}
+                            open={Boolean(this.state.AnchorEl)}
+                            onClose={this.handleMenuClose}
+                        >
+                            <MenuItem onClick={this.handleMenuClose}>Profile</MenuItem>
+                            <MenuItem onClick={this.handleMenuClose}>My account</MenuItem>
+                        </Menu>
                     </Toolbar>
                 </AppBar>
                 <Grid container justify="center" style={{ paddingTop: "25px" }}>
