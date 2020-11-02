@@ -445,12 +445,16 @@ class Homepage extends Component {
                 if (childSnapshot.child("resturauntName").val() === name) {
                     if (childSnapshot.child("customersPerWeek").val() != null) {
                         for(var i = 1; i < Object.keys(supplyData).length; i++) {
-                            var quantity = childSnapshot.hasChild(supplyData[i].item) ? db.child(supplyData[i].item).val() : [];
+                            var quantity = childSnapshot.hasChild(supplyData[i].item) ? childSnapshot.child(supplyData[i].item).child("quantity").val() : [];
                             quantity.push(supplyData[i].weeklyquantity);
                             db.child(name).child(supplyData[i].item).child("quantity").set(quantity);
                             db.child(name).child(supplyData[i].item).child("category").set(supplyData[i].category);
                         }
                     }
+
+                    globalThis.setState({
+                        supplydataopen: false
+                    });
                 }
             });
         });
@@ -623,20 +627,21 @@ class Homepage extends Component {
                             backgroundColor: "white",
                             height: "400px"
                         }} elevation={0}>
+                            <Grid container direction = "row" alignItems = "center" spacing = {5} style={{padding: "25px"}}>
+                                <Typography> Current Week: {dateLabels[6]} - {dateLabels[0]} </Typography>
+                                <Button variant="contained" onClick={this.createSupply}>
+                                    Add Supply
+                                </Button>
+                                <Button variant="contained" onClick={this.manageCategory}>
+                                    Manage Categories
+                                </Button>
+                            </Grid>
                             <DataGrid
                                 rows={this.state.rows}
                                 columns={this.state.columns}
                                 hideFooter
                                 onRowClick={this.onRowClick}
                             />
-                            <div style={{padding: "25px"}}>
-                                <Button style={{position: "relative", top: "200px"}} variant="contained" onClick={this.createSupply}>
-                                    Add Supply Entry
-                                </Button>
-                                <Button style={{position: "relative", top: "200px"}} variant="contained" onClick={this.manageCategory}>
-                                    Manage Supply Categories
-                                </Button>
-                            </div>
                         </Paper>
                     </DialogContent>
 
