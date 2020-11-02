@@ -379,7 +379,7 @@ class Homepage extends Component {
 
     handleSupplyClose = () => {
         var list = this.state.rows;
-        list.push({ id: Object.keys(list).length + 1, item: document.getElementById('supply_name').value, category: document.getElementById('category_list').value, weeklyquantity: document.getElementById('supply_quantity').value });
+        list.push({ id: Object.keys(list).length + 1, item: document.getElementById('supply_name').value, category: document.getElementById('category_list').value, weeklyquantity: document.getElementById('supply_quantity').value, predictedquantity: 0 });
         
         this.setState({
             rows: list
