@@ -290,6 +290,16 @@ class CreateAccount extends Component {
             {"code": "ZW", "code3": "ZWE", "name": "Zimbabwe", "number": "716"},
             {"code": "AX", "code3": "ALA", "name": "Åland Islands", "number": "248"}
         ];
+        const handleSubmit = e => {
+            e.preventDefault();
+            this.uploadAccount()
+        };
+        const handleKeypress = e => {
+            //it triggers by pressing the enter key
+            if (e.keyCode === 13) {
+                handleSubmit();
+            }
+        };
         return (
             <div>
                 <div className="animated-background" style={{height: "100vh"}}>
@@ -372,7 +382,8 @@ class CreateAccount extends Component {
                                         style={{width: "80%", marginLeft: "10%", marginTop: "2%", marginBottom: "2%"}}
                                     />
                                     <Button
-                                        onClick={this.uploadAccount}
+                                        onClick = {handleSubmit}
+                                        type="submit"
                                         fullWidth
                                         variant="contained"
                                         style={{width: "80%", marginLeft: "10%", marginTop: "3%", marginBottom: "5%"}}
