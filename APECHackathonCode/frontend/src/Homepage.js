@@ -121,6 +121,41 @@ class Homepage extends Component {
     }
 
     componentDidMount = () => {
+        const myPieChartRef = this.state.pieChartRef.current.getContext("2d");
+
+        var tempPieChart = new Chart(myPieChartRef, {
+            type: "pie",
+            data: {
+                labels: ["test1", "test2"],
+                datasets: [{
+                        data: [123, 2314],
+                        backgroundColor: [
+                            "#bfc0c0",
+                            "#dc042c",
+                            "#2d3142",
+                            "#283b63",
+                            "#1b2b5f",
+                            "#f5f5f5",
+                        ],
+                        borderColor: 'rgba(0, 0, 0, 1)',
+                    }
+                ]
+            },
+            options: {
+                legend: {
+                    position: 'top',
+                },
+                layout: {
+                    padding: {
+                        left: 20,
+                        right: 40,
+                        top: 5,
+                        bottom: 15,
+                    }
+                }
+            }
+        }); 
+
         const myLineChartRef = this.state.lineChartRef.current.getContext("2d");
         var country = "USA";
 
@@ -130,13 +165,13 @@ class Homepage extends Component {
                 labels: dateLabelsChart,
                 datasets: [
                     {
-                        label: "Daily Customers",
+                        label: "Predicted Daily Customers",
                         data: this.state.currentData,
                         backgroundColor: 'rgba(0,0,0,0)',
                         borderColor: 'rgba(0, 0, 0, 1)',
                     }, 
                     {
-                        label: "Daily Covid Cases",
+                        label: "Predicted Daily Covid Cases",
                         data: this.state.casesPerDay,
                         backgroundColor: 'rgba(0, 0, 0, 0)',
                         borderColor: 'rgba(200, 0, 0, .3)',
@@ -155,10 +190,10 @@ class Homepage extends Component {
             }
         });
 
-
-
         var inputData = [];
         var name = this.state.restaurauntName;
+        var nameList = [];
+        var quantityList = [];
 
         firebase.database().ref("Accounts").once('value').then(function (snapshot) {
             snapshot.forEach(childSnapshot => {
@@ -167,6 +202,7 @@ class Homepage extends Component {
                     var supplyList = [];
                     childSnapshot.child("Supplies").forEach(supply => {
                         supplyList.push({id: supplyList.length + 1,item: supply.child("name").val(), category: supply.child("category").val(), weeklyquantity: (supply.child("quantity").val())[(supply.child("quantity").val()).length - 1], predictedquantity: 0});
+                        nameList.push(supply.child("name").val());
                     });
                     globalThis.setState({
                         rows: supplyList
@@ -178,7 +214,23 @@ class Homepage extends Component {
                 customerName: name
             })
 
-            axios.post('http://127.0.0.1:5000/analyzeCustomerData', { 'data': inputData }).then(res => {
+            var weightedWeeklyData = [];
+            var tempAvg = 0;
+            var innerLen = (inputData.length/6 | 0);
+            for(var i = 0; i < inputData.length; i += (inputData.length/6 | 0)) {
+                tempAvg = 0;
+                if(inputData.length - i < innerLen) {
+                    innerLen = inputData.length - i;
+                }
+                for(var j = 0; j < innerLen; j++) {
+                    tempAvg += inputData[i + j];
+                }
+                weightedWeeklyData.push((tempAvg/innerLen));
+            }
+            console.log(weightedWeeklyData);
+
+            axios.post('http://127.0.0.1:5000/analyzeCustomerData', { 'data': weightedWeeklyData }).then(res => {
+                console.log(res.data.data);
                 var pastData = inputData;
                 var resData = res.data.data;
                 var calculatedData = [];
@@ -236,11 +288,20 @@ class Homepage extends Component {
 
                 var percentDifference = Math.abs(globalThis.state.runningAverage - globalThis.state.currentAverage) / (globalThis.state.runningAverage) * 100 | 0;
                 var inputMessage = "Your restaurant had " + globalThis.state.runningAverage + " customers last week and we predict that your restaurant will have " + globalThis.state.currentAverage + " customers next week. Based off of this, you should order " + percentDifference + "% " + amount + " supplies for next week.";
-
+                
                 var supplyInputData = globalThis.state.rows;
+                var sum = 0;
                 for(var x = 0; x < supplyInputData.length; x++) {
-                    var data = (supplyInputData[x].weeklyquantity * percentDifference / 100 | 0);
-                    supplyInputData[x].predictedquantity = data + parseInt(supplyInputData[x].weeklyquantity);
+                    var data = parseInt(supplyInputData[x].weeklyquantity) + (supplyInputData[x].weeklyquantity * percentDifference / 100 | 0);
+                    sum += (data);
+                    quantityList.push(data);
+                    supplyInputData[x].predictedquantity = data;
+                }
+
+                if (tempPieChart != null) {
+                    tempPieChart.data.labels = nameList;
+                    tempPieChart.data.datasets[0].data = quantityList;
+                    tempPieChart.update();
                 }
 
                 globalThis.setState({
@@ -288,49 +349,13 @@ class Homepage extends Component {
                     });
 
                     if (tempChart != null) {
-                        tempChart.data.datasets[1].label = "Daily COVID Cases " + divisorMessage;
+                        tempChart.data.datasets[1].label = "Predicted Daily COVID Cases " + divisorMessage;
                         tempChart.data.datasets[1].data = globalThis.state.casesPerDay;
                         tempChart.update();
                     }
                 });
             });
         });
-
-        const myPieChartRef = this.state.pieChartRef.current.getContext("2d");
-
-        var tempPieChart = new Chart(myPieChartRef, {
-            type: "pie",
-            data: {
-                labels: ["test1", "test2", "test3"],
-                datasets: [{
-                        label: "Daily Customers",
-                        data: [123, 2314, 1234],
-                        backgroundColor: [
-                            "#bfc0c0",
-                            "#dc042c",
-                            "#2d3142",
-                            "#283b63",
-                            "#1b2b5f",
-                            "#f5f5f5",
-                        ],
-                        borderColor: 'rgba(0, 0, 0, 1)',
-                    }
-                ]
-            },
-            options: {
-                legend: {
-                    position: 'top',
-                },
-                layout: {
-                    padding: {
-                        left: 20,
-                        right: 40,
-                        top: 5,
-                        bottom: 15,
-                    }
-                }
-            }
-        }); 
     }
 
     returnSupplyHomepage = () => {
@@ -390,7 +415,7 @@ class Homepage extends Component {
 
     returnList = () => {
         var categories = this.state.categories;
-        var categories_listtype = []
+        var categories_listtype = [];
         for (var i = 0; i < categories.length; i++) {
             categories_listtype.push(categories[i]["categoryName"])
         }
@@ -464,9 +489,8 @@ class Homepage extends Component {
             }
 
             firebase.database().ref("Accounts").child(name).child("customersPerWeek").set(input);
+            window.location.reload(false);
         });
-
-        window.location.reload(false);
     };
 
     handleSupplyClose = () => {
@@ -513,6 +537,7 @@ class Homepage extends Component {
         this.setState({
             supplydataopen: false,
         });
+        window.location.reload(false);
     };
 
     onRowClick = (rowIdx, row) => {
@@ -548,6 +573,7 @@ class Homepage extends Component {
                     globalThis.setState({
                         supplydataopen: false
                     });
+                    window.location.reload(false);
                 }
             });
         });
@@ -721,7 +747,7 @@ class Homepage extends Component {
                             <Grid item xs={12} style={{paddingLeft: "2.5vw", paddingRight: "2.5vw"}}>
                                 <Paper elevation={5}>
                                     <Typography style={{ textAlign: "center", paddingTop: "15px" }}>
-                                        Percentage of Total Cost Per Item
+                                        Predicted Quantity Required of Each Item Next Week
                                     </Typography>
                                     <div class="chart-container" style={{ margin: "auto" }}>
                                         <canvas
