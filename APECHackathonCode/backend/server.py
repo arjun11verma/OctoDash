@@ -30,8 +30,13 @@ class LinearRegression(nn.Module):
 
 @app.route('/analyzeCustomerData', methods=['POST', 'GET'])
 def analyzeCustomerData():
+    print(request.data)
+
     post_data = (literal_eval(request.data.decode('utf8')))
     data = post_data['data']
+
+    print(data)
+
     y_data = []
     x_data = []
     xlen = 0

@@ -200,13 +200,19 @@ class Homepage extends Component {
                 if (childSnapshot.child("resturauntName").val() === name) {
                     inputData = childSnapshot.child("customersPerWeek").val();
                     var supplyList = [];
-                    childSnapshot.child("Supplies").forEach(supply => {
-                        supplyList.push({id: supplyList.length + 1,item: supply.child("name").val(), category: supply.child("category").val(), weeklyquantity: (supply.child("quantity").val())[(supply.child("quantity").val()).length - 1], predictedquantity: 0});
-                        nameList.push(supply.child("name").val());
-                    });
-                    globalThis.setState({
-                        rows: supplyList
-                    });
+
+                    if(childSnapshot.hasChild("Supplies")) {
+                        childSnapshot.child("Supplies").forEach(supply => {
+                            supplyList.push({id: supplyList.length + 1,item: supply.child("name").val(), category: supply.child("category").val(), weeklyquantity: (supply.child("quantity").val())[(supply.child("quantity").val()).length - 1], predictedquantity: 0});
+                            nameList.push(supply.child("name").val());
+                        });
+                    }
+
+                    if(supplyList !== undefined && supplyList !== []) {
+                        globalThis.setState({
+                            rows: supplyList
+                        });
+                    }
                 }
             });
 
@@ -216,8 +222,13 @@ class Homepage extends Component {
 
             var weightedWeeklyData = [];
             var tempAvg = 0;
+
             var innerLen = (inputData.length/6 | 0);
-            for(var i = 0; i < inputData.length; i += (inputData.length/6 | 0)) {
+            if(innerLen === 0) {
+                innerLen = 1; 
+            }
+            var sendLen = innerLen;
+            for(var i = 0; i < inputData.length; i += sendLen) {
                 tempAvg = 0;
                 if(inputData.length - i < innerLen) {
                     innerLen = inputData.length - i;
@@ -364,8 +375,6 @@ class Homepage extends Component {
         var add1 = 2;
         var mult2 = 6;
         var add2 = 5;
-        console.log((((rows[0].item.length + rows[0].predictedquantity.toString().length) - ((rows[0].item.length + rows[0].predictedquantity.toString().length ) % mult1)) / mult1) + add1)
-        console.log(rows)
         return (
             rows.map(text =>
                 <Grid item xs={(((text.item.length + text.predictedquantity.toString().length) - ((text.item.length + text.predictedquantity.toString().length ) % mult1)) / mult1) + add1}>
