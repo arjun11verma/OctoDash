@@ -14,3 +14,7 @@ Flask
 Torch
 mediacloud
 newspaper3k
+
+
+Color Palette
+https://coolors.co/bfc0c0-dc042c-2d3142-283b63-1b2b5f-f5f5f5
