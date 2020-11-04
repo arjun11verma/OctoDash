@@ -52,6 +52,7 @@ class Homepage extends Component {
             mlData: [],
             pastData: [],
             currentData: [],
+            urlDataList: [],
             runningAverage: 0,
             currentAverage: 0,
             overallAverage: 0,
@@ -323,13 +324,16 @@ class Homepage extends Component {
                 });
             });
 
+            var urlBoxList = [];
             axios.post('http://127.0.0.1:5000/getArticleInfo', { 'country': country }).then(res => {
-                var urlList = [];
-                console.log(res);
+                var data = res.data;
                 for (var i = 0; i < 10; i++) {
-                    urlList.push(res.data[i.toString()]);
+                    urlBoxList.push(data[i]);
                 }
-                console.log(globalThis.state.urlList);
+
+                globalThis.setState({
+                    urlDataList: urlBoxList
+                });
             });
 
             axios.post('http://127.0.0.1:5000/covidData', { 'country': country }).then(res => {
@@ -673,10 +677,26 @@ class Homepage extends Component {
                                     <Typography style = {{padding: "10px", textAlign: "center"}}>Ever since you began using the Octo terminal, {this.state.restaurauntName} has had an average of {this.state.overallAverage} customers per week!</Typography>
                                 </Paper>
                             </Grid>
-                            {this.returnSupplyHomepage()}
+                            <Grid item xs={9}>
+                            <Grid container spacing={3} justify="center" direction="row">
+                                <Grid item xs={12} style={{paddingLeft: "2.5vw", paddingRight: "2.5vw"}}>
+                                    <Paper elevation={5}>
+                                        <Typography style={{ textAlign: "center", paddingTop: "15px" }}>
+                                            Predicted Quantity Required of Each Item Next Week
+                                        </Typography>
+                                        <div class="chart-container" style={{ margin: "auto" }}>
+                                            <canvas
+                                                id="myPieChartRef"
+                                                ref={this.state.pieChartRef}
+                                            />
+                                        </div>
+                                    </Paper>
+                                </Grid>
+                            </Grid>
+                            </Grid>
                         </Grid>
                     </Grid>
-                    <Grid item xs={3} style={{ paddingRight: "25px" }}>
+                    <Grid item xs={3} style={{ paddingRight: "25px" }} >
                         <Grid container spacing={3} justify="center">
                             <Grid item xs={6}>
                                 <Paper style={{backgroundColor: "#BFC0C0", padding: "2px"}}>
@@ -743,7 +763,7 @@ class Homepage extends Component {
                             <Grid item xs={12}>
                                 <Paper style={{
                                     backgroundColor: "white",
-                                    height: "365px",
+                                    height: "745px",
                                     overflowY: 'scroll'
                                 }} elevation={5}>
                                     <Typography style = {{padding: "10px"}}>{this.state.urlList}</Typography>
@@ -751,23 +771,7 @@ class Homepage extends Component {
                             </Grid>
                         </Grid>
                     </Grid>
-                    <Grid item xs={9}>
-                        <Grid container spacing={3} justify="center" direction="row">
-                            <Grid item xs={12} style={{paddingLeft: "2.5vw", paddingRight: "2.5vw"}}>
-                                <Paper elevation={5}>
-                                    <Typography style={{ textAlign: "center", paddingTop: "15px" }}>
-                                        Predicted Quantity Required of Each Item Next Week
-                                    </Typography>
-                                    <div class="chart-container" style={{ margin: "auto" }}>
-                                        <canvas
-                                            id="myPieChartRef"
-                                            ref={this.state.pieChartRef}
-                                        />
-                                    </div>
-                                </Paper>
-                            </Grid>
-                        </Grid>
-                    </Grid>
+                    
                     <Grid item xs={3}>
                     </Grid>
                 </Grid>
