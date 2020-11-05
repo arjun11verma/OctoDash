@@ -29,6 +29,7 @@ import Link from "@material-ui/core/Link";
 import Divider from "@material-ui/core/Divider";
 import Select from "@material-ui/core/Select";
 import FormControl from "@material-ui/core/FormControl";
+import InputLabel from "@material-ui/core/InputLabel"
 
 var globalThis;
 const weeks = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"];
@@ -1077,20 +1078,17 @@ class Homepage extends Component {
                                             backgroundColor: "white",
                                         }} elevation={5}>
                                             <Grid container direction="row" alignItems="center" justify="center">
-                                                <Grid item xs={2}>
-                                                </Grid>
-                                                <Grid item xs={8}>
+                                                <Grid item xs={9}>
                                                     <Typography style={{ textAlign: "center", paddingTop: "15px" }}>
                                                         {this.state.titleGraphText}
                                                     </Typography>
                                                 </Grid>
-                                                <Grid item xs={2}>
-                                                    <FormControl style={{minWidth: "140"}}>
-                                                        <Typography style = {{paddingTop: "20px"}}>Biweekly Data</Typography>
+                                                <Grid item xs={3} justify = "center" alignItems = "center">
+                                                    <FormControl style = {{justify: "center"}}>
+                                                        <InputLabel>Biweekly Data</InputLabel>
                                                         <Select
-                                                            labelId="demo-simple-select-label"
-                                                            id="demo-simple-select"
-                                                            value={"Hello"}
+                                                            style = {{width: "150px"}}
+                                                            inputProps={{ 'aria-label': 'Without label' }}
                                                             autoWidth
                                                         >
                                                             <MenuItem onClick = {() => {window.location.reload(false)}}>Next Week's Predictions</MenuItem>
