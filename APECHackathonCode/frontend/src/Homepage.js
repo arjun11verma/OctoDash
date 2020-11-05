@@ -14,7 +14,7 @@ import DialogContent from "@material-ui/core/DialogContent";
 import TextField from "@material-ui/core/TextField";
 import DialogActions from "@material-ui/core/DialogActions";
 import Dialog from "@material-ui/core/Dialog";
-import {DataGrid} from "@material-ui/data-grid";
+import { DataGrid } from "@material-ui/data-grid";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
@@ -23,25 +23,14 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import MenuItem from "@material-ui/core/MenuItem";
 import Menu from "@material-ui/core/Menu";
-import {AccountCircle} from "@material-ui/icons"
+import { AccountCircle } from "@material-ui/icons"
 import { Textfit } from 'react-textfit';
 import Link from "@material-ui/core/Link";
 import Divider from "@material-ui/core/Divider";
 
-// ADD ANOTHER DATA LINE FOR COVID DATA TO SPAN COVID DATA TO YOUR RESTURAUNT DATA
 var globalThis;
 const weeks = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"];
-var currentDate = new Date();
-var sideDate = new Date();
-var dateLabelsChart = [currentDate.toDateString()];
-var dateLabels = [sideDate.toDateString()];
-for(var i = 1; i < 7; i++) {
-    currentDate.setDate(currentDate.getDate() + 1);
-    sideDate.setDate(sideDate.getDate() - 1);
-    dateLabelsChart.push(currentDate.toDateString());
-    dateLabels.push(sideDate.toDateString());
-}
-dateLabels.push(sideDate.toDateString());
+const setDate = new Date();
 
 class Homepage extends Component {
     constructor(props) {
@@ -51,7 +40,10 @@ class Homepage extends Component {
             restaurauntName: ((((window.location.pathname).split("/"))[2]).replace("%20", " ")),
             lineChartRef: React.createRef(),
             pieChartRef: React.createRef(),
+            objectiveDate: 0,
             mlData: [],
+            actualCovidData: [],
+            dateLabels: [],
             pastData: [],
             currentData: [],
             urlDataList: [],
@@ -74,10 +66,11 @@ class Homepage extends Component {
             AnchorEl: null,
             percent: "",
             amount: "",
+            lineGraph: null,
             activesupplyid: false,
             categories: [
-                {id: 1, categoryName: "COVID"},
-                {id: 2, categoryName: "Food"}
+                { id: 1, categoryName: "COVID" },
+                { id: 2, categoryName: "Food" }
             ],
             columns: [
                 { field: 'id', headerName: 'ID', width: 70 },
@@ -114,7 +107,7 @@ class Homepage extends Component {
                 }
             ],
             rows: [
-                { id: 1, item: 'Enter Items', category: 'None', weeklyquantity: 0, predictedquantity: 0},
+                { id: 1, item: 'Enter Items', category: 'None', weeklyquantity: 0, predictedquantity: 0 },
             ]
         };
     }
@@ -132,17 +125,17 @@ class Homepage extends Component {
             data: {
                 labels: ["test1", "test2"],
                 datasets: [{
-                        data: [123, 2314],
-                        backgroundColor: [
-                            "#bfc0c0",
-                            "#dc042c",
-                            "#2d3142",
-                            "#283b63",
-                            "#1b2b5f",
-                            "#f5f5f5",
-                        ],
-                        borderColor: 'rgba(0, 0, 0, 1)',
-                    }
+                    data: [123, 2314],
+                    backgroundColor: [
+                        "#bfc0c0",
+                        "#dc042c",
+                        "#2d3142",
+                        "#283b63",
+                        "#1b2b5f",
+                        "#f5f5f5",
+                    ],
+                    borderColor: 'rgba(0, 0, 0, 1)',
+                }
                 ]
             },
             options: {
@@ -158,41 +151,43 @@ class Homepage extends Component {
                     }
                 }
             }
-        }); 
+        });
 
         const myLineChartRef = this.state.lineChartRef.current.getContext("2d");
         var country = "USA";
 
-        var tempChart = new Chart(myLineChartRef, {
-            type: "line",
-            data: {
-                labels: dateLabelsChart,
-                datasets: [
-                    {
-                        label: "Predicted Daily Customers",
-                        data: this.state.currentData,
-                        backgroundColor: 'rgba(0,0,0,0)',
-                        borderColor: 'rgba(0, 0, 0, 1)',
-                    }, 
-                    {
-                        label: "Predicted Daily Covid Cases",
-                        data: this.state.casesPerDay,
-                        backgroundColor: 'rgba(0, 0, 0, 0)',
-                        borderColor: 'rgba(200, 0, 0, .3)',
-                    }
-                ]
-            },
-            options: {
-                layout: {
-                    padding: {
-                        left: 20,
-                        right: 40,
-                        top: 5,
-                        bottom: 15,
+        globalThis.setState({
+            lineGraph: new Chart(myLineChartRef, {
+                type: "line",
+                data: {
+                    labels: [1, 2, 3, 4, 5, 6, 7],
+                    datasets: [
+                        {
+                            label: "Predicted Daily Customers",
+                            data: this.state.currentData,
+                            backgroundColor: 'rgba(0,0,0,0)',
+                            borderColor: 'rgba(0, 0, 0, 1)',
+                        },
+                        {
+                            label: "Predicted Daily Covid Cases",
+                            data: this.state.casesPerDay,
+                            backgroundColor: 'rgba(0, 0, 0, 0)',
+                            borderColor: 'rgba(200, 0, 0, .3)',
+                        }
+                    ]
+                },
+                options: {
+                    layout: {
+                        padding: {
+                            left: 20,
+                            right: 40,
+                            top: 5,
+                            bottom: 15,
+                        }
                     }
                 }
-            }
-        });
+            })
+        })
 
         var inputData = [];
         var name = this.state.restaurauntName;
@@ -203,20 +198,54 @@ class Homepage extends Component {
             snapshot.forEach(childSnapshot => {
                 if (childSnapshot.child("resturauntName").val() === name) {
                     inputData = childSnapshot.child("customersPerWeek").val();
+
+                    globalThis.setState({
+                        pastData: inputData
+                    })
+
                     var supplyList = [];
 
-                    if(childSnapshot.hasChild("Supplies")) {
+                    if (childSnapshot.hasChild("Supplies")) {
                         childSnapshot.child("Supplies").forEach(supply => {
-                            supplyList.push({id: supplyList.length + 1,item: supply.child("name").val(), category: supply.child("category").val(), weeklyquantity: (supply.child("quantity").val())[(supply.child("quantity").val()).length - 1], predictedquantity: 0});
+                            supplyList.push({ id: supplyList.length + 1, item: supply.child("name").val(), category: supply.child("category").val(), weeklyquantity: (supply.child("quantity").val())[(supply.child("quantity").val()).length - 1], predictedquantity: 0 });
                             nameList.push(supply.child("name").val());
                         });
                     }
 
-                    if(supplyList !== undefined && supplyList !== []) {
+                    var currentDate = new Date();
+                    if (childSnapshot.hasChild("StartWeek")) {
+                        var dateBlock = childSnapshot.child("StartWeek").val();
+                        currentDate = new Date(dateBlock.year, dateBlock.month - 1, dateBlock.day);
+                        for (var i = 0; i < inputData.length - 7; i++) {
+                            currentDate.setDate(currentDate.getDate() + 1);
+                        }
+                    }
+
+                    globalThis.setState({
+                        objectiveDate: currentDate
+                    })
+
+                    var dateList = [];
+                    for (var i = 0; i < 7; i++) {
+                        dateList.push(currentDate.toDateString());
+                        currentDate.setDate(currentDate.getDate() + 1);
+                    }
+
+                    if (supplyList !== undefined && supplyList !== []) {
                         globalThis.setState({
                             rows: supplyList
                         });
                     }
+
+                    globalThis.setState({
+                        dateLabels: dateList
+                    });
+
+                    if (globalThis.state.lineGraph !== null) {
+                        globalThis.state.lineGraph.data.labels = dateList;
+                    }
+
+                    console.log(globalThis.state.rows);
                 }
             });
 
@@ -226,21 +255,23 @@ class Homepage extends Component {
 
             var weightedWeeklyData = [];
             var tempAvg = 0;
+            var innerLen = 1;
+            var arrLen = 0;
 
-            var innerLen = (inputData.length/6 | 0);
-            if(innerLen === 0) {
-                innerLen = 1; 
+            if (inputData !== null) {
+                arrLen = inputData.length;
+                innerLen = (arrLen / 6 | 0);
             }
             var sendLen = innerLen;
-            for(var i = 0; i < inputData.length; i += sendLen) {
+            for (var i = 0; i < arrLen; i += sendLen) {
                 tempAvg = 0;
-                if(inputData.length - i < innerLen) {
+                if (inputData.length - i < innerLen) {
                     innerLen = inputData.length - i;
                 }
-                for(var j = 0; j < innerLen; j++) {
+                for (var j = 0; j < innerLen; j++) {
                     tempAvg += inputData[i + j];
                 }
-                weightedWeeklyData.push((tempAvg/innerLen));
+                weightedWeeklyData.push((tempAvg / innerLen));
             }
             console.log(weightedWeeklyData);
 
@@ -253,7 +284,7 @@ class Homepage extends Component {
                 var tempAvg = 0;
 
                 for (var i = 1; i < 8; i++) {
-                    calculatedData.push(pastData[pastData.length - 8 + i] + resData[i - 1]*0.30 - topper*0.30);
+                    calculatedData.push(pastData[pastData.length - 8 + i] + resData[i - 1] * 0.30 - topper * 0.30);
                     tempAvg += pastData[pastData.length - i];
                 }
 
@@ -261,9 +292,9 @@ class Homepage extends Component {
                     mlData: calculatedData
                 });
 
-                if (tempChart != null) {
-                    tempChart.data.datasets[0].data = globalThis.state.mlData;
-                    tempChart.update();
+                if (globalThis.state.lineGraph != null) {
+                    globalThis.state.lineGraph.data.datasets[0].data = globalThis.state.mlData;
+                    globalThis.state.lineGraph.update();
                 }
 
                 globalThis.setState({
@@ -303,10 +334,10 @@ class Homepage extends Component {
 
                 var percentDifference = Math.abs(globalThis.state.runningAverage - globalThis.state.currentAverage) / (globalThis.state.runningAverage) * 100 | 0;
                 var inputMessage = "Your restaurant had " + globalThis.state.runningAverage + " customers last week and we predict that your restaurant will have " + globalThis.state.currentAverage + " customers next week. Based off of this, you should order " + percentDifference + "% " + amount + " supplies for next week.";
-                
+
                 var supplyInputData = globalThis.state.rows;
                 var sum = 0;
-                for(var x = 0; x < supplyInputData.length; x++) {
+                for (var x = 0; x < supplyInputData.length; x++) {
                     var data = parseInt(supplyInputData[x].weeklyquantity) + (supplyInputData[x].weeklyquantity * percentDifference / 100 | 0);
                     sum += (data);
                     quantityList.push(data);
@@ -347,33 +378,60 @@ class Homepage extends Component {
                     covidData.push(data[i].cases);
                 }
 
+                globalThis.setState({
+                    actualCovidData: covidData
+                })
+
                 axios.post('http://127.0.0.1:5000/analyzeCustomerData', { 'data': covidData }).then(res => {
                     var resData = res.data.data;
                     var calculatedData = [];
                     var topper = resData[0];
                     var divisor = 1000;
                     var divisorMessage = "(Thousands)";
-                    if(globalThis.state.currentAverage > 500) {
+                    if (globalThis.state.currentAverage > 500) {
                         divisor = 100;
                         divisorMessage = "(Hundreds)";
                     }
 
                     for (var i = 1; i < 8; i++) {
-                        calculatedData.push((covidData[covidData.length - 8 + i] + resData[i - 1] - topper)/divisor | 0);
+                        calculatedData.push((covidData[covidData.length - 8 + i] + resData[i - 1] - topper) / divisor | 0);
                     }
 
                     globalThis.setState({
                         casesPerDay: calculatedData
                     });
 
-                    if (tempChart != null) {
-                        tempChart.data.datasets[1].label = "Predicted Daily COVID Cases " + divisorMessage;
-                        tempChart.data.datasets[1].data = globalThis.state.casesPerDay;
-                        tempChart.update();
+                    if (globalThis.state.lineGraph != null) {
+                        globalThis.state.lineGraph.data.datasets[1].label = "Predicted Daily COVID Cases " + divisorMessage;
+                        globalThis.state.lineGraph.data.datasets[1].data = globalThis.state.casesPerDay;
+                        globalThis.state.lineGraph.update();
                     }
                 });
             });
         });
+    }
+
+    previousWeeklyView = () => {
+        var newData = this.state.mlData;
+        for (var i = 0; i < 7; i++) {
+            newData.unshift((this.state.pastData)[this.state.pastData.length - i - 1]);
+        }
+        var middleDate = this.state.objectiveDate;
+        var dateList = [];
+        middleDate.setDate(middleDate.getDate() - 14);
+        for (var i = 0; i < 14; i++) {
+            dateList.push(middleDate.toDateString());
+            middleDate.setDate(middleDate.getDate() + 1);
+        }
+        var covidList = (globalThis.state.actualCovidData).concat(globalThis.state.casesPerDay);
+        console.log(globalThis.state.actualCovidData);
+
+        if (globalThis.state.lineGraph != null) {
+            globalThis.state.lineGraph.data.labels = dateList;
+            globalThis.state.lineGraph.data.datasets[0].data = middleDate;
+            globalThis.state.lineGraph.data.datasets[1].data = covidList;
+            globalThis.state.lineGraph.update();
+        }
     }
 
     returnSupplyHomepage = () => {
@@ -384,12 +442,13 @@ class Homepage extends Component {
         var add2 = 5;
         return (
             rows.map(text =>
-                <Grid item xs={(((text.item.length + text.predictedquantity.toString().length) - ((text.item.length + text.predictedquantity.toString().length ) % mult1)) / mult1) + add1}>
+                <Grid item xs={(((text.item.length + text.predictedquantity.toString().length) - ((text.item.length + text.predictedquantity.toString().length) % mult1)) / mult1) + add1}>
                     <Paper style={{
                         backgroundColor: "white",
                     }} elevation={5}>
                         <Grid container spacing={0} justify="center" direction="row" margin="25px">
-                            <Grid item xs={((((text.item.length) - (text.item.length % mult2)) / mult2) + add2)} style={{display: "flex",
+                            <Grid item xs={((((text.item.length) - (text.item.length % mult2)) / mult2) + add2)} style={{
+                                display: "flex",
                                 flexDirection: "column",
                                 justifyContent: "center",
                                 height: "7vh"
@@ -411,7 +470,7 @@ class Homepage extends Component {
                                     {text.weeklyquantity}
                                 </Textfit>
                             </Grid>
-                            <Grid item xs={11-((((text.item.length) - (text.item.length % mult2)) / mult2) + add2)} style={{
+                            <Grid item xs={11 - ((((text.item.length) - (text.item.length % mult2)) / mult2) + add2)} style={{
                                 display: "flex",
                                 flexDirection: "column",
                                 justifyContent: "center"
@@ -438,7 +497,7 @@ class Homepage extends Component {
         return (
             categories_listtype.map(text =>
                 <ListItem button>
-                    <ListItemText primary={text}/>
+                    <ListItemText primary={text} />
                     <ListItemSecondaryAction>
                         <IconButton edge="end" aria-label="delete">
                             <DeleteIcon />
@@ -449,19 +508,19 @@ class Homepage extends Component {
     }
 
     handleSupplyDataClickOpen = () => {
-        this.setState({supplydataopen: true});
+        this.setState({ supplydataopen: true });
     };
 
     handleCategoryAddClickOpen = () => {
-        this.setState({categoryaddopen: true});
+        this.setState({ categoryaddopen: true });
     };
 
     handleCustomerClickOpen = () => {
-        this.setState({customeropen: true});
+        this.setState({ customeropen: true });
     };
 
     handleCategoryClickOpen = () => {
-        this.setState({categoryopen: true});
+        this.setState({ categoryopen: true });
     };
 
     handleAccountClickOpen = () => {
@@ -469,8 +528,7 @@ class Homepage extends Component {
     };
 
     handleSupplyClickOpen = (id) => {
-        if (id !== "new")
-        {
+        if (id !== "new") {
             this.setState({
                 supplyopen: true,
                 activesupplyid: id
@@ -485,17 +543,20 @@ class Homepage extends Component {
     };
 
     handleCustomerDataClose = () => {
-        this.setState({customeropen: false});
+        this.setState({ customeropen: false });
     }
 
     handleCustomerClose = () => {
-        this.setState({customeropen: false});
+        this.setState({ customeropen: false });
 
-        var input = 0;
+        var input = [];
         var name = this.state.restaurauntName;
         firebase.database().ref("Accounts").once('value').then(function (snapshot) {
             snapshot.forEach(childSnapshot => {
                 if (childSnapshot.child("resturauntName").val() === name) {
+                    if (!childSnapshot.hasChild("StartWeek")) {
+                        firebase.database().ref("Accounts").child(name).child("StartWeek").set({ 'day': setDate.getDate(), 'month': setDate.getMonth() + 1, 'year': setDate.getFullYear() });
+                    }
                     if (childSnapshot.child("customersPerWeek").val() != null) {
                         input = childSnapshot.child("customersPerWeek").val();
                     }
@@ -516,7 +577,7 @@ class Homepage extends Component {
     handleSupplyClose = () => {
         var list = this.state.rows;
         list.push({ id: Object.keys(list).length + 1, item: document.getElementById('supply_name').value, category: document.getElementById('category_list').value, weeklyquantity: document.getElementById('supply_quantity').value, predictedquantity: 0 });
-        
+
         this.setState({
             rows: list
         });
@@ -546,7 +607,7 @@ class Homepage extends Component {
     handleCategoryAddClose = () => {
         var upload = document.getElementById("category").value;
         var categories = this.state.categories;
-        categories.push({id: 0, categoryName: upload})
+        categories.push({ id: 0, categoryName: upload })
         this.setState({
             categoryaddopen: false,
             categories: categories
@@ -557,7 +618,6 @@ class Homepage extends Component {
         this.setState({
             supplydataopen: false,
         });
-        window.location.reload(false);
     };
 
     handleAccountClose = () => {
@@ -569,7 +629,7 @@ class Homepage extends Component {
     onRowClick = (rowIdx, row) => {
         this.handleSupplyClickOpen(rowIdx["data"]["id"])
     }
-    
+
     createSupply = () => {
         this.handleSupplyClickOpen("new")
     }
@@ -578,7 +638,7 @@ class Homepage extends Component {
         this.handleCategoryClickOpen()
     }
 
-    updateSupplyData =() => {
+    updateSupplyData = () => {
         var db = firebase.database().ref("Accounts");
         var supplyData = this.state.rows;
         var name = this.state.restaurauntName;
@@ -587,7 +647,7 @@ class Homepage extends Component {
             snapshot.forEach(childSnapshot => {
                 if (childSnapshot.child("resturauntName").val() === name) {
                     if (childSnapshot.child("customersPerWeek").val() != null) {
-                        for(var i = 0; i < Object.keys(supplyData).length; i++) {
+                        for (var i = 0; i < Object.keys(supplyData).length; i++) {
                             var quantity = childSnapshot.hasChild(supplyData[i].item) ? childSnapshot.child(supplyData[i].item).child("quantity").val() : [];
                             quantity.push(supplyData[i].weeklyquantity);
                             db.child(name).child("Supplies").child(supplyData[i].item).child("name").set(supplyData[i].item);
@@ -876,15 +936,15 @@ class Homepage extends Component {
         ];
         return (
             <div>
-                <AppBar position="static" style={{ backgroundColor: "#283B63"}}>
-                    <Toolbar style={{minHeight: "7vh"}}>
-                        <Typography style={{ flexGrow: "1"}} variant="h6" >
+                <AppBar position="static" style={{ backgroundColor: "#283B63" }}>
+                    <Toolbar style={{ minHeight: "7vh" }}>
+                        <Typography style={{ flexGrow: "1" }} variant="h6" >
                             Octo Dashboard - {this.state.customerName}
                         </Typography>
-                        <Button variant="contained" onClick={this.handleSupplyDataClickOpen} style={{marginRight: "25px", backgroundColor: "#BFC0C0"}}>
+                        <Button variant="contained" onClick={this.handleSupplyDataClickOpen} style={{ marginRight: "25px", backgroundColor: "#BFC0C0" }}>
                             Edit Supply Data
                         </Button>
-                        <Button variant="contained" onClick={this.handleCustomerClickOpen} style={{backgroundColor: "#BFC0C0"}}>
+                        <Button variant="contained" onClick={this.handleCustomerClickOpen} style={{ backgroundColor: "#BFC0C0" }}>
                             Add Customer Data
                         </Button>
                         <IconButton
@@ -919,59 +979,53 @@ class Homepage extends Component {
                 <Grid container justify="center" style={{ paddingTop: "25px", height: "93vh", backgroundColor: "#F5F5F5"}}>
                     <Grid item xs={10} style={{ paddingLeft: "25px", paddingRight: "25px"}}>
                         <Grid container spacing={3} justify="center" direction="row">
-                            <Grid item xs={3}>
-                                <Grid container spacing={3} justify="center" direction="row">
-                                    <Grid item xs={12}>
-                                        <Paper elevation={5}>
-                                            <Typography style={{ textAlign: "center", paddingTop: "15px" }}>
-                                                Predicted Quantity Required of Each Item Next Week
-                                            </Typography>
-                                            <div class="chart-container">
-                                                <canvas
-                                                    id="myPieChartRef"
-                                                    ref={this.state.pieChartRef}
-                                                    height="200px"
-                                                />
-                                            </div>
-                                        </Paper>
+                            <Grid item xs={12}>
+                                <Paper style={{
+                                    backgroundColor: "white",
+                                }} elevation={5}>
+                                    <Grid container direction="row" alignItems="center" justify="center">
+                                        <Typography style={{ textAlign: "center", paddingTop: "15px" }}>
+                                            Predicted Number of COVID Cases and Customers Next Week
+                                        </Typography>
                                     </Grid>
-                                </Grid>
+                                    <div class="chart-container" style={{ margin: "auto" }}>
+                                        <canvas
+                                            id="lineChart"
+                                            ref={this.state.lineChartRef}
+                                        />
+                                    </div>
+                                </Paper>
+                            </Grid>
+                            <Grid item xs={12}>
+                                <Paper style={{
+                                    backgroundColor: "white",
+                                }} elevation={5}>
+                                    <Typography style={{ padding: "10px", textAlign: "center" }}>Ever since you began using the Octo terminal, {this.state.restaurauntName} has had an average of {this.state.overallAverage} customers per week!</Typography>
+                                </Paper>
                             </Grid>
                             <Grid item xs={9}>
                                 <Grid container spacing={3} justify="center" direction="row">
-                                    <Grid item xs={12}>
-                                        <Paper style={{
-                                            backgroundColor: "white"
-                                        }} elevation={5}>
+                                    <Grid item xs={12} style={{ paddingLeft: "2.5vw", paddingRight: "2.5vw" }}>
+                                        <Paper elevation={5}>
                                             <Typography style={{ textAlign: "center", paddingTop: "15px" }}>
-                                                Predicted Number of COVID Cases and Customers Next Week
-                                            </Typography>
+                                                Predicted Quantity Required of Each Item Next Week
+                                        </Typography>
                                             <div class="chart-container" style={{ margin: "auto" }}>
                                                 <canvas
-                                                    id="lineChart"
-                                                    ref={this.state.lineChartRef}
+                                                    id="myPieChartRef"
+                                                    ref={this.state.pieChartRef}
                                                 />
                                             </div>
                                         </Paper>
                                     </Grid>
-                                    <Grid item xs={12}>
-                                        <Paper style={{
-                                            backgroundColor: "white",
-                                        }} elevation={5}>
-                                            <Typography style = {{padding: "10px", textAlign: "center"}}>Ever since you began using the Octo terminal, {this.state.restaurauntName} has had an average of {this.state.overallAverage} customers per week!</Typography>
-                                        </Paper>
-                                    </Grid>
                                 </Grid>
                             </Grid>
-
-
-
                         </Grid>
                     </Grid>
                     <Grid item xs={2} style={{ paddingRight: "25px" }} >
                         <Grid container spacing={3} justify="center">
                             <Grid item xs={6}>
-                                <Paper style={{backgroundColor: "#BFC0C0", padding: "2px"}}>
+                                <Paper style={{ backgroundColor: "#BFC0C0", padding: "2px" }}>
                                     <Paper style={{
                                         textAlign: "center",
                                         padding: "5px",
@@ -989,7 +1043,7 @@ class Homepage extends Component {
                                 </Paper>
                             </Grid>
                             <Grid item xs={6}>
-                                <Paper style={{backgroundColor: this.state.color, padding: "2px"}}> 
+                                <Paper style={{ backgroundColor: this.state.color, padding: "2px" }}>
                                     <Paper style={{
                                         borderColor: this.state.color,
                                         borderWidth: "5px",
@@ -1016,7 +1070,7 @@ class Homepage extends Component {
                                         You should order
                                     </Typography>
                                     <Typography variant="h5">
-                                        {this.state.percent}% <span style={{color: this.state.color}}>{this.state.amount}</span>
+                                        {this.state.percent}% <span style={{ color: this.state.color }}>{this.state.amount}</span>
                                     </Typography>
                                     <Typography variant="subtitle2">
                                         Supplies for next week
@@ -1037,24 +1091,24 @@ class Homepage extends Component {
                                     backgroundColor: "white",
                                     overflowY: 'scroll'
                                 }} elevation={5}>
-                                    <Typography style = {{padding: "10px"}}>{this.state.urlList}</Typography>
+                                    <Typography style={{ padding: "10px" }}>{this.state.urlList}</Typography>
                                 </Paper>
                             </Grid>
                         </Grid>
                     </Grid>
-                    
+
                     <Grid item xs={3}>
                     </Grid>
                 </Grid>
-                <Dialog fullWidth={true} maxWidth = {'md'} open={this.state.supplydataopen} onClose={this.handleCategoryAddClose} aria-labelledby="supply-data-dialog">
+                <Dialog fullWidth={true} maxWidth={'md'} open={this.state.supplydataopen} onClose={this.handleCategoryAddClose} aria-labelledby="supply-data-dialog">
                     <DialogTitle id="supply-data-dialog">Resturaunt Supplies Used</DialogTitle>
                     <DialogContent>
                         <Paper style={{
                             backgroundColor: "white",
                             height: "400px"
                         }} elevation={0}>
-                            <Grid container direction = "row" alignItems = "center" spacing = {5} style={{padding: "25px"}}>
-                                <Typography> Current Week: {dateLabels[6]} - {dateLabels[0]} </Typography>
+                            <Grid container direction="row" alignItems="center" spacing={5} style={{ padding: "25px" }}>
+                                <Typography> Current Week: {this.state.dateLabels[6]} - {this.state.dateLabels[0]} </Typography>
                                 <Button variant="contained" onClick={this.createSupply}>
                                     Add Supply
                                 </Button>
@@ -1091,7 +1145,7 @@ class Homepage extends Component {
                                 label="Category"
                                 id="category"
                                 autoFocus
-                                style={{width: "80%", marginLeft: "10%"}}
+                                style={{ width: "80%", marginLeft: "10%" }}
                             />
                         </form>
                     </DialogContent>
@@ -1133,13 +1187,13 @@ class Homepage extends Component {
                                 label="Supply Name"
                                 id="supply_name"
                                 autoFocus
-                                style={{width: "80%", marginLeft: "10%"}}
+                                style={{ width: "80%", marginLeft: "10%" }}
                             />
                             <Autocomplete
                                 id="category_list"
                                 options={this.state.categories}
                                 getOptionLabel={(option) => option.categoryName}
-                                style={{width: "80%", marginLeft: "10%"}}
+                                style={{ width: "80%", marginLeft: "10%" }}
                                 renderInput={(params) => <TextField {...params} label="Category" variant="outlined" />}
                             />
                             <TextField
@@ -1148,7 +1202,7 @@ class Homepage extends Component {
                                 required
                                 label="Weekly Quantity"
                                 id="supply_quantity"
-                                style={{width: "80%", marginLeft: "10%"}}
+                                style={{ width: "80%", marginLeft: "10%" }}
                             />
                         </form>
                     </DialogContent>
@@ -1169,7 +1223,7 @@ class Homepage extends Component {
                                 variant="outlined"
                                 margin="normal"
                                 required
-                                label= {dateLabels[6]}
+                                label={this.state.dateLabels[6]}
                                 id="mon"
                                 autoFocus
                                 style={{ width: "80%", marginLeft: "10%" }}
@@ -1178,7 +1232,7 @@ class Homepage extends Component {
                                 variant="outlined"
                                 margin="normal"
                                 required
-                                label= {dateLabels[5]}
+                                label={this.state.dateLabels[5]}
                                 id="tue"
                                 autoFocus
                                 style={{ width: "80%", marginLeft: "10%" }}
@@ -1187,7 +1241,7 @@ class Homepage extends Component {
                                 variant="outlined"
                                 margin="normal"
                                 required
-                                label= {dateLabels[4]}
+                                label={this.state.dateLabels[4]}
                                 id="wed"
                                 autoFocus
                                 style={{ width: "80%", marginLeft: "10%" }}
@@ -1196,7 +1250,7 @@ class Homepage extends Component {
                                 variant="outlined"
                                 margin="normal"
                                 required
-                                label= {dateLabels[3]}
+                                label={this.state.dateLabels[3]}
                                 id="thu"
                                 autoFocus
                                 style={{ width: "80%", marginLeft: "10%" }}
@@ -1205,7 +1259,7 @@ class Homepage extends Component {
                                 variant="outlined"
                                 margin="normal"
                                 required
-                                label= {dateLabels[2]}
+                                label={this.state.dateLabels[2]}
                                 id="fri"
                                 autoFocus
                                 style={{ width: "80%", marginLeft: "10%" }}
@@ -1214,7 +1268,7 @@ class Homepage extends Component {
                                 variant="outlined"
                                 margin="normal"
                                 required
-                                label= {dateLabels[1]}
+                                label={this.state.dateLabels[1]}
                                 id="sat"
                                 autoFocus
                                 style={{ width: "80%", marginLeft: "10%" }}
@@ -1223,7 +1277,7 @@ class Homepage extends Component {
                                 variant="outlined"
                                 margin="normal"
                                 required
-                                label= {dateLabels[0]}
+                                label={this.state.dateLabels[0]}
                                 id="sun"
                                 autoFocus
                                 style={{ width: "80%", marginLeft: "10%" }}
