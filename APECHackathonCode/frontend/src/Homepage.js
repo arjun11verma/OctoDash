@@ -268,6 +268,9 @@ class Homepage extends Component {
                 arrLen = inputData.length;
                 innerLen = (arrLen / 6 | 0);
             }
+            if(innerLen === 0) {
+                innerLen = 1;
+            }
             var sendLen = innerLen;
             for (var i = 0; i < arrLen; i += sendLen) {
                 tempAvg = 0;
@@ -290,7 +293,7 @@ class Homepage extends Component {
                 var tempAvg = 0;
 
                 for (var i = 1; i < 8; i++) {
-                    calculatedData.push(pastData[pastData.length - 8 + i] + resData[i - 1] * 0.30 - topper * 0.30);
+                    calculatedData.push(pastData[pastData.length - 8 + i] + resData[i - 1] * 0.50 - topper * 0.50);
                     tempAvg += pastData[pastData.length - i];
                 }
 
