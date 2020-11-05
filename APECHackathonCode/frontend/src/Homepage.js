@@ -1135,7 +1135,8 @@ class Homepage extends Component {
                             <Grid item xs={12}>
                                 <Paper style={{
                                     backgroundColor: "white",
-                                    overflowY: 'scroll'
+                                    overflowY: 'scroll',
+                                    height: "414px"
                                 }} elevation={5}>
                                     <Typography style={{ padding: "10px" }}>{this.state.urlList}</Typography>
                                 </Paper>
