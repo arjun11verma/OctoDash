@@ -27,6 +27,8 @@ import { AccountCircle } from "@material-ui/icons"
 import { Textfit } from 'react-textfit';
 import Link from "@material-ui/core/Link";
 import Divider from "@material-ui/core/Divider";
+import Select from "@material-ui/core/Select";
+import FormControl from "@material-ui/core/FormControl";
 
 var globalThis;
 const weeks = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"];
@@ -66,6 +68,7 @@ class Homepage extends Component {
             AnchorEl: null,
             percent: "",
             amount: "",
+            view: "week",
             lineGraph: null,
             activesupplyid: false,
             categories: [
@@ -977,10 +980,63 @@ class Homepage extends Component {
                     </Toolbar>
                 </AppBar>
                 <Grid container justify="center" style={{ paddingTop: "25px", height: "93vh", backgroundColor: "#F5F5F5" }}>
-                    <Grid item xs={10} style={{ paddingLeft: "25px", paddingRight: "25px" }}>
+                    <Grid item xs={9} style={{ paddingLeft: "25px", paddingRight: "25px" }}>
                         <Grid container spacing={3} justify="center" direction="row">
                             <Grid item xs={3}>
                                 <Grid container spacing={3} justify="center" direction="row">
+                                    <Grid item xs={6}>
+                                        <Paper style={{ backgroundColor: "#BFC0C0", padding: "2px" }}>
+                                            <Paper style={{
+                                                textAlign: "center",
+                                                padding: "5px",
+                                            }} elevation={5}>
+                                                <Typography variant="subtitle2">
+                                                    Recorded
+                                                </Typography>
+                                                <Typography variant="h5">
+                                                    {this.state.runningAverage}
+                                                </Typography>
+                                                <Typography variant="subtitle2">
+                                                    Customers this week
+                                                </Typography>
+                                            </Paper>
+                                        </Paper>
+                                    </Grid>
+                                    <Grid item xs={6}>
+                                        <Paper style={{ backgroundColor: this.state.color, padding: "2px" }}>
+                                            <Paper style={{
+                                                borderColor: this.state.color,
+                                                borderWidth: "5px",
+                                                textAlign: "center",
+                                                padding: "5px",
+                                            }} elevation={5}>
+                                                <Typography variant="subtitle2">
+                                                    Predicted
+                                                </Typography>
+                                                <Typography variant="h5">
+                                                    {this.state.currentAverage}
+                                                </Typography>
+                                                <Typography variant="subtitle2">
+                                                    Customers next week
+                                                </Typography>
+                                            </Paper>
+                                        </Paper>
+                                    </Grid>
+                                    <Grid item xs={12}>
+                                        <Paper style={{
+                                            textAlign: "center"
+                                        }} elevation={5}>
+                                            <Typography variant="subtitle2">
+                                                You should order
+                                            </Typography>
+                                            <Typography variant="h5">
+                                                {this.state.percent}% <span style={{ color: this.state.color }}>{this.state.amount}</span>
+                                            </Typography>
+                                            <Typography variant="subtitle2">
+                                                Supplies for next week
+                                            </Typography>
+                                        </Paper>
+                                    </Grid>
                                     <Grid item xs={12}>
                                         <Paper elevation={5}>
                                             <Typography style={{ textAlign: "center", paddingTop: "15px" }}>
@@ -1004,86 +1060,52 @@ class Homepage extends Component {
                                             backgroundColor: "white",
                                         }} elevation={5}>
                                             <Grid container direction="row" alignItems="center" justify="center">
-                                                <Typography style={{ textAlign: "center", paddingTop: "15px" }}>
-                                                    Predicted Number of COVID Cases and Customers Next Week
-                                        </Typography>
+                                                <Grid item xs={2}>
+                                                </Grid>
+                                                <Grid item xs={8}>
+                                                    <Typography style={{ textAlign: "center", paddingTop: "15px" }}>
+                                                        Predicted Number of COVID Cases and Customers Next Week
+                                                    </Typography>
+                                                </Grid>
+                                                <Grid item xs={2}>
+                                                    <FormControl style={{minWidth: "120"}}>
+                                                        <Select
+                                                            labelId="demo-simple-select-label"
+                                                            id="demo-simple-select"
+                                                            value={this.state.view}
+                                                            autoWidth
+                                                        >
+                                                            <MenuItem value={10}>Ten</MenuItem>
+                                                            <MenuItem value={20}>Twenty</MenuItem>
+                                                            <MenuItem value={30}>Thirty</MenuItem>
+                                                        </Select>
+                                                    </FormControl>
+                                                </Grid>
                                             </Grid>
-                                            <div class="chart-container" style={{ margin: "auto" }}>
-                                                <canvas
-                                                    id="lineChart"
-                                                    ref={this.state.lineChartRef}
-                                                />
-                                            </div>
+                                            <Grid item xs={12}>
+                                                <div class="chart-container" style={{ margin: "auto" }}>
+                                                    <canvas
+                                                        id="lineChart"
+                                                        ref={this.state.lineChartRef}
+                                                    />
+                                                </div>
+                                            </Grid>
                                         </Paper>
                                     </Grid>
-                                    <Grid item xs={12}>
-                                        <Paper style={{
-                                            backgroundColor: "white",
-                                        }} elevation={5}>
-                                            <Typography style={{ padding: "10px", textAlign: "center" }}>Ever since you began using the Octo terminal, {this.state.restaurauntName} has had an average of {this.state.overallAverage} customers per week!</Typography>
-                                        </Paper>
-                                    </Grid>
-
                                 </Grid>
+                            </Grid>
+                            <Grid item xs={12}>
+                                <Paper style={{
+                                    backgroundColor: "white",
+                                }} elevation={5}>
+                                    <Typography style={{ padding: "10px", textAlign: "center" }}>Ever since you began using the Octo terminal, {this.state.restaurauntName} has had an average of {this.state.overallAverage} customers per week!</Typography>
+                                </Paper>
                             </Grid>
                         </Grid>
 
                     </Grid>
-                    <Grid item xs={2} style={{ paddingRight: "25px" }} >
+                    <Grid item xs={3} style={{ paddingRight: "25px" }} >
                         <Grid container spacing={3} justify="center">
-                            <Grid item xs={6}>
-                                <Paper style={{ backgroundColor: "#BFC0C0", padding: "2px" }}>
-                                    <Paper style={{
-                                        textAlign: "center",
-                                        padding: "5px",
-                                    }} elevation={5}>
-                                        <Typography variant="subtitle2">
-                                            Recorded
-                                        </Typography>
-                                        <Typography variant="h5">
-                                            {this.state.runningAverage}
-                                        </Typography>
-                                        <Typography variant="subtitle2">
-                                            Customers this week
-                                        </Typography>
-                                    </Paper>
-                                </Paper>
-                            </Grid>
-                            <Grid item xs={6}>
-                                <Paper style={{ backgroundColor: this.state.color, padding: "2px" }}>
-                                    <Paper style={{
-                                        borderColor: this.state.color,
-                                        borderWidth: "5px",
-                                        textAlign: "center",
-                                        padding: "5px",
-                                    }} elevation={5}>
-                                        <Typography variant="subtitle2">
-                                            Predicted
-                                        </Typography>
-                                        <Typography variant="h5">
-                                            {this.state.currentAverage}
-                                        </Typography>
-                                        <Typography variant="subtitle2">
-                                            Customers next week
-                                        </Typography>
-                                    </Paper>
-                                </Paper>
-                            </Grid>
-                            <Grid item xs={12}>
-                                <Paper style={{
-                                    textAlign: "center"
-                                }} elevation={5}>
-                                    <Typography variant="subtitle2">
-                                        You should order
-                                    </Typography>
-                                    <Typography variant="h5">
-                                        {this.state.percent}% <span style={{ color: this.state.color }}>{this.state.amount}</span>
-                                    </Typography>
-                                    <Typography variant="subtitle2">
-                                        Supplies for next week
-                                    </Typography>
-                                </Paper>
-                            </Grid>
                             <Grid item xs={12}>
                                 <Paper style={{
                                     backgroundColor: "white",
