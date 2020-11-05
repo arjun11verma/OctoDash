@@ -43,6 +43,7 @@ class Homepage extends Component {
             lineChartRef: React.createRef(),
             pieChartRef: React.createRef(),
             objectiveDate: 0,
+            divisor: 0,
             mlData: [],
             actualCovidData: [],
             dateLabels: [],
@@ -55,6 +56,7 @@ class Homepage extends Component {
             customerMessage: "",
             newsMessage: "Based on our predictions, you will be getting more customers next week! Here is some news regarding handling extra customers during COVID-19.",
             customerName: "",
+            titleGraphText: "Predicted Number of COVID Cases and Customers Next Week",
             urlList: "",
             casesPerDay: [],
             color: "#66cc66",
@@ -396,8 +398,12 @@ class Homepage extends Component {
                         divisorMessage = "(Hundreds)";
                     }
 
+                    globalThis.setState({
+                        divisor: divisor
+                    });
+
                     for (var i = 1; i < 8; i++) {
-                        calculatedData.push((covidData[covidData.length - 8 + i] + resData[i - 1] - topper) / divisor | 0);
+                        calculatedData.push((covidData[covidData.length - 8 + i] + resData[i - 1]*0.33 - topper*0.33) / divisor | 0);
                     }
 
                     globalThis.setState({
@@ -415,10 +421,17 @@ class Homepage extends Component {
     }
 
     previousWeeklyView = () => {
+        globalThis.setState({
+            titleGraphText: "Previous Week's Data and Next Week's Predictions"
+        })
+
         var newData = this.state.mlData;
+        console.log(newData);
         for (var i = 0; i < 7; i++) {
             newData.unshift((this.state.pastData)[this.state.pastData.length - i - 1]);
         }
+        console.log(newData);
+
         var middleDate = this.state.objectiveDate;
         var dateList = [];
         middleDate.setDate(middleDate.getDate() - 14);
@@ -426,12 +439,16 @@ class Homepage extends Component {
             dateList.push(middleDate.toDateString());
             middleDate.setDate(middleDate.getDate() + 1);
         }
-        var covidList = (globalThis.state.actualCovidData).concat(globalThis.state.casesPerDay);
-        console.log(globalThis.state.actualCovidData);
+
+        var covidList = (globalThis.state.casesPerDay);
+        for(var i = 0; i < 7; i++) {
+            covidList.unshift(((globalThis.state.actualCovidData)[i])/globalThis.state.divisor | 0);
+        }
+        console.log(globalThis.state.casesPerDay);
 
         if (globalThis.state.lineGraph != null) {
             globalThis.state.lineGraph.data.labels = dateList;
-            globalThis.state.lineGraph.data.datasets[0].data = middleDate;
+            globalThis.state.lineGraph.data.datasets[0].data = newData;
             globalThis.state.lineGraph.data.datasets[1].data = covidList;
             globalThis.state.lineGraph.update();
         }
@@ -1064,20 +1081,20 @@ class Homepage extends Component {
                                                 </Grid>
                                                 <Grid item xs={8}>
                                                     <Typography style={{ textAlign: "center", paddingTop: "15px" }}>
-                                                        Predicted Number of COVID Cases and Customers Next Week
+                                                        {this.state.titleGraphText}
                                                     </Typography>
                                                 </Grid>
                                                 <Grid item xs={2}>
-                                                    <FormControl style={{minWidth: "120"}}>
+                                                    <FormControl style={{minWidth: "140"}}>
+                                                        <Typography style = {{paddingTop: "20px"}}>Biweekly Data</Typography>
                                                         <Select
                                                             labelId="demo-simple-select-label"
                                                             id="demo-simple-select"
-                                                            value={this.state.view}
+                                                            value={"Hello"}
                                                             autoWidth
                                                         >
-                                                            <MenuItem value={10}>Ten</MenuItem>
-                                                            <MenuItem value={20}>Twenty</MenuItem>
-                                                            <MenuItem value={30}>Thirty</MenuItem>
+                                                            <MenuItem onClick = {() => {window.location.reload(false)}}>Next Week's Predictions</MenuItem>
+                                                            <MenuItem value = {0} onClick = {this.previousWeeklyView} selected>Previous Week's Data and Next Week's Predictions</MenuItem>
                                                         </Select>
                                                     </FormControl>
                                                 </Grid>
