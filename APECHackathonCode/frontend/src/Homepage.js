@@ -29,6 +29,8 @@ import Link from "@material-ui/core/Link";
 import Divider from "@material-ui/core/Divider";
 import Select from "@material-ui/core/Select";
 import FormControl from "@material-ui/core/FormControl";
+import Chip from "@material-ui/core/Chip";
+import Avatar from "@material-ui/core/Avatar";
 
 var globalThis;
 const weeks = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"];
@@ -439,51 +441,52 @@ class Homepage extends Component {
 
     returnSupplyHomepage = () => {
         var rows = this.state.rows;
+        var plus = "";
+        var val = parseInt(rows[0].predictedquantity) - parseInt(rows[0].weeklyquantity);
+        if(val > 0) {
+            plus = "+";
+        }
         var mult1 = 9;
         var add1 = 2;
         var mult2 = 6;
         var add2 = 5;
         return (
             rows.map(text =>
-                <Grid item xs={(((text.item.length + text.predictedquantity.toString().length) - ((text.item.length + text.predictedquantity.toString().length) % mult1)) / mult1) + add1}>
+                <Grid item xs={2}>
                     <Paper style={{
                         backgroundColor: "white",
                     }} elevation={5}>
-                        <Grid container spacing={0} justify="center" direction="row" margin="25px">
-                            <Grid item xs={((((text.item.length) - (text.item.length % mult2)) / mult2) + add2)} style={{
-                                display: "flex",
-                                flexDirection: "column",
-                                justifyContent: "center",
-                                height: "7vh"
-                            }}>
-                                <Textfit min={18} max={22} mode="single" forceSingleModeWidth={false} style={{
-                                    textAlign: "right",
-                                }}>
+                        <Grid container spacing={0} justify="left" direction="row">
+                            <Grid item xs={8} style={{ paddingLeft: "10px", paddingTop: "10px" }}>
+                                <Typography variant="h7">
                                     {text.item}
-                                </Textfit>
+                                </Typography>
                             </Grid>
-                            <Grid item xs={1} style={{
-                                display: "flex",
-                                flexDirection: "column",
-                                justifyContent: "center",
-                            }}>
-                                <Textfit min={8} max={13} mode="single" forceSingleModeWidth={false} style={{
-                                    textAlign: "center",
-                                }}>
-                                    {text.weeklyquantity}
-                                </Textfit>
+                            <Grid item xs={4} style={{ paddingRight: "10px", paddingTop: "10px" }}>
+                                <Chip
+                                    size="small"
+                                    label={text.category}
+                                    clickable
+                                    color="primary"
+                                />
                             </Grid>
-                            <Grid item xs={11 - ((((text.item.length) - (text.item.length % mult2)) / mult2) + add2)} style={{
-                                display: "flex",
-                                flexDirection: "column",
-                                justifyContent: "center"
-                            }}>
-                                <Textfit min={20} mode="single" forceSingleModeWidth={false} style={{
-                                    textAlign: "left",
-                                    color: this.state.color,
+                            <Grid item xs={12} style={{ paddingLeft: "20px" }}>
+                                <Typography variant="h5" style={{
+                                    color: this.state.color
                                 }}>
                                     {this.state.arrow}{text.predictedquantity}
-                                </Textfit>
+                                </Typography>
+                            </Grid>
+                            <Grid item xs={12} style={{ paddingLeft: "10px", paddingBottom: "10px" }}>
+                                <Typography variant="subtitle2" display="inline" style={{
+                                    color: this.state.color,
+                                    paddingRight: "4px"
+                                }}>
+                                    {plus + (parseInt(rows[0].predictedquantity) - parseInt(rows[0].weeklyquantity))}
+                                </Typography>
+                                <Typography variant="subtitle2" display="inline" inline>
+                                    from {text.weeklyquantity} last week
+                                </Typography>
                             </Grid>
                         </Grid>
                     </Paper>
@@ -1100,6 +1103,11 @@ class Homepage extends Component {
                                 }} elevation={5}>
                                     <Typography style={{ padding: "10px", textAlign: "center" }}>Ever since you began using the Octo terminal, {this.state.restaurauntName} has had an average of {this.state.overallAverage} customers per week!</Typography>
                                 </Paper>
+                            </Grid>
+                            <Grid container spacing={3} justify="center" alignItems="center" direction="row" style={{
+                                paddingTop: "15px"
+                            }}>
+                                {this.returnSupplyHomepage()}
                             </Grid>
                         </Grid>
 
