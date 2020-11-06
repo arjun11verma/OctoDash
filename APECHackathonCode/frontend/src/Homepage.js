@@ -397,11 +397,10 @@ class Homepage extends Component {
                             />
                             <CardContent>
                                 <Typography variant="body1" component="h2">
-                                {info.title}
+                                    {info.title}
                                 </Typography>
                                 <Typography variant="body2" color="textSecondary" component="p">
-                                {info.date}
->>>>>>> master
+                                    {info.date}
                                 </Typography>
                             </CardContent>
                         </CardActionArea>
