@@ -173,12 +173,13 @@ class Homepage extends Component {
                             data: this.state.currentData,
                             backgroundColor: 'rgba(0,0,0,0)',
                             borderColor: 'rgba(0, 0, 0, 1)',
+                            borderDash: [5, 5,]
                         },
                         {
                             label: "Predicted Daily Covid Cases",
                             data: this.state.casesPerDay,
                             backgroundColor: 'rgba(0, 0, 0, 0)',
-                            borderColor: 'rgba(200, 0, 0, .3)',
+                            borderColor: 'rgba(200, 0, 0, .3)'
                         }
                     ]
                 },
@@ -430,11 +431,15 @@ class Homepage extends Component {
         })
 
         var newData = this.state.mlData;
-        console.log(newData);
-        for (var i = 0; i < 7; i++) {
-            newData.unshift((this.state.pastData)[this.state.pastData.length - i - 1]);
+        for(var i = 0; i < 7; i++) {
+            newData.unshift(null);
         }
-        console.log(newData);
+        var oldData = this.state.pastData;
+        var oldestData = [];
+        for(var i = oldData.length - 7; i < oldData.length; i++) {
+            oldestData.push(oldData[i]);
+        }
+        oldestData.push(newData[7]);
 
         var middleDate = this.state.objectiveDate;
         var dateList = [];
@@ -454,6 +459,13 @@ class Homepage extends Component {
             globalThis.state.lineGraph.data.labels = dateList;
             globalThis.state.lineGraph.data.datasets[0].data = newData;
             globalThis.state.lineGraph.data.datasets[1].data = covidList;
+            globalThis.state.lineGraph.data.datasets[1].label = "Daily COVID Cases";
+            globalThis.state.lineGraph.data.datasets.push({
+                label: "Previous Week's Customers",
+                data: oldestData,
+                backgroundColor: 'rgba(0, 0, 0, 0)',
+                borderColor: 'rgba(0, 0, 0, 1)'
+            });
             globalThis.state.lineGraph.update();
         }
     }
