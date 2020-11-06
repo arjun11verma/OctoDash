@@ -149,14 +149,6 @@ class Homepage extends Component {
             options: {
                 legend: {
                     position: 'top',
-                },
-                layout: {
-                    padding: {
-                        left: 20,
-                        right: 40,
-                        top: 5,
-                        bottom: 15,
-                    }
                 }
             }
         });
@@ -187,12 +179,7 @@ class Homepage extends Component {
                 },
                 options: {
                     layout: {
-                        padding: {
-                            left: 20,
-                            right: 40,
-                            top: 5,
-                            bottom: 15,
-                        }
+                        
                     }
                 }
             })
@@ -480,15 +467,12 @@ class Homepage extends Component {
             if(val > 0) {
                 plus = "+";
             }
-            var mult1 = 9;
-            var add1 = 2;
-            var mult2 = 6;
-            var add2 = 5;
             return (
                 rows.map(text =>
-                    <Grid item xs={2}>
+                    <Grid item xs={6} sm = {2}>
                         <Paper style={{
-                            backgroundColor: "white",
+                            overflow: "hidden",
+                            backgroundColor: "white"
                         }} elevation={5}>
                             <Grid container spacing={0} justify="left" direction="row">
                                 <Grid item xs={8} style={{ paddingLeft: "10px", paddingTop: "10px" }}>
@@ -504,11 +488,15 @@ class Homepage extends Component {
                                         color="primary"
                                     />
                                 </Grid>
-                                <Grid item xs={12} style={{ paddingLeft: "20px" }}>
-                                    <Typography variant="h5" style={{
-                                        color: this.state.color
+                                <Grid item xs={12} style={{ paddingLeft: "20px", paddingBottom: "3px" }}>
+                                    <Typography variant="h5" display = "inline" style={{
+                                        color: this.state.color,
+                                        paddingRight: "4px"
                                     }}>
                                         {this.state.arrow}{text.predictedquantity}
+                                    </Typography>
+                                    <Typography variant = "subtitle2" display = "inline">
+                                        orders/wk
                                     </Typography>
                                 </Grid>
                                 <Grid item xs={12} style={{ paddingLeft: "10px", paddingBottom: "10px" }}>
@@ -516,7 +504,7 @@ class Homepage extends Component {
                                         color: this.state.color,
                                         paddingRight: "4px"
                                     }}>
-                                        {plus + (parseInt(rows[0].predictedquantity) - parseInt(rows[0].weeklyquantity))}
+                                        {plus + (parseInt(text.predictedquantity) - parseInt(text.weeklyquantity))}
                                     </Typography>
                                     <Typography variant="subtitle2" display="inline" inline>
                                         from {text.weeklyquantity} last week
@@ -1021,7 +1009,7 @@ class Homepage extends Component {
                 <Grid container justify="center" style={{ paddingTop: "25px", height: "93vh", backgroundColor: "#F5F5F5" }}>
                     <Grid item xs={9} style={{ paddingLeft: "25px", paddingRight: "25px" }}>
                         <Grid container spacing={3} justify="center" direction="row">
-                            <Grid item xs={3}>
+                            <Grid item xs={12} sm = {3}>
                                 <Grid container spacing={3} justify="center" direction="row">
                                     <Grid item xs={6}>
                                         <Paper style={{ backgroundColor: "#BFC0C0", padding: "2px" }}>
@@ -1036,7 +1024,10 @@ class Homepage extends Component {
                                                     {this.state.runningAverage}
                                                 </Typography>
                                                 <Typography variant="subtitle2">
-                                                    Customers this week
+                                                    Customers
+                                                </Typography>
+                                                <Typography variant = "subtitle2">
+                                                    this week
                                                 </Typography>
                                             </Paper>
                                         </Paper>
@@ -1056,7 +1047,10 @@ class Homepage extends Component {
                                                     {this.state.currentAverage}
                                                 </Typography>
                                                 <Typography variant="subtitle2">
-                                                    Customers next week
+                                                    Customers
+                                                </Typography>
+                                                <Typography variant = "subtitle2">
+                                                    next week
                                                 </Typography>
                                             </Paper>
                                         </Paper>
