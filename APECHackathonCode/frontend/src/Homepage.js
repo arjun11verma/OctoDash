@@ -1259,7 +1259,7 @@ class Homepage extends Component {
                         }} elevation={0}>
                             <Grid container direction="row" alignItems="center" spacing={5} style={{ padding: "25px" }}>
                                 <Typography> Current Week: {this.state.dateLabels[6]} - {this.state.dateLabels[0]} </Typography>
-                                <Button variant="contained" onClick={this.createSupply}>
+                                <Button variant="contained" onClick={this.createSupply} style={{marginLeft: "25px", marginRight:"25px"}}> 
                                     Add Supply
                                 </Button>
                                 <Button variant="contained" onClick={this.manageCategory}>
