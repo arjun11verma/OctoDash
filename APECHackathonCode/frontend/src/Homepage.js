@@ -199,6 +199,7 @@ class Homepage extends Component {
             snapshot.forEach(childSnapshot => {
                 if (childSnapshot.child("resturauntName").val() === name) {
                     inputData = childSnapshot.child("customersPerWeek").val();
+                    country = childSnapshot.child("country").val();
 
                     globalThis.setState({
                         pastData: inputData
@@ -379,17 +380,23 @@ class Homepage extends Component {
                 cards = rows.map(info =>
                     <Card>
                         <CardActionArea onClick = {() => {window.open(info.url); console.log(info.url)}}>
-                            <CardMedia
-                                src = {info.imageUrl}
-                            />
-                            <CardContent>
-                                <Typography variant="body1" component="h2">
-                                    {info.title}
-                                </Typography>
-                                <Typography variant="body2" color="textSecondary" component="p">
-                                    {info.authors[0]} - {info.date}
-                                </Typography>
-                            </CardContent>
+                            <Grid container direction="column">
+                                <CardContent inline>
+                                    <Grid container direction="row">
+                                        <Grid xs = {4}>
+                                            <img src = {info.imageURL} alt = "image" width = "90px"></img>
+                                        </Grid>
+                                        <Grid xs = {8}>
+                                            <Typography style = {{fontSize: "13px"}} component="h2">
+                                                {info.title}
+                                            </Typography>
+                                            <Typography style = {{fontSize: "10px"}} color="textSecondary" component="p">
+                                                {info.authors[0]} - {info.date}
+                                            </Typography>
+                                        </Grid>
+                                    </Grid>
+                                </CardContent>
+                            </Grid>
                         </CardActionArea>
                     </Card>);
                 
@@ -486,59 +493,61 @@ class Homepage extends Component {
 
     returnSupplyHomepage = () => {
         var rows = this.state.rows;
-        var plus = "";
-        var val = parseInt(rows[0].predictedquantity) - parseInt(rows[0].weeklyquantity);
-        if(val > 0) {
-            plus = "+";
-        }
-        return (
-            rows.map(text =>
-                <Grid item xs={6} sm={2}>
-                    <Paper style={{
-                        backgroundColor: "white",
-                        height: "11vh",
-                        overflow: "hidden"
-                    }} elevation={5}>
-                        <Grid container spacing={0} justify="left" direction="row">
-                            <Grid item xs={8} style={{ paddingLeft: "10px", paddingTop: "10px" }}>
-                                <Typography variant="h7">
-                                    {text.item}
-                                </Typography>
+        if(rows[0] !== undefined) {
+            var plus = "";
+            var val = parseInt(rows[0].predictedquantity) - parseInt(rows[0].weeklyquantity);
+            if(val > 0) {
+                plus = "+";
+            }
+            return (
+                rows.map(text =>
+                    <Grid item xs={6} sm={2}>
+                        <Paper style={{
+                            backgroundColor: "white",
+                            height: "11vh",
+                            overflow: "hidden"
+                        }} elevation={5}>
+                            <Grid container spacing={0} justify="left" direction="row">
+                                <Grid item xs={8} style={{ paddingLeft: "10px", paddingTop: "10px" }}>
+                                    <Typography variant="h7">
+                                        {text.item}
+                                    </Typography>
+                                </Grid>
+                                <Grid item xs={4} style={{ paddingRight: "10px", paddingTop: "10px" }}>
+                                    <Chip
+                                        size="small"
+                                        label={text.category}
+                                        clickable
+                                        color="primary"
+                                    />
+                                </Grid>
+                                <Grid item xs={12} style={{ paddingLeft: "20px", paddingBottom: "3px" }}>
+                                    <Typography variant="h5" display="inline" style={{
+                                        color: this.state.color,
+                                        paddingRight: "4px",
+                                    }}>
+                                        {this.state.arrow}{text.predictedquantity}
+                                    </Typography>
+                                    <Typography variant="subtitle2" display="inline">
+                                        orders/wk
+                                    </Typography>
+                                </Grid>
+                                <Grid item xs={12} style={{ paddingLeft: "10px", paddingBottom: "10px" }}>
+                                    <Typography variant="subtitle2" display="inline" style={{
+                                        color: this.state.color,
+                                        paddingRight: "4px"
+                                    }}>
+                                        {plus + (parseInt(text.predictedquantity) - parseInt(text.weeklyquantity))}
+                                    </Typography>
+                                    <Typography variant="subtitle2" display="inline" inline>
+                                        from <i>{text.weeklyquantity} orders/wk </i>
+                                    </Typography>
+                                </Grid>
                             </Grid>
-                            <Grid item xs={4} style={{ paddingRight: "10px", paddingTop: "10px" }}>
-                                <Chip
-                                    size="small"
-                                    label={text.category}
-                                    clickable
-                                    color="primary"
-                                />
-                            </Grid>
-                            <Grid item xs={12} style={{ paddingLeft: "20px", paddingBottom: "3px" }}>
-                                <Typography variant="h5" display="inline" style={{
-                                    color: this.state.color,
-                                    paddingRight: "4px",
-                                }}>
-                                    {this.state.arrow}{text.predictedquantity}
-                                </Typography>
-                                <Typography variant="subtitle2" display="inline">
-                                    orders/wk
-                                </Typography>
-                            </Grid>
-                            <Grid item xs={12} style={{ paddingLeft: "10px", paddingBottom: "10px" }}>
-                                <Typography variant="subtitle2" display="inline" style={{
-                                    color: this.state.color,
-                                    paddingRight: "4px"
-                                }}>
-                                    {plus + (parseInt(text.predictedquantity) - parseInt(text.weeklyquantity))}
-                                </Typography>
-                                <Typography variant="subtitle2" display="inline" inline>
-                                    from <i>{text.weeklyquantity} orders/wk </i>
-                                </Typography>
-                            </Grid>
-                        </Grid>
-                    </Paper>
-                </Grid>)
-        )
+                        </Paper>
+                    </Grid>)
+            );
+        }   
     }
 
     returnList = () => {
