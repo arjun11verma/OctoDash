@@ -408,6 +408,8 @@ class Homepage extends Component {
                 globalThis.setState({
                     uiurls: cards
                 });
+                document.getElementById("news-skeleton").style.display = "none";
+                document.getElementById("news-paper").style.display = "block";
             });
 
             axios.post('http://127.0.0.1:5000/covidData', { 'country': country }).then(res => {
@@ -1020,7 +1022,7 @@ class Homepage extends Component {
                         </Grid>
                     </Grid>
                     <Grid item xs={12} sm={3} style={{ paddingRight: "25px" }} >
-                        <Grid container spacing={3} justify="center">
+                        <Grid container spacing={3} direction="row" justify="center">
                             <Grid item xs={12}>
                                 <Paper style={{
                                     backgroundColor: "white",
@@ -1032,7 +1034,9 @@ class Homepage extends Component {
                                 </Paper>
                             </Grid>
                             <Grid item xs={12}>
-                                <Paper style={{
+                                <Skeleton id="news-skeleton" variant="rect" height="70vh"/>
+                                <Paper id="news-paper" style={{
+                                    display: "none",
                                     backgroundColor: "white",
                                     overflowY: 'scroll',
                                     height: "70vh"
