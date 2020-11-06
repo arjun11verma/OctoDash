@@ -181,6 +181,7 @@ class Homepage extends Component {
                             data: this.state.currentData,
                             backgroundColor: 'rgba(0,0,0,0)',
                             borderColor: 'rgba(0, 0, 0, 1)',
+                            borderDash: [5, 5]
                         },
                         {
                             label: "Predicted Daily Covid Cases",
@@ -462,11 +463,12 @@ class Homepage extends Component {
         })
 
         var newData = this.state.mlData;
-        console.log(newData);
+        var oldData = [];
         for (var i = 0; i < 7; i++) {
-            newData.unshift((this.state.pastData)[this.state.pastData.length - i - 1]);
+            oldData.unshift((this.state.pastData)[this.state.pastData.length - i - 1]);
+            newData.unshift(null);
         }
-        console.log(newData);
+        newData[newData.length - 8] = oldData[oldData.length - 1];
 
         var middleDate = this.state.objectiveDate;
         var dateList = [];
@@ -486,6 +488,12 @@ class Homepage extends Component {
             globalThis.state.lineGraph.data.labels = dateList;
             globalThis.state.lineGraph.data.datasets[0].data = newData;
             globalThis.state.lineGraph.data.datasets[1].data = covidList;
+            globalThis.state.lineGraph.data.datasets.push({
+                label: "Last Week's Customers",
+                data: oldData,
+                backgroundColor: 'rgba(0,0,0,0)',
+                borderColor: 'rgba(0, 0, 0, 1)',
+            });
             globalThis.state.lineGraph.update();
         }
     }
@@ -497,10 +505,6 @@ class Homepage extends Component {
         if(val > 0) {
             plus = "+";
         }
-        var mult1 = 9;
-        var add1 = 2;
-        var mult2 = 6;
-        var add2 = 5;
         return (
             rows.map(text =>
                 <Grid item xs={2}>
