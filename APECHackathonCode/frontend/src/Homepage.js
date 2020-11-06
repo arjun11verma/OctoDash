@@ -674,12 +674,49 @@ class Homepage extends Component {
     };
 
     handleDateSelect = (date) => {
+        var setDate = new Date(date);
         this.setState({
-            selectedate: date
-        })
-        console.log(date)
-        document.getElementById("datetext").innerHTML = date;
-        document.getElementById("customerday").value = 123;
+            selecteddate: setDate
+        });
+    }
+
+    submitData = () => {
+        var setDate = this.state.selecteddate;
+        var newVal = document.getElementById("customerday").value;
+        var name = this.state.restaurauntName;
+
+        firebase.database().ref("Accounts").once('value').then(function (snapshot) {
+            console.log(setDate);
+            snapshot.forEach(childSnapshot => {
+                if(childSnapshot.child("resturauntName").val() === globalThis.state.restaurauntName && !childSnapshot.hasChild("StartWeek")) {
+                    firebase.database().ref("Accounts").child(name).child("StartWeek").set({ 'day': setDate.getDate(), 'month': setDate.getMonth() + 1, 'year': setDate.getFullYear() });
+                    firebase.database().ref("Accounts").child(name).child("customersPerWeek").set([newVal]);
+                } else if (childSnapshot.child("resturauntName").val() === globalThis.state.restaurauntName) {
+                    var dateBlock = childSnapshot.child("StartWeek").val();
+                    var currentDate = new Date(dateBlock.year, dateBlock.month - 1, dateBlock.day);
+
+                    console.log(setDate);
+                    console.log(currentDate);
+
+                    var currentCustomerList = childSnapshot.child("customersPerWeek").val();
+                    const diffTime = Math.abs(setDate - currentDate);
+                    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+                    console.log(diffDays);
+
+                    if((setDate - currentDate > 0) && diffDays < currentCustomerList.length) {
+                        currentCustomerList[diffDays] = parseInt(newVal);
+                    } else {
+                        currentCustomerList.push(parseInt(newVal));
+                    }
+
+                    console.log(currentCustomerList);
+                    firebase.database().ref("Accounts").child(name).child("customersPerWeek").set(currentCustomerList);
+
+                    document.getElementById("customerday").value = "";
+                }
+            });
+        });
     }
 
     handleCategoryAddClose = () => {
@@ -1201,7 +1238,6 @@ class Homepage extends Component {
                                         />
                                     </Grid>
                                     <Grid item xs={6}>
-                                        <Typography id="datetext" >{this.state.selecteddate}</Typography>
                                         <TextField
                                             variant="outlined"
                                             margin="normal"
@@ -1220,7 +1256,7 @@ class Homepage extends Component {
                         <Button onClick={this.handleCustomerDataClose} color="primary">
                             Cancel
                         </Button>
-                        <Button onClick={this.handleCustomerClose} color="primary">
+                        <Button onClick={this.submitData} color="primary">
                             Submit
                         </Button>
                     </DialogActions>
