@@ -682,6 +682,12 @@ class Homepage extends Component {
         });
     };
 
+    handleNoDataSupplyClose = () => {
+        this.setState({
+            supplyopen: false,
+        });
+    }
+
     handleAccountClose = () => {
         this.setState({
             accountopen: false,
@@ -1380,7 +1386,7 @@ class Homepage extends Component {
                         </form>
                     </DialogContent>
                     <DialogActions>
-                        <Button onClick={this.handleSupplyClose} color="primary">
+                        <Button onClick={this.handleNoDataSupplyClose} color="primary">
                             Cancel
                         </Button>
                         <Button onClick={this.handleSupplyClose} color="primary">
