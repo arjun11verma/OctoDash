@@ -1035,7 +1035,7 @@ class Homepage extends Component {
                 <AppBar position="static" style={{ backgroundColor: "#283B63" }}>
                     <Toolbar style={{ minHeight: "7vh" }}>
                         <Typography style={{ flexGrow: "1" }} variant="h6" >
-                            Octo Dashboard - {this.state.customerName}
+                            OctoDash - {this.state.customerName}
                         </Typography>
                         <Button variant="contained" onClick={this.handleSupplyDataClickOpen} style={{ marginRight: "25px", backgroundColor: "#BFC0C0" }}>
                             Edit Supply Data
@@ -1082,7 +1082,8 @@ class Homepage extends Component {
                                             <Paper style={{
                                                 textAlign: "center",
                                                 padding: "5px",
-                                                height: "11vh"
+                                                height: "11vh", 
+                                                overflow: "hidden"
                                             }} elevation={5}>
                                                 <Typography variant="subtitle2">
                                                     Recorded
@@ -1106,7 +1107,8 @@ class Homepage extends Component {
                                                 borderWidth: "5px",
                                                 textAlign: "center",
                                                 padding: "5px",
-                                                height: "11vh"
+                                                height: "11vh",
+                                                overflow: "hidden",
                                             }} elevation={5}>
                                                 <Typography variant="subtitle2">
                                                     Predicted
@@ -1127,6 +1129,7 @@ class Homepage extends Component {
                                         <Paper style={{
                                             textAlign: "center",
                                             height: "9vh",
+                                            overflow: "hidden",
                                         }} elevation={5}>
                                             <Typography variant="subtitle2">
                                                 You should order
@@ -1157,7 +1160,8 @@ class Homepage extends Component {
                                     </Grid>
                                     <Grid item xs={12}>
                                         <Paper elevation={5} style={{
-                                            height: "13vh"
+                                            height: "13vh",
+                                            overflow: "hidden"
                                         }}>
                                             <Typography style={{ padding: "10px", textAlign: "center" }}>Ever since you began using the Octo terminal, {this.state.restaurauntName} has had an average of {this.state.overallAverage} customers per week!</Typography>
                                         </Paper>
