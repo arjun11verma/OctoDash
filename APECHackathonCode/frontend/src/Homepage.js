@@ -710,6 +710,8 @@ class Homepage extends Component {
 
                     console.log(currentCustomerList);
                     firebase.database().ref("Accounts").child(name).child("customersPerWeek").set(currentCustomerList);
+
+                    document.getElementById("customerday").value = "";
                 }
             });
         });
