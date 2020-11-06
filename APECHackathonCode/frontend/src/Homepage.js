@@ -153,6 +153,7 @@ class Homepage extends Component {
                 ]
             },
             options: {
+                responsive: true,
                 legend: {
                     position: 'top',
                 },
@@ -1146,14 +1147,14 @@ class Homepage extends Component {
                                         <Paper elevation={5} style={{
                                             height: "28vh"
                                         }}>
-                                            <Typography style={{ textAlign: "center", paddingLeft: "15px", paddingRight: "15px", paddingTop: "15px", paddingBottom: "10px" }}>
+                                            <Typography style={{ textAlign: "center", paddingLeft: "15px", paddingRight: "15px", paddingTop: "15px", paddingBottom: "0px" }}>
                                                 Predicted Quantity Required of Each Item Next Week
                                             </Typography>
-                                            <div class="chart-container" style={{ margin: "auto", paddingBottom: "20px", paddingLeft: "15px", paddingRight: "15px"}}>
+                                            <div class="chart-container" style={{ margin: "auto", paddingBottom: "20px", paddingLeft: "15px", paddingRight: "15px", paddingTop: "0px"}}>
                                                 <canvas
                                                     id="myPieChartRef"
                                                     ref={this.state.pieChartRef}
-                                                    height="200px"
+                                                    height="220px"
                                                 />
                                             </div>
                                         </Paper>
