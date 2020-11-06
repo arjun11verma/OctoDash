@@ -38,6 +38,7 @@ import { CardContent } from '@material-ui/core';
 import { CardMedia } from '@material-ui/core';
 import InfiniteCalendar from 'react-infinite-calendar'
 import 'react-infinite-calendar/styles.css'
+import Skeleton from "@material-ui/lab/Skeleton";
 
 var globalThis;
 const weeks = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"];
@@ -672,12 +673,12 @@ class Homepage extends Component {
 
     handleDateSelect = (date) => {
         this.setState({
-            selecteddate: date
-        });
+            selectedate: date
+        })
         console.log(date)
-        //document.getElementById("datetext").innerHTML = date;
-        //document.getElementById("customerday").value = 123; // update this
-    };
+        document.getElementById("datetext").innerHTML = date;
+        document.getElementById("customerday").value = 123;
+    }
 
     handleCategoryAddClose = () => {
         var upload = document.getElementById("category").value;
@@ -1036,6 +1037,7 @@ class Homepage extends Component {
                                     overflowY: 'scroll',
                                     height: "70vh"
                                 }} elevation={5}>
+                                    <Skeleton variant="rect" height={"60vh"} style={{padding: "25px"}} />
                                     {this.state.uiurls}
                                 </Paper>
                             </Grid>
