@@ -1037,7 +1037,6 @@ class Homepage extends Component {
                                     overflowY: 'scroll',
                                     height: "70vh"
                                 }} elevation={5}>
-                                    <Skeleton variant="rect" height={"60vh"} style={{padding: "25px"}} />
                                     {this.state.uiurls}
                                 </Paper>
                             </Grid>
