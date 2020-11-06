@@ -108,14 +108,14 @@ def getNewsUrls(country):
     startsearch = (dateTimeObj - timedelta(days=7)).strftime("%Y-%m-%dT%H:%M:%SZ")
     stopsearch = dateTimeObj.strftime("%Y-%m-%dT%H:%M:%SZ")
 
-    storylimit = 10
+    storylimit = 15
     tag_id_dict = {"MYS":38380297, "USA":34412234, "RUS":8878645, "CHN":34412193, "VNM":8878732,
     "THA":34412328, "SGP":34412474, "KOR":34412127, "JPN":34412056, "TWN":34412361, "PHL": 34412313,
     "BRN":34412241, "IDN":34412392, "AUS":34412282, "NZL":34412098, "CAN":34411583, "MEX": 34412427,
     "PER":34412158, "CHL":34412295}
 
     storylist = mc.storyList(
-        solr_query="(title:((covid OR coronavirus OR covid-19) AND (food OR resturant OR local resturant OR small buisness))) AND tags_id_media:{0}".format(tag_id_dict[country]),
+        solr_query='title:covid OR title:coronavirus OR title:"covid-19" AND title:buisness AND tags_id_media:{0}'.format(tag_id_dict[country]),
         solr_filter="publish_day:[{0} TO {1}]".format(startsearch, stopsearch),
         rows=storylimit)
 
