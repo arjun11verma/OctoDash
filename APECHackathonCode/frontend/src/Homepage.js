@@ -30,10 +30,13 @@ import Divider from "@material-ui/core/Divider";
 import Select from "@material-ui/core/Select";
 import FormControl from "@material-ui/core/FormControl";
 import InputLabel from "@material-ui/core/InputLabel"
+<<<<<<< HEAD
 import Chip from "@material-ui/core/Chip";
 import Avatar from "@material-ui/core/Avatar";
 import InfiniteCalendar from 'react-infinite-calendar';
 import 'react-infinite-calendar/styles.css';
+=======
+>>>>>>> master
 
 var globalThis;
 const weeks = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"];
@@ -493,19 +496,29 @@ class Homepage extends Component {
                     <Paper style={{
                         backgroundColor: "white",
                     }} elevation={5}>
-                        <Grid container spacing={0} justify="left" direction="row">
-                            <Grid item xs={8} style={{ paddingLeft: "10px", paddingTop: "10px" }}>
-                                <Typography variant="h7">
+                        <Grid container spacing={0} justify="center" direction="row" margin="25px">
+                            <Grid item xs={((((text.item.length) - (text.item.length % mult2)) / mult2) + add2)} style={{
+                                display: "flex",
+                                flexDirection: "column",
+                                justifyContent: "center",
+                                height: "7vh"
+                            }}>
+                                <Textfit min={18} max={22} mode="single" forceSingleModeWidth={false} style={{
+                                    textAlign: "right",
+                                }}>
                                     {text.item}
-                                </Typography>
+                                </Textfit>
                             </Grid>
-                            <Grid item xs={4} style={{ paddingRight: "10px", paddingTop: "10px" }}>
-                                <Chip
-                                    size="small"
-                                    label={text.category}
-                                    clickable
-                                    color="primary"
-                                />
+                            <Grid item xs={1} style={{
+                                display: "flex",
+                                flexDirection: "column",
+                                justifyContent: "center",
+                            }}>
+                                <Textfit min={8} max={13} mode="single" forceSingleModeWidth={false} style={{
+                                    textAlign: "center",
+                                }}>
+                                    {text.weeklyquantity}
+                                </Textfit>
                             </Grid>
                             <Grid item xs={12} style={{ paddingLeft: "20px" }}>
                                 <Typography variant="h5" style={{
