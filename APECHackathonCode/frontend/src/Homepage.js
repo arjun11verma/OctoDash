@@ -384,22 +384,24 @@ class Homepage extends Component {
                 console.log(data)
                 for (var i = 0; i < Object.keys(data).length; i++) {
                     outerDict = data[i + ""];
-                    rows.push(outerDict);
+                    if(outerDict !== undefined) {
+                        rows.push(outerDict);
+                    }
                 }
                 console.log(rows);
                 cards = rows.map(info =>
                     <Card>
-                        <CardActionArea onClick = {() => {console.log("oof")}}>
+                        <CardActionArea onClick = {() => {window.open(info.url); console.log(info.url)}}>
                             <CardMedia
-                                image={info[3]}
-                                title={info[4]}
+                                image={info.imageURL}
+                                title={info.title}
                             />
                             <CardContent>
                                 <Typography gutterBottom variant="h5" component="h2">
-                                {info[4]}
+                                {info.title}
                                 </Typography>
                                 <Typography variant="body2" color="textSecondary" component="p">
-                                {info[0]} - {info[1]} 
+                                {info.date}
                                 </Typography>
                             </CardContent>
                         </CardActionArea>
@@ -1184,7 +1186,6 @@ class Homepage extends Component {
                                 {this.returnSupplyHomepage()}
                             </Grid>
                         </Grid>
-
                     </Grid>
                     <Grid item xs={3} style={{ paddingRight: "25px" }} >
                         <Grid container spacing={3} justify="center">
