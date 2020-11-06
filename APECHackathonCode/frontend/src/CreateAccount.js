@@ -297,6 +297,32 @@ class CreateAccount extends Component {
     }
 
     render() {
+<<<<<<< Updated upstream
+=======
+        const countryListAllIsoData = [
+            { "code": "AU", "code3": "AUS", "name": "Australia", "number": "036" },
+            { "code": "BN", "code3": "BRN", "name": "Brunei Darussalam", "number": "096" },
+            { "code": "CA", "code3": "CAN", "name": "Canada", "number": "124" },
+            { "code": "CL", "code3": "CHL", "name": "Chile", "number": "152" },
+            { "code": "CN", "code3": "CHN", "name": "China", "number": "156" },
+            { "code": "HK", "code3": "HKG", "name": "Hong Kong", "number": "344" },
+            { "code": "ID", "code3": "IDN", "name": "Indonesia", "number": "360" },
+            { "code": "JP", "code3": "JPN", "name": "Japan", "number": "392" },
+            { "code": "KR", "code3": "KOR", "name": "Korea (the Republic of)", "number": "410" },
+            { "code": "MY", "code3": "MYS", "name": "Malaysia", "number": "458" },
+            { "code": "MX", "code3": "MEX", "name": "Mexico", "number": "484" },
+            { "code": "NZ", "code3": "NZL", "name": "New Zealand", "number": "554" },
+            { "code": "PG", "code3": "PNG", "name": "Papua New Guinea", "number": "598" },
+            { "code": "PE", "code3": "PER", "name": "Peru", "number": "604" },
+            { "code": "PH", "code3": "PHL", "name": "Philippines (the)", "number": "608" },
+            { "code": "RU", "code3": "RUS", "name": "Russian Federation (the)", "number": "643" },
+            { "code": "SG", "code3": "SGP", "name": "Singapore", "number": "702" },
+            { "code": "TW", "code3": "TWN", "name": "Taiwan", "number": "158" },
+            { "code": "TH", "code3": "THA", "name": "Thailand", "number": "764" },
+            { "code": "US", "code3": "USA", "name": "United States of America (the)", "number": "840" },
+            { "code": "VN", "code3": "VNM", "name": "Viet Nam", "number": "704" },
+        ];
+>>>>>>> Stashed changes
         const handleSubmit = e => {
             e.preventDefault();
             this.uploadAccount()
