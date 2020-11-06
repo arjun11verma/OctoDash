@@ -501,7 +501,9 @@ class Homepage extends Component {
         if(rows[0] !== undefined) {
             var plus = "";
             var val = parseInt(rows[0].predictedquantity) - parseInt(rows[0].weeklyquantity);
+            console.log(val);
             if(val > 0) {
+                console.log(val);
                 plus = "+";
             }
             return (
@@ -776,7 +778,7 @@ class Homepage extends Component {
             if(rows[i].id === this.state.activesupplyid) {
                 name = rows[i].item;
                 rows[i].weeklyquantity = newQuantity;
-                rows[i].predictedquantity = (newQuantity * (1 + (Math.abs(globalThis.state.runningAverage - globalThis.state.currentAverage) / (globalThis.state.runningAverage)))) | 0;
+                rows[i].predictedquantity = (newQuantity * (1 + ((globalThis.state.runningAverage - globalThis.state.currentAverage) / (globalThis.state.runningAverage)))) | 0;
             }
         }
 
