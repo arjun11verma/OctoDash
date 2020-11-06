@@ -699,6 +699,20 @@ class Homepage extends Component {
         }
     }
 
+    closeNothingEdit = () => {
+        this.setState({
+            openEdit: false
+        });
+    }
+
+    closeEdit = () => {
+        var newQuantity = parseInt(document.getElementById("supply_quantity_edit").value);
+        var rows = this.state.rows;
+        for(var i = 0; i < rows.length; i++) {
+
+        }
+    }
+
     createSupply = () => {
         this.handleSupplyClickOpen("new")
     }
@@ -1187,7 +1201,7 @@ class Homepage extends Component {
                                 <Paper style={{
                                     backgroundColor: "white",
                                     overflowY: 'scroll',
-                                    height: "414px"
+                                    height: "525px"
                                 }} elevation={5}>
                                     {this.state.uiurls}
                                 </Paper>
@@ -1283,11 +1297,19 @@ class Homepage extends Component {
                                 margin="normal"
                                 required
                                 label="Weekly Quantity"
-                                id="supply_quantity"
+                                id="supply_quantity_edit"
                                 style={{ width: "80%", marginLeft: "10%" }}
                             />
                         </form>
                     </DialogContent>
+                    <DialogActions>
+                        <Button onClick={this.closeNothingEdit} color="primary">
+                            Cancel
+                        </Button>
+                        <Button onClick={this.closeEdit} color="primary">
+                            Add Entry
+                        </Button>
+                    </DialogActions>
                 </Dialog>
                 <Dialog open={this.state.supplyopen} onClose={this.handleSupplyClose} aria-labelledby="supply-dialog">
                     <DialogTitle id="supply-dialog">Input your weekly data for {this.state.activesupplyid}</DialogTitle>
