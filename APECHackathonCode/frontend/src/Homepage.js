@@ -32,6 +32,10 @@ import FormControl from "@material-ui/core/FormControl";
 import InputLabel from "@material-ui/core/InputLabel"
 import Chip from "@material-ui/core/Chip";
 import Avatar from "@material-ui/core/Avatar";
+import { Card } from '@material-ui/core'
+import { CardActionArea } from '@material-ui/core'
+import { CardContent } from '@material-ui/core';
+import { CardMedia } from '@material-ui/core';
 
 var globalThis;
 const weeks = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"];
@@ -47,6 +51,7 @@ class Homepage extends Component {
             pieChartRef: React.createRef(),
             objectiveDate: 0,
             divisor: 0,
+            uiurls: [],
             mlData: [],
             actualCovidData: [],
             dateLabels: [],
@@ -149,6 +154,14 @@ class Homepage extends Component {
             options: {
                 legend: {
                     position: 'top',
+                },
+                layout: {
+                    padding: {
+                        left: 20,
+                        right: 40,
+                        top: 5,
+                        bottom: 15,
+                    }
                 }
             }
         });
@@ -167,19 +180,23 @@ class Homepage extends Component {
                             data: this.state.currentData,
                             backgroundColor: 'rgba(0,0,0,0)',
                             borderColor: 'rgba(0, 0, 0, 1)',
-                            borderDash: [5, 5,]
                         },
                         {
                             label: "Predicted Daily Covid Cases",
                             data: this.state.casesPerDay,
                             backgroundColor: 'rgba(0, 0, 0, 0)',
-                            borderColor: 'rgba(200, 0, 0, .3)'
+                            borderColor: 'rgba(200, 0, 0, .3)',
                         }
                     ]
                 },
                 options: {
                     layout: {
-                        
+                        padding: {
+                            left: 20,
+                            right: 40,
+                            top: 5,
+                            bottom: 15,
+                        }
                     }
                 }
             })
@@ -360,12 +377,35 @@ class Homepage extends Component {
             var urlBoxList = [];
             axios.post('http://127.0.0.1:5000/getArticleInfo', { 'country': country }).then(res => {
                 var data = res.data;
-                for (var i = 0; i < 10; i++) {
-                    urlBoxList.push(data[i]);
+                var outerDict;
+                var rows = [];
+                var cards = [] 
+                console.log(data)
+                for (var i = 0; i < Object.keys(data).length; i++) {
+                    outerDict = data[i + ""];
+                    rows.push(outerDict);
                 }
-
+                console.log(rows);
+                cards = rows.map(info =>
+                    <Card>
+                        <CardActionArea onClick = {() => {console.log("oof")}}>
+                            <CardMedia
+                                image={info[3]}
+                                title={info[4]}
+                            />
+                            <CardContent>
+                                <Typography gutterBottom variant="h5" component="h2">
+                                {info[4]}
+                                </Typography>
+                                <Typography variant="body2" color="textSecondary" component="p">
+                                {info[0]} - {info[1]} 
+                                </Typography>
+                            </CardContent>
+                        </CardActionArea>
+                    </Card>);
+                
                 globalThis.setState({
-                    urlDataList: urlBoxList
+                    uiurls: cards
                 });
             });
 
@@ -420,15 +460,11 @@ class Homepage extends Component {
         })
 
         var newData = this.state.mlData;
-        for(var i = 0; i < 7; i++) {
-            newData.unshift(null);
+        console.log(newData);
+        for (var i = 0; i < 7; i++) {
+            newData.unshift((this.state.pastData)[this.state.pastData.length - i - 1]);
         }
-        var oldData = this.state.pastData;
-        var oldestData = [];
-        for(var i = oldData.length - 7; i < oldData.length; i++) {
-            oldestData.push(oldData[i]);
-        }
-        oldestData.push(newData[7]);
+        console.log(newData);
 
         var middleDate = this.state.objectiveDate;
         var dateList = [];
@@ -448,74 +484,63 @@ class Homepage extends Component {
             globalThis.state.lineGraph.data.labels = dateList;
             globalThis.state.lineGraph.data.datasets[0].data = newData;
             globalThis.state.lineGraph.data.datasets[1].data = covidList;
-            globalThis.state.lineGraph.data.datasets[1].label = "Daily COVID Cases";
-            globalThis.state.lineGraph.data.datasets.push({
-                label: "Previous Week's Customers",
-                data: oldestData,
-                backgroundColor: 'rgba(0, 0, 0, 0)',
-                borderColor: 'rgba(0, 0, 0, 1)'
-            });
             globalThis.state.lineGraph.update();
         }
     }
 
     returnSupplyHomepage = () => {
         var rows = this.state.rows;
-        if(rows !== undefined && rows[0] !== undefined) {
-            var plus = "";
-            var val = parseInt(rows[0].predictedquantity) - parseInt(rows[0].weeklyquantity);
-            if(val > 0) {
-                plus = "+";
-            }
-            return (
-                rows.map(text =>
-                    <Grid item xs={6} sm = {2}>
-                        <Paper style={{
-                            overflow: "hidden",
-                            backgroundColor: "white"
-                        }} elevation={5}>
-                            <Grid container spacing={0} justify="left" direction="row">
-                                <Grid item xs={8} style={{ paddingLeft: "10px", paddingTop: "10px" }}>
-                                    <Typography variant="h7">
-                                        {text.item}
-                                    </Typography>
-                                </Grid>
-                                <Grid item xs={4} style={{ paddingRight: "10px", paddingTop: "10px" }}>
-                                    <Chip
-                                        size="small"
-                                        label={text.category}
-                                        clickable
-                                        color="primary"
-                                    />
-                                </Grid>
-                                <Grid item xs={12} style={{ paddingLeft: "20px", paddingBottom: "3px" }}>
-                                    <Typography variant="h5" display = "inline" style={{
-                                        color: this.state.color,
-                                        paddingRight: "4px"
-                                    }}>
-                                        {this.state.arrow}{text.predictedquantity}
-                                    </Typography>
-                                    <Typography variant = "subtitle2" display = "inline">
-                                        orders/wk
-                                    </Typography>
-                                </Grid>
-                                <Grid item xs={12} style={{ paddingLeft: "10px", paddingBottom: "10px" }}>
-                                    <Typography variant="subtitle2" display="inline" style={{
-                                        color: this.state.color,
-                                        paddingRight: "4px"
-                                    }}>
-                                        {plus + (parseInt(text.predictedquantity) - parseInt(text.weeklyquantity))}
-                                    </Typography>
-                                    <Typography variant="subtitle2" display="inline" inline>
-                                        from {text.weeklyquantity} last week
-                                    </Typography>
-                                </Grid>
-                            </Grid>
-                        </Paper>
-                    </Grid>)
-            )
+        var plus = "";
+        var val = parseInt(rows[0].predictedquantity) - parseInt(rows[0].weeklyquantity);
+        if(val > 0) {
+            plus = "+";
         }
-        
+        var mult1 = 9;
+        var add1 = 2;
+        var mult2 = 6;
+        var add2 = 5;
+        return (
+            rows.map(text =>
+                <Grid item xs={2}>
+                    <Paper style={{
+                        backgroundColor: "white",
+                    }} elevation={5}>
+                        <Grid container spacing={0} justify="left" direction="row">
+                            <Grid item xs={8} style={{ paddingLeft: "10px", paddingTop: "10px" }}>
+                                <Typography variant="h7">
+                                    {text.item}
+                                </Typography>
+                            </Grid>
+                            <Grid item xs={4} style={{ paddingRight: "10px", paddingTop: "10px" }}>
+                                <Chip
+                                    size="small"
+                                    label={text.category}
+                                    clickable
+                                    color="primary"
+                                />
+                            </Grid>
+                            <Grid item xs={12} style={{ paddingLeft: "20px" }}>
+                                <Typography variant="h5" style={{
+                                    color: this.state.color
+                                }}>
+                                    {this.state.arrow}{text.predictedquantity}
+                                </Typography>
+                            </Grid>
+                            <Grid item xs={12} style={{ paddingLeft: "10px", paddingBottom: "10px" }}>
+                                <Typography variant="subtitle2" display="inline" style={{
+                                    color: this.state.color,
+                                    paddingRight: "4px"
+                                }}>
+                                    {plus + (parseInt(rows[0].predictedquantity) - parseInt(rows[0].weeklyquantity))}
+                                </Typography>
+                                <Typography variant="subtitle2" display="inline" inline>
+                                    from {text.weeklyquantity} last week
+                                </Typography>
+                            </Grid>
+                        </Grid>
+                    </Paper>
+                </Grid>)
+        )
     }
 
     returnList = () => {
@@ -1009,7 +1034,7 @@ class Homepage extends Component {
                 <Grid container justify="center" style={{ paddingTop: "25px", height: "93vh", backgroundColor: "#F5F5F5" }}>
                     <Grid item xs={9} style={{ paddingLeft: "25px", paddingRight: "25px" }}>
                         <Grid container spacing={3} justify="center" direction="row">
-                            <Grid item xs={12} sm = {3}>
+                            <Grid item xs={3}>
                                 <Grid container spacing={3} justify="center" direction="row">
                                     <Grid item xs={6}>
                                         <Paper style={{ backgroundColor: "#BFC0C0", padding: "2px" }}>
@@ -1024,10 +1049,7 @@ class Homepage extends Component {
                                                     {this.state.runningAverage}
                                                 </Typography>
                                                 <Typography variant="subtitle2">
-                                                    Customers
-                                                </Typography>
-                                                <Typography variant = "subtitle2">
-                                                    this week
+                                                    Customers this week
                                                 </Typography>
                                             </Paper>
                                         </Paper>
@@ -1047,10 +1069,7 @@ class Homepage extends Component {
                                                     {this.state.currentAverage}
                                                 </Typography>
                                                 <Typography variant="subtitle2">
-                                                    Customers
-                                                </Typography>
-                                                <Typography variant = "subtitle2">
-                                                    next week
+                                                    Customers next week
                                                 </Typography>
                                             </Paper>
                                         </Paper>
@@ -1131,10 +1150,13 @@ class Homepage extends Component {
                                     <Typography style={{ padding: "10px", textAlign: "center" }}>Ever since you began using the Octo terminal, {this.state.restaurauntName} has had an average of {this.state.overallAverage} customers per week!</Typography>
                                 </Paper>
                             </Grid>
+                            <Grid container spacing={3} justify="center" alignItems="center" direction="row" style={{
+                                paddingTop: "15px"
+                            }}>
+                                {this.returnSupplyHomepage()}
+                            </Grid>
                         </Grid>
-                        <Grid container = "column" spacing = {2} style = {{paddingTop: "15px"}} justify = "center">
-                            {this.returnSupplyHomepage()}
-                        </Grid>
+
                     </Grid>
                     <Grid item xs={3} style={{ paddingRight: "25px" }} >
                         <Grid container spacing={3} justify="center">
@@ -1151,9 +1173,9 @@ class Homepage extends Component {
                                 <Paper style={{
                                     backgroundColor: "white",
                                     overflowY: 'scroll',
-                                    height: "398px"
+                                    height: "414px"
                                 }} elevation={5}>
-                                    <Typography style={{ padding: "10px" }}>{this.state.urlList}</Typography>
+                                    {this.state.uiurls}
                                 </Paper>
                             </Grid>
                         </Grid>
