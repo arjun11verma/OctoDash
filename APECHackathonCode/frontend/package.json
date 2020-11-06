@@ -18,6 +18,7 @@
     "react-country-region-selector": "^3.0.1",
     "react-dom": "^17.0.1",
     "react-dropdown": "^1.9.0",
+    "react-infinite-calendar": "^2.3.1",
     "react-material-ui-calendar": "^0.2.3",
     "react-number-format": "^4.4.1",
     "react-router-dom": "^5.2.0",
