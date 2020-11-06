@@ -30,6 +30,8 @@ import Divider from "@material-ui/core/Divider";
 import Select from "@material-ui/core/Select";
 import FormControl from "@material-ui/core/FormControl";
 import InputLabel from "@material-ui/core/InputLabel"
+import Chip from "@material-ui/core/Chip";
+import Avatar from "@material-ui/core/Avatar";
 
 var globalThis;
 const weeks = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"];
@@ -147,14 +149,6 @@ class Homepage extends Component {
             options: {
                 legend: {
                     position: 'top',
-                },
-                layout: {
-                    padding: {
-                        left: 20,
-                        right: 40,
-                        top: 5,
-                        bottom: 15,
-                    }
                 }
             }
         });
@@ -182,16 +176,6 @@ class Homepage extends Component {
                             borderColor: 'rgba(200, 0, 0, .3)'
                         }
                     ]
-                },
-                options: {
-                    layout: {
-                        padding: {
-                            left: 20,
-                            right: 40,
-                            top: 5,
-                            bottom: 15,
-                        }
-                    }
                 }
             })
         })
@@ -472,51 +456,54 @@ class Homepage extends Component {
 
     returnSupplyHomepage = () => {
         var rows = this.state.rows;
-        var mult1 = 9;
-        var add1 = 2;
-        var mult2 = 6;
-        var add2 = 5;
+        var plus = "";
+        var val = parseInt(rows[0].predictedquantity) - parseInt(rows[0].weeklyquantity);
+        if(val > 0) {
+            plus = "+";
+        }
         return (
             rows.map(text =>
-                <Grid item xs={(((text.item.length + text.predictedquantity.toString().length) - ((text.item.length + text.predictedquantity.toString().length) % mult1)) / mult1) + add1}>
+                <Grid item xs={6} sm={2}>
                     <Paper style={{
                         backgroundColor: "white",
+                        height: "11vh",
+                        overflow: "hidden"
                     }} elevation={5}>
-                        <Grid container spacing={0} justify="center" direction="row" margin="25px">
-                            <Grid item xs={((((text.item.length) - (text.item.length % mult2)) / mult2) + add2)} style={{
-                                display: "flex",
-                                flexDirection: "column",
-                                justifyContent: "center",
-                                height: "7vh"
-                            }}>
-                                <Textfit min={18} max={22} mode="single" forceSingleModeWidth={false} style={{
-                                    textAlign: "right",
-                                }}>
+                        <Grid container spacing={0} justify="left" direction="row">
+                            <Grid item xs={8} style={{ paddingLeft: "10px", paddingTop: "10px" }}>
+                                <Typography variant="h7">
                                     {text.item}
-                                </Textfit>
+                                </Typography>
                             </Grid>
-                            <Grid item xs={1} style={{
-                                display: "flex",
-                                flexDirection: "column",
-                                justifyContent: "center",
-                            }}>
-                                <Textfit min={8} max={13} mode="single" forceSingleModeWidth={false} style={{
-                                    textAlign: "center",
-                                }}>
-                                    {text.weeklyquantity}
-                                </Textfit>
+                            <Grid item xs={4} style={{ paddingRight: "10px", paddingTop: "10px" }}>
+                                <Chip
+                                    size="small"
+                                    label={text.category}
+                                    clickable
+                                    color="primary"
+                                />
                             </Grid>
-                            <Grid item xs={11 - ((((text.item.length) - (text.item.length % mult2)) / mult2) + add2)} style={{
-                                display: "flex",
-                                flexDirection: "column",
-                                justifyContent: "center"
-                            }}>
-                                <Textfit min={20} mode="single" forceSingleModeWidth={false} style={{
-                                    textAlign: "left",
+                            <Grid item xs={12} style={{ paddingLeft: "20px", paddingBottom: "3px"}}>
+                                <Typography variant="h5" display="inline" style={{
                                     color: this.state.color,
+                                    paddingRight: "4px",
                                 }}>
                                     {this.state.arrow}{text.predictedquantity}
-                                </Textfit>
+                                </Typography>
+                                <Typography variant="subtitle2" display="inline">
+                                    orders/wk
+                                </Typography>
+                            </Grid>
+                            <Grid item xs={12} style={{ paddingLeft: "10px", paddingBottom: "10px" }}>
+                                <Typography variant="subtitle2" display="inline" style={{
+                                    color: this.state.color,
+                                    paddingRight: "4px"
+                                }}>
+                                    {plus + (parseInt(rows[0].predictedquantity) - parseInt(rows[0].weeklyquantity))}
+                                </Typography>
+                                <Typography variant="subtitle2" display="inline" inline>
+                                    from <i>{text.weeklyquantity} orders/wk </i>
+                                </Typography>
                             </Grid>
                         </Grid>
                     </Paper>
@@ -1015,13 +1002,14 @@ class Homepage extends Component {
                 <Grid container justify="center" style={{ paddingTop: "25px", height: "93vh", backgroundColor: "#F5F5F5" }}>
                     <Grid item xs={9} style={{ paddingLeft: "25px", paddingRight: "25px" }}>
                         <Grid container spacing={3} justify="center" direction="row">
-                            <Grid item xs={3}>
+                            <Grid item xs={12} sm={3}>
                                 <Grid container spacing={3} justify="center" direction="row">
                                     <Grid item xs={6}>
                                         <Paper style={{ backgroundColor: "#BFC0C0", padding: "2px" }}>
                                             <Paper style={{
                                                 textAlign: "center",
                                                 padding: "5px",
+                                                height: "11vh"
                                             }} elevation={5}>
                                                 <Typography variant="subtitle2">
                                                     Recorded
@@ -1030,7 +1018,10 @@ class Homepage extends Component {
                                                     {this.state.runningAverage}
                                                 </Typography>
                                                 <Typography variant="subtitle2">
-                                                    Customers this week
+                                                    Customers
+                                                </Typography>
+                                                <Typography variant="subtitle2">
+                                                    this week
                                                 </Typography>
                                             </Paper>
                                         </Paper>
@@ -1042,6 +1033,7 @@ class Homepage extends Component {
                                                 borderWidth: "5px",
                                                 textAlign: "center",
                                                 padding: "5px",
+                                                height: "11vh"
                                             }} elevation={5}>
                                                 <Typography variant="subtitle2">
                                                     Predicted
@@ -1050,14 +1042,18 @@ class Homepage extends Component {
                                                     {this.state.currentAverage}
                                                 </Typography>
                                                 <Typography variant="subtitle2">
-                                                    Customers next week
+                                                    Customers
+                                                </Typography>
+                                                <Typography variant="subtitle2">
+                                                    next week
                                                 </Typography>
                                             </Paper>
                                         </Paper>
                                     </Grid>
                                     <Grid item xs={12}>
                                         <Paper style={{
-                                            textAlign: "center"
+                                            textAlign: "center",
+                                            height: "9vh"
                                         }} elevation={5}>
                                             <Typography variant="subtitle2">
                                                 You should order
@@ -1071,11 +1067,13 @@ class Homepage extends Component {
                                         </Paper>
                                     </Grid>
                                     <Grid item xs={12}>
-                                        <Paper elevation={5}>
-                                            <Typography style={{ textAlign: "center", paddingTop: "15px" }}>
+                                        <Paper elevation={5} style={{
+                                            height: "29vh"
+                                        }}>
+                                            <Typography style={{ textAlign: "center", paddingLeft: "15px", paddingRight: "15px", paddingTop: "15px", paddingBottom: "5px" }}>
                                                 Predicted Quantity Required of Each Item Next Week
                                             </Typography>
-                                            <div class="chart-container" style={{ margin: "auto" }}>
+                                            <div class="chart-container" style={{ margin: "auto", paddingBottom: "20px", paddingLeft: "15px", paddingRight: "15px" }}>
                                                 <canvas
                                                     id="myPieChartRef"
                                                     ref={this.state.pieChartRef}
@@ -1084,16 +1082,28 @@ class Homepage extends Component {
                                             </div>
                                         </Paper>
                                     </Grid>
+                                    <Grid item xs={12}>
+                                        <Paper elevation={5} style={{
+                                            height: "6vh"
+                                        }}>
+                                            <Typography style={{ textAlign: "center", padding: "15px"}}>
+                                                Filler text
+                                            </Typography>
+                                        </Paper>
+                                    </Grid>
                                 </Grid>
                             </Grid>
-                            <Grid item xs={9}>
+                            <Grid item xs={12} sm={9}>
                                 <Grid container spacing={3} justify="center" direction="row">
                                     <Grid item xs={12}>
                                         <Paper style={{
                                             backgroundColor: "white",
+                                            height: "65vh"
                                         }} elevation={5}>
                                             <Grid container direction="row" alignItems="center" justify="center">
-                                                <Grid item xs={9}>
+                                                <Grid item xs={2}>
+                                                </Grid>
+                                                <Grid item xs={7}>
                                                     <Typography style={{ textAlign: "center", paddingTop: "15px" }}>
                                                         {this.state.titleGraphText}
                                                     </Typography>
@@ -1112,8 +1122,8 @@ class Homepage extends Component {
                                                     </FormControl>
                                                 </Grid>
                                             </Grid>
-                                            <Grid item xs={12}>
-                                                <div class="chart-container" style={{ margin: "auto" }}>
+                                            <Grid item xs={12} style={{paddingLeft: "25px", paddingRight: "25px", paddingBottom: "25px", paddingTop: "15px"}}>
+                                                <div class="chart-container">
                                                     <canvas
                                                         id="lineChart"
                                                         ref={this.state.lineChartRef}
@@ -1131,16 +1141,22 @@ class Homepage extends Component {
                                     <Typography style={{ padding: "10px", textAlign: "center" }}>Ever since you began using the Octo terminal, {this.state.restaurauntName} has had an average of {this.state.overallAverage} customers per week!</Typography>
                                 </Paper>
                             </Grid>
+                            <Grid container spacing={3} justify="center" alignItems="center" direction="row" style={{
+                                paddingTop: "15px"
+                            }}>
+                                {this.returnSupplyHomepage()}
+                            </Grid>
                         </Grid>
 
                     </Grid>
-                    <Grid item xs={3} style={{ paddingRight: "25px" }} >
+                    <Grid item xs={12} sm={3} style={{ paddingRight: "25px" }} >
                         <Grid container spacing={3} justify="center">
                             <Grid item xs={12}>
                                 <Paper style={{
                                     backgroundColor: "white",
-                                    height: "auto",
-                                    padding: "10px"
+                                    height: "12vh",
+                                    padding: "12px",
+                                    overflow: "scroll"
                                 }} elevation={5}>
                                     <Typography>{this.state.newsMessage}</Typography>
                                 </Paper>
@@ -1149,19 +1165,16 @@ class Homepage extends Component {
                                 <Paper style={{
                                     backgroundColor: "white",
                                     overflowY: 'scroll',
-                                    height: "414px"
+                                    height: "70vh"
                                 }} elevation={5}>
                                     <Typography style={{ padding: "10px" }}>{this.state.urlList}</Typography>
                                 </Paper>
                             </Grid>
                         </Grid>
                     </Grid>
-
-                    <Grid item xs={3}>
-                    </Grid>
                 </Grid>
                 <Dialog fullWidth={true} maxWidth={'md'} open={this.state.supplydataopen} onClose={this.handleCategoryAddClose} aria-labelledby="supply-data-dialog">
-                    <DialogTitle id="supply-data-dialog">Resturaunt Supplies Used</DialogTitle>
+                    <DialogTitle id="supply-data-dialog">Restaurant Supplies Used</DialogTitle>
                     <DialogContent>
                         <Paper style={{
                             backgroundColor: "white",

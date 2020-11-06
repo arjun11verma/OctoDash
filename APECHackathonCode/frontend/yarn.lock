@@ -10018,6 +10018,11 @@ react-is@^17.0.1:
   resolved "https://registry.yarnpkg.com/react-is/-/react-is-17.0.1.tgz#5b3531bd76a645a4c9fb6e693ed36419e3301339"
   integrity sha512-NAnt2iGDXohE5LI7uBnLnqvLQMtzhkiAOLXTmv+qnF9Ky7xAPcX8Up/xWIhxvLVGJvuLiNc4xQLtuqDRzb4fSA==
 
+react-material-ui-calendar@^0.2.3:
+  version "0.2.3"
+  resolved "https://registry.yarnpkg.com/react-material-ui-calendar/-/react-material-ui-calendar-0.2.3.tgz#a958b25c88e1f22f4fc4dfe161e801c8d6165835"
+  integrity sha512-GSbVS3Vx+rgcsC2UZmQPw3FjFwU7w3rrls2drJMuqjQ0vxG8nXZ/I5CPUnrcighz1NcOoVA8r94kHffz05jjRg==
+
 react-number-format@^4.4.1:
   version "4.4.1"
   resolved "https://registry.yarnpkg.com/react-number-format/-/react-number-format-4.4.1.tgz#d5614dd25edfc21ed48b97356213440081437a94"
