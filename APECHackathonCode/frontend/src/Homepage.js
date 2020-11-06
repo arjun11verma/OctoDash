@@ -399,7 +399,7 @@ class Homepage extends Component {
                             />
                             <CardContent>
                                 <Typography gutterBottom variant="h5" component="h2">
-                                {info["title"]}
+                                {info[4]}
                                 </Typography>
                                 <Typography variant="body2" color="textSecondary" component="p">
                                 {info["authors"][0]} - {info["date"]} 
