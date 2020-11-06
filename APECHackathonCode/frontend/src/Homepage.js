@@ -342,7 +342,7 @@ class Homepage extends Component {
                     });
                 }
 
-                var percentDifference = Math.abs(globalThis.state.runningAverage - globalThis.state.currentAverage) / (globalThis.state.runningAverage) * 100 | 0;
+                var percentDifference = (globalThis.state.currentAverage - globalThis.state.runningAverage) / (globalThis.state.runningAverage) * 100 | 0;
                 var inputMessage = "Your restaurant had " + globalThis.state.runningAverage + " customers last week and we predict that your restaurant will have " + globalThis.state.currentAverage + " customers next week. Based off of this, you should order " + percentDifference + "% " + amount + " supplies for next week.";
 
                 var supplyInputData = globalThis.state.rows;
