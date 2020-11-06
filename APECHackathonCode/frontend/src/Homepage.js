@@ -401,7 +401,7 @@ class Homepage extends Component {
                                     {info.title}
                                 </Typography>
                                 <Typography variant="body2" color="textSecondary" component="p">
-                                    {info.date}
+                                    {info.authors[0]} - {info.date}
                                 </Typography>
                             </CardContent>
                         </CardActionArea>
