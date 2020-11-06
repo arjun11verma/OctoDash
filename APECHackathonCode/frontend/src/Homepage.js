@@ -368,7 +368,7 @@ class Homepage extends Component {
                 var data = res.data;
                 var outerDict;
                 var rows = [];
-                var cards = [] 
+                var cards = []
                 console.log(data)
                 for (var i = 0; i < Object.keys(data).length; i++) {
                     outerDict = data[i + ""];
@@ -399,7 +399,7 @@ class Homepage extends Component {
                             </Grid>
                         </CardActionArea>
                     </Card>);
-                
+               
                 globalThis.setState({
                     uiurls: cards
                 });
@@ -547,7 +547,7 @@ class Homepage extends Component {
                         </Paper>
                     </Grid>)
             );
-        }   
+        }  
     }
 
     returnList = () => {
@@ -682,6 +682,12 @@ class Homepage extends Component {
         });
     };
 
+    handleNoDataSupplyClose = () => {
+        this.setState({
+            supplyopen: false,
+        });
+    }
+
     handleAccountClose = () => {
         this.setState({
             accountopen: false,
@@ -728,7 +734,7 @@ class Homepage extends Component {
         });
 
         firebase.database().ref("Accounts").child(this.state.restaurauntName).child("Supplies").child(name).child("quantity").set([newQuantity]);
-        
+       
         setTimeout(() => {
             globalThis.setState({
                 openEdit: false
@@ -1092,7 +1098,7 @@ class Homepage extends Component {
                                             <Paper style={{
                                                 textAlign: "center",
                                                 padding: "5px",
-                                                height: "11vh", 
+                                                height: "11vh",
                                                 overflow: "hidden"
                                             }} elevation={5}>
                                                 <Typography variant="subtitle2">
@@ -1104,7 +1110,7 @@ class Homepage extends Component {
                                                 <Typography variant="subtitle2">
                                                     Customers
                                                 </Typography>
-                                                <Typography variant="subtitle2"> 
+                                                <Typography variant="subtitle2">
                                                     this week
                                                 </Typography>
                                             </Paper>
@@ -1129,7 +1135,7 @@ class Homepage extends Component {
                                                 <Typography variant="subtitle2">
                                                     Customers
                                                 </Typography>
-                                                <Typography variant="subtitle2"> 
+                                                <Typography variant="subtitle2">
                                                     next week
                                                 </Typography>
                                             </Paper>
@@ -1380,7 +1386,7 @@ class Homepage extends Component {
                         </form>
                     </DialogContent>
                     <DialogActions>
-                        <Button onClick={this.handleSupplyClose} color="primary">
+                        <Button onClick={this.handleNoDataSupplyClose} color="primary">
                             Cancel
                         </Button>
                         <Button onClick={this.handleSupplyClose} color="primary">
