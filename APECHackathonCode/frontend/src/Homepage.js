@@ -718,6 +718,7 @@ class Homepage extends Component {
             if(rows[i].id === this.state.activesupplyid) {
                 name = rows[i].item;
                 rows[i].weeklyquantity = newQuantity;
+                rows[i].predictedquantity = (newQuantity * (1 + (Math.abs(globalThis.state.runningAverage - globalThis.state.currentAverage) / (globalThis.state.runningAverage)))) | 0;
             }
         }
 
@@ -726,13 +727,12 @@ class Homepage extends Component {
         });
 
         firebase.database().ref("Accounts").child(this.state.restaurauntName).child("Supplies").child(name).child("quantity").set([newQuantity]);
-        console.log(firebase.database().ref("Accounts").child(this.state.restaurauntName).child("Supplies").child(name));
         
         setTimeout(() => {
             globalThis.setState({
                 openEdit: false
             });
-        }, 2000);
+        }, 500);
     }
 
     createSupply = () => {
