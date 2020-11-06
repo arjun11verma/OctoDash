@@ -474,57 +474,60 @@ class Homepage extends Component {
 
     returnSupplyHomepage = () => {
         var rows = this.state.rows;
-        var plus = "";
-        var val = parseInt(rows[0].predictedquantity) - parseInt(rows[0].weeklyquantity);
-        if(val > 0) {
-            plus = "+";
+        if(rows !== undefined && rows[0] !== undefined) {
+            var plus = "";
+            var val = parseInt(rows[0].predictedquantity) - parseInt(rows[0].weeklyquantity);
+            if(val > 0) {
+                plus = "+";
+            }
+            var mult1 = 9;
+            var add1 = 2;
+            var mult2 = 6;
+            var add2 = 5;
+            return (
+                rows.map(text =>
+                    <Grid item xs={2}>
+                        <Paper style={{
+                            backgroundColor: "white",
+                        }} elevation={5}>
+                            <Grid container spacing={0} justify="left" direction="row">
+                                <Grid item xs={8} style={{ paddingLeft: "10px", paddingTop: "10px" }}>
+                                    <Typography variant="h7">
+                                        {text.item}
+                                    </Typography>
+                                </Grid>
+                                <Grid item xs={4} style={{ paddingRight: "10px", paddingTop: "10px" }}>
+                                    <Chip
+                                        size="small"
+                                        label={text.category}
+                                        clickable
+                                        color="primary"
+                                    />
+                                </Grid>
+                                <Grid item xs={12} style={{ paddingLeft: "20px" }}>
+                                    <Typography variant="h5" style={{
+                                        color: this.state.color
+                                    }}>
+                                        {this.state.arrow}{text.predictedquantity}
+                                    </Typography>
+                                </Grid>
+                                <Grid item xs={12} style={{ paddingLeft: "10px", paddingBottom: "10px" }}>
+                                    <Typography variant="subtitle2" display="inline" style={{
+                                        color: this.state.color,
+                                        paddingRight: "4px"
+                                    }}>
+                                        {plus + (parseInt(rows[0].predictedquantity) - parseInt(rows[0].weeklyquantity))}
+                                    </Typography>
+                                    <Typography variant="subtitle2" display="inline" inline>
+                                        from {text.weeklyquantity} last week
+                                    </Typography>
+                                </Grid>
+                            </Grid>
+                        </Paper>
+                    </Grid>)
+            )
         }
-        var mult1 = 9;
-        var add1 = 2;
-        var mult2 = 6;
-        var add2 = 5;
-        return (
-            rows.map(text =>
-                <Grid item xs={2}>
-                    <Paper style={{
-                        backgroundColor: "white",
-                    }} elevation={5}>
-                        <Grid container spacing={0} justify="left" direction="row">
-                            <Grid item xs={8} style={{ paddingLeft: "10px", paddingTop: "10px" }}>
-                                <Typography variant="h7">
-                                    {text.item}
-                                </Typography>
-                            </Grid>
-                            <Grid item xs={4} style={{ paddingRight: "10px", paddingTop: "10px" }}>
-                                <Chip
-                                    size="small"
-                                    label={text.category}
-                                    clickable
-                                    color="primary"
-                                />
-                            </Grid>
-                            <Grid item xs={12} style={{ paddingLeft: "20px" }}>
-                                <Typography variant="h5" style={{
-                                    color: this.state.color
-                                }}>
-                                    {this.state.arrow}{text.predictedquantity}
-                                </Typography>
-                            </Grid>
-                            <Grid item xs={12} style={{ paddingLeft: "10px", paddingBottom: "10px" }}>
-                                <Typography variant="subtitle2" display="inline" style={{
-                                    color: this.state.color,
-                                    paddingRight: "4px"
-                                }}>
-                                    {plus + (parseInt(rows[0].predictedquantity) - parseInt(rows[0].weeklyquantity))}
-                                </Typography>
-                                <Typography variant="subtitle2" display="inline" inline>
-                                    from {text.weeklyquantity} last week
-                                </Typography>
-                            </Grid>
-                        </Grid>
-                    </Paper>
-                </Grid>)
-        )
+        
     }
 
     returnList = () => {
@@ -1135,7 +1138,7 @@ class Homepage extends Component {
                                 </Paper>
                             </Grid>
                         </Grid>
-                        <Grid container = "column" spacing = {2} style = {{paddingTop: "15px"}}>
+                        <Grid container = "column" spacing = {2} style = {{paddingTop: "15px"}} justify = "center">
                             {this.returnSupplyHomepage()}
                         </Grid>
                     </Grid>
@@ -1154,7 +1157,7 @@ class Homepage extends Component {
                                 <Paper style={{
                                     backgroundColor: "white",
                                     overflowY: 'scroll',
-                                    height: "414px"
+                                    height: "398px"
                                 }} elevation={5}>
                                     <Typography style={{ padding: "10px" }}>{this.state.urlList}</Typography>
                                 </Paper>
