@@ -32,6 +32,8 @@ import FormControl from "@material-ui/core/FormControl";
 import InputLabel from "@material-ui/core/InputLabel"
 import Chip from "@material-ui/core/Chip";
 import Avatar from "@material-ui/core/Avatar";
+import InfiniteCalendar from 'react-infinite-calendar';
+import 'react-infinite-calendar/styles.css';
 
 var globalThis;
 const weeks = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"];
@@ -74,6 +76,8 @@ class Homepage extends Component {
             percent: "",
             amount: "",
             view: "week",
+            today: new Date(),
+            selecteddate: null,
             lineGraph: null,
             activesupplyid: false,
             categories: [
@@ -637,6 +641,15 @@ class Homepage extends Component {
         });
     };
 
+    handleDateSelect = (date) => {
+        this.setState({
+            selectedate: date
+        })
+        console.log(date)
+        document.getElementById("datetext").innerHTML = date;
+        document.getElementById("customerday").value = 123;
+    }
+
     onRowClick = (rowIdx, row) => {
         this.handleSupplyClickOpen(rowIdx["data"]["id"])
     }
@@ -945,6 +958,7 @@ class Homepage extends Component {
             { "code": "ZW", "code3": "ZWE", "name": "Zimbabwe", "number": "716" },
             { "code": "AX", "code3": "ALA", "name": "Åland Islands", "number": "248" }
         ];
+        var lastWeek = new Date(this.state.today.getFullYear(), this.state.today.getMonth(), this.state.today.getDate() - 7);
         return (
             <div>
                 <AppBar position="static" style={{ backgroundColor: "#283B63" }}>
@@ -1276,74 +1290,34 @@ class Homepage extends Component {
                         </Button>
                     </DialogActions>
                 </Dialog>
-                <Dialog open={this.state.customeropen} onClose={this.handleCustomerClose} aria-labelledby="form-dialog-title">
+                <Dialog maxWidth={"lg"} open={this.state.customeropen} onClose={this.handleCustomerClose} aria-labelledby="form-dialog-title">
                     <DialogTitle id="form-dialog-title">Input your weekly data</DialogTitle>
                     <DialogContent>
-                        <form>
-                            <TextField
-                                variant="outlined"
-                                margin="normal"
-                                required
-                                label={this.state.dateLabels[6]}
-                                id="mon"
-                                autoFocus
-                                style={{ width: "80%", marginLeft: "10%" }}
-                            />
-                            <TextField
-                                variant="outlined"
-                                margin="normal"
-                                required
-                                label={this.state.dateLabels[5]}
-                                id="tue"
-                                autoFocus
-                                style={{ width: "80%", marginLeft: "10%" }}
-                            />
-                            <TextField
-                                variant="outlined"
-                                margin="normal"
-                                required
-                                label={this.state.dateLabels[4]}
-                                id="wed"
-                                autoFocus
-                                style={{ width: "80%", marginLeft: "10%" }}
-                            />
-                            <TextField
-                                variant="outlined"
-                                margin="normal"
-                                required
-                                label={this.state.dateLabels[3]}
-                                id="thu"
-                                autoFocus
-                                style={{ width: "80%", marginLeft: "10%" }}
-                            />
-                            <TextField
-                                variant="outlined"
-                                margin="normal"
-                                required
-                                label={this.state.dateLabels[2]}
-                                id="fri"
-                                autoFocus
-                                style={{ width: "80%", marginLeft: "10%" }}
-                            />
-                            <TextField
-                                variant="outlined"
-                                margin="normal"
-                                required
-                                label={this.state.dateLabels[1]}
-                                id="sat"
-                                autoFocus
-                                style={{ width: "80%", marginLeft: "10%" }}
-                            />
-                            <TextField
-                                variant="outlined"
-                                margin="normal"
-                                required
-                                label={this.state.dateLabels[0]}
-                                id="sun"
-                                autoFocus
-                                style={{ width: "80%", marginLeft: "10%" }}
-                            />
-                        </form>
+                        <Paper style={{width: "1000px"}}>
+                            <Grid container spacing={3} justify="center" direction="row">
+                                <Grid item xs={6}>
+                                    <InfiniteCalendar
+                                        height={400}
+                                        width={500}
+                                        selected={this.state.today}
+                                        minDate={lastWeek}
+                                        onSelect={this.handleDateSelect}
+                                    />
+                                </Grid>
+                                <Grid item xs={6}>
+                                    <Typography id="datetext" >{this.state.selecteddate}</Typography>
+                                    <TextField
+                                        variant="outlined"
+                                        margin="normal"
+                                        required
+                                        fullWidth
+                                        label="Customers on this day"
+                                        id="customerday"
+                                        style={{ width: "80%", marginLeft: "10%", marginTop: "2%", marginBottom: "2%" }}
+                                    />  Q
+                                </Grid>
+                            </Grid>
+                        </Paper>
                     </DialogContent>
                     <DialogActions>
                         <Button onClick={this.handleCustomerDataClose} color="primary">
