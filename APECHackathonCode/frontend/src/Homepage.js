@@ -47,6 +47,8 @@ class Homepage extends Component {
             pieChartRef: React.createRef(),
             objectiveDate: 0,
             divisor: 0,
+            openEdit: false,
+            closeEdit: false,
             mlData: [],
             actualCovidData: [],
             dateLabels: [],
@@ -121,8 +123,7 @@ class Homepage extends Component {
     }
 
     editButton = (element) => {
-        console.log("row" + element.rowIndex +
-            " - column" + element.cellIndex)
+        console.log("HELLO");
     }
 
     componentDidMount = () => {
@@ -657,7 +658,20 @@ class Homepage extends Component {
     };
 
     onRowClick = (rowIdx, row) => {
-        this.handleSupplyClickOpen(rowIdx["data"]["id"])
+        var id = rowIdx["data"]["id"];
+
+        if (id !== "new") {
+            this.setState({
+                openEdit: true,
+                activesupplyid: id
+            });
+        }
+        else {
+            this.setState({
+                openEdit: true,
+                activesupplyid: id
+            });
+        }
     }
 
     createSupply = () => {
@@ -1237,6 +1251,21 @@ class Homepage extends Component {
                             Done
                         </Button>
                     </DialogActions>
+                </Dialog>
+                <Dialog open={this.state.openEdit} onClose={this.state.closeEdit} aria-labelledby="supply-dialog">
+                    <DialogTitle id="supply-dialog">Edit your weekly data for {this.state.activesupplyid}</DialogTitle>
+                    <DialogContent>
+                        <form>
+                            <TextField
+                                variant="outlined"
+                                margin="normal"
+                                required
+                                label="Weekly Quantity"
+                                id="supply_quantity"
+                                style={{ width: "80%", marginLeft: "10%" }}
+                            />
+                        </form>
+                    </DialogContent>
                 </Dialog>
                 <Dialog open={this.state.supplyopen} onClose={this.handleSupplyClose} aria-labelledby="supply-dialog">
                     <DialogTitle id="supply-dialog">Input your weekly data for {this.state.activesupplyid}</DialogTitle>
