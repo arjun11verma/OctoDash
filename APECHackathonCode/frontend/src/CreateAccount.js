@@ -297,8 +297,6 @@ class CreateAccount extends Component {
     }
 
     render() {
-<<<<<<< Updated upstream
-=======
         const countryListAllIsoData = [
             { "code": "AU", "code3": "AUS", "name": "Australia", "number": "036" },
             { "code": "BN", "code3": "BRN", "name": "Brunei Darussalam", "number": "096" },
@@ -322,7 +320,6 @@ class CreateAccount extends Component {
             { "code": "US", "code3": "USA", "name": "United States of America (the)", "number": "840" },
             { "code": "VN", "code3": "VNM", "name": "Viet Nam", "number": "704" },
         ];
->>>>>>> Stashed changes
         const handleSubmit = e => {
             e.preventDefault();
             this.uploadAccount()
