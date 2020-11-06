@@ -384,13 +384,16 @@ class Homepage extends Component {
                 console.log(data)
                 for (var i = 0; i < Object.keys(data).length; i++) {
                     outerDict = data[i + ""];
-                    rows.push(outerDict);
+                    if(outerDict !== undefined) {
+                        rows.push(outerDict);
+                    }
                 }
                 console.log(rows);
                 cards = rows.map(info =>
                     <Card>
-                        <CardActionArea onClick = {() => {console.log("oof")}}>
+                        <CardActionArea onClick = {() => {window.open(info.url); console.log(info.url)}}>
                             <CardMedia
+<<<<<<< HEAD
                                 image={info["image"]}
                                 title={info["title"]}
                             />
@@ -400,6 +403,17 @@ class Homepage extends Component {
                                 </Typography>
                                 <Typography variant="body2" color="textSecondary" component="p">
                                 {info["authors"][0]} - {info["date"]} 
+=======
+                                image={info.imageURL}
+                                title={info.title}
+                            />
+                            <CardContent>
+                                <Typography gutterBottom variant="h5" component="h2">
+                                {info.title}
+                                </Typography>
+                                <Typography variant="body2" color="textSecondary" component="p">
+                                {info.date}
+>>>>>>> master
                                 </Typography>
                             </CardContent>
                         </CardActionArea>
@@ -696,6 +710,20 @@ class Homepage extends Component {
                 openEdit: true,
                 activesupplyid: id
             });
+        }
+    }
+
+    closeNothingEdit = () => {
+        this.setState({
+            openEdit: false
+        });
+    }
+
+    closeEdit = () => {
+        var newQuantity = parseInt(document.getElementById("supply_quantity_edit").value);
+        var rows = this.state.rows;
+        for(var i = 0; i < rows.length; i++) {
+
         }
     }
 
@@ -1170,7 +1198,6 @@ class Homepage extends Component {
                                 {this.returnSupplyHomepage()}
                             </Grid>
                         </Grid>
-
                     </Grid>
                     <Grid item xs={3} style={{ paddingRight: "25px" }} >
                         <Grid container spacing={3} justify="center">
@@ -1187,7 +1214,7 @@ class Homepage extends Component {
                                 <Paper style={{
                                     backgroundColor: "white",
                                     overflowY: 'scroll',
-                                    height: "414px"
+                                    height: "525px"
                                 }} elevation={5}>
                                     {this.state.uiurls}
                                 </Paper>
@@ -1283,11 +1310,19 @@ class Homepage extends Component {
                                 margin="normal"
                                 required
                                 label="Weekly Quantity"
-                                id="supply_quantity"
+                                id="supply_quantity_edit"
                                 style={{ width: "80%", marginLeft: "10%" }}
                             />
                         </form>
                     </DialogContent>
+                    <DialogActions>
+                        <Button onClick={this.closeNothingEdit} color="primary">
+                            Cancel
+                        </Button>
+                        <Button onClick={this.closeEdit} color="primary">
+                            Add Entry
+                        </Button>
+                    </DialogActions>
                 </Dialog>
                 <Dialog open={this.state.supplyopen} onClose={this.handleSupplyClose} aria-labelledby="supply-dialog">
                     <DialogTitle id="supply-dialog">Input your weekly data for {this.state.activesupplyid}</DialogTitle>
