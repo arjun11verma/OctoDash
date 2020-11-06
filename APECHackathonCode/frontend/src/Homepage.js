@@ -393,22 +393,10 @@ class Homepage extends Component {
                     <Card>
                         <CardActionArea onClick = {() => {window.open(info.url); console.log(info.url)}}>
                             <CardMedia
-<<<<<<< HEAD
-                                image={info["image"]}
-                                title={info["title"]}
+                                src = {info.imageUrl}
                             />
                             <CardContent>
-                                <Typography gutterBottom variant="h5" component="h2">
-                                {info["title"]}
-                                </Typography>
-                                <Typography variant="body2" color="textSecondary" component="p">
-                                {info["authors"][0]} - {info["date"]} 
-=======
-                                image={info.imageURL}
-                                title={info.title}
-                            />
-                            <CardContent>
-                                <Typography gutterBottom variant="h5" component="h2">
+                                <Typography variant="body1" component="h2">
                                 {info.title}
                                 </Typography>
                                 <Typography variant="body2" color="textSecondary" component="p">
@@ -546,7 +534,7 @@ class Homepage extends Component {
                                     color: this.state.color,
                                     paddingRight: "4px"
                                 }}>
-                                    {plus + (parseInt(rows[0].predictedquantity) - parseInt(rows[0].weeklyquantity))}
+                                    {plus + (parseInt(text.predictedquantity) - parseInt(text.weeklyquantity))}
                                 </Typography>
                                 <Typography variant="subtitle2" display="inline" inline>
                                     from {text.weeklyquantity} last week
