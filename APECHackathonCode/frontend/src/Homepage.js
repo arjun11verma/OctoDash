@@ -1135,7 +1135,7 @@ class Homepage extends Component {
                                 </Paper>
                             </Grid>
                         </Grid>
-                        <Grid container = "column" spacing = {2}>
+                        <Grid container = "column" spacing = {2} style = {{paddingTop: "15px"}}>
                             {this.returnSupplyHomepage()}
                         </Grid>
                     </Grid>
