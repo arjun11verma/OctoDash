@@ -702,10 +702,27 @@ class Homepage extends Component {
 
     closeEdit = () => {
         var newQuantity = parseInt(document.getElementById("supply_quantity_edit").value);
+        var name = "";
         var rows = this.state.rows;
         for(var i = 0; i < rows.length; i++) {
-
+            if(rows[i].id === this.state.activesupplyid) {
+                name = rows[i].item;
+                rows[i].weeklyquantity = newQuantity;
+                rows[i].predictedquantity = (newQuantity * (1 + (Math.abs(globalThis.state.runningAverage - globalThis.state.currentAverage) / (globalThis.state.runningAverage)))) | 0;
+            }
         }
+
+        globalThis.setState({
+            rows: rows
+        });
+
+        firebase.database().ref("Accounts").child(this.state.restaurauntName).child("Supplies").child(name).child("quantity").set([newQuantity]);
+        
+        setTimeout(() => {
+            globalThis.setState({
+                openEdit: false
+            });
+        }, 500);
     }
 
     createSupply = () => {
@@ -1303,7 +1320,7 @@ class Homepage extends Component {
                         </Button>
                     </DialogActions>
                 </Dialog>
-                <Dialog open={this.state.openEdit} onClose={this.state.closeEdit} aria-labelledby="supply-dialog">
+                <Dialog open={this.state.openEdit} onClose = {this.closeEdit} aria-labelledby="supply-dialog">
                     <DialogTitle id="supply-dialog">Edit your weekly data for {this.state.activesupplyid}</DialogTitle>
                     <DialogContent>
                         <form>
