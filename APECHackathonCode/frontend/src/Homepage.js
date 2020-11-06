@@ -391,15 +391,15 @@ class Homepage extends Component {
                     <Card>
                         <CardActionArea onClick = {() => {console.log("oof")}}>
                             <CardMedia
-                                image={info[3]}
-                                title={info[4]}
+                                image={info["image"]}
+                                title={info["title"]}
                             />
                             <CardContent>
                                 <Typography gutterBottom variant="h5" component="h2">
-                                {info[4]}
+                                {info["title"]}
                                 </Typography>
                                 <Typography variant="body2" color="textSecondary" component="p">
-                                {info[0]} - {info[1]} 
+                                {info["authors"][0]} - {info["date"]} 
                                 </Typography>
                             </CardContent>
                         </CardActionArea>
