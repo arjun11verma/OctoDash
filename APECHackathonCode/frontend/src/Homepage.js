@@ -684,11 +684,12 @@ class Homepage extends Component {
         var name = this.state.restaurauntName;
 
         firebase.database().ref("Accounts").once('value').then(function (snapshot) {
+            console.log(setDate);
             snapshot.forEach(childSnapshot => {
-                if(!childSnapshot.hasChild("StartWeek")) {
+                if(childSnapshot.child("resturauntName").val() === globalThis.state.restaurauntName && !childSnapshot.hasChild("StartWeek")) {
                     firebase.database().ref("Accounts").child(name).child("StartWeek").set({ 'day': setDate.getDate(), 'month': setDate.getMonth() + 1, 'year': setDate.getFullYear() });
-                }
-                else {
+                    firebase.database().ref("Accounts").child(name).child("customersPerWeek").set([newVal]);
+                } else if (childSnapshot.child("resturauntName").val() === globalThis.state.restaurauntName) {
                     var dateBlock = childSnapshot.child("StartWeek").val();
                     var currentDate = new Date(dateBlock.year, dateBlock.month - 1, dateBlock.day);
 
