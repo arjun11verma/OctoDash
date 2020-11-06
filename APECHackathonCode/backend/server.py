@@ -129,12 +129,12 @@ def getArticleInfo():
     post_data = (literal_eval(request.data.decode('utf8')))
     country = post_data["country"]
     articleInfo = {}
-    urls = getNewsUrls(country)
+    urls = getNewsUrls("USA")
     count = 0
+    goodCount = 0
     while count < len(urls):
         article = Article(urls[count])
         try:
-            print(" article")
             article.download()
             article.parse()
             if (isinstance(article.publish_date, datetime)):
@@ -153,12 +153,18 @@ def getArticleInfo():
                 article.top_image = "No imageURL"
             if article.title == None:
                 article.title = "No title"
-            articleInfo[count] = {"authors": authors, "date": date, "url": urls[count],
+            if count != 0 and goodCount != 0 and urls[count] == articleInfo[goodCount - 1]["url"]:
+                print("Inside if statement")
+                raise Exception
+            articleInfo[goodCount] = {"authors": authors, "date": date, "url": urls[count],
             "imageURL": article.top_image, "title": article.title}
             count = count + 1
-        except:
+            goodCount = goodCount + 1
+        except Exception as e:
+            print(e)
             count = count + 1 
             print("bad article")
     return articleInfo
+
 
 app.run()
