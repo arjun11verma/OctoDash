@@ -378,17 +378,23 @@ class Homepage extends Component {
                 cards = rows.map(info =>
                     <Card>
                         <CardActionArea onClick = {() => {window.open(info.url); console.log(info.url)}}>
-                            <CardMedia
-                                src = {info.imageUrl}
-                            />
-                            <CardContent>
-                                <Typography variant="body1" component="h2">
-                                    {info.title}
-                                </Typography>
-                                <Typography variant="body2" color="textSecondary" component="p">
-                                    {info.authors[0]} - {info.date}
-                                </Typography>
-                            </CardContent>
+                            <Grid container direction="column">
+                                <CardContent inline>
+                                    <Grid container direction="row">
+                                        <Grid xs = {4}>
+                                            <img src = {info.imageURL} alt = "image" width = "90px"></img>
+                                        </Grid>
+                                        <Grid xs = {8}>
+                                            <Typography style = {{fontSize: "13px"}} component="h2">
+                                                {info.title}
+                                            </Typography>
+                                            <Typography style = {{fontSize: "10px"}} color="textSecondary" component="p">
+                                                {info.authors[0]} - {info.date}
+                                            </Typography>
+                                        </Grid>
+                                    </Grid>
+                                </CardContent>
+                            </Grid>
                         </CardActionArea>
                     </Card>);
                 
