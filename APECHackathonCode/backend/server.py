@@ -109,7 +109,10 @@ def getNewsUrls(country):
     stopsearch = dateTimeObj.strftime("%Y-%m-%dT%H:%M:%SZ")
 
     storylimit = 10
-    tag_id_dict = {"MYS": 38380297, "USA": 34412234}
+    tag_id_dict = {"MYS":38380297, "USA":34412234, "RUS":8878645, "CHN":34412193, "VNM":8878732,
+    "THA":34412328, "SGP":34412474, "KOR":34412127, "JPN":34412056, "TWN":34412361, "PHL": 34412313,
+    "BRN":34412241, "IDN":34412392, "AUS":34412282, "NZL":34412098, "CAN":34411583, "MEX": 34412427,
+    "PER":34412158, "CHL":34412295}
 
     storylist = mc.storyList(
         solr_query="(title:((covid OR coronavirus OR covid-19) AND (food OR resturant OR local resturant OR small buisness))) AND tags_id_media:{0}".format(tag_id_dict[country]),
@@ -142,6 +145,14 @@ def getArticleInfo():
             for x in article.authors:
                 if len(x.split(" ")) == 2:
                     authors.append(x)
+            if not authors: 
+                authors[0] = "No Author"
+            if date == None:
+                date = "No Date"
+            if article.top_image == None:
+                article.top_image = "No imageURL"
+            if article.title == None:
+                article.title = "No title"
             articleInfo[count] = {"authors": authors, "date": date, "url": urls[count],
             "imageURL": article.top_image, "title": article.title}
             count = count + 1
